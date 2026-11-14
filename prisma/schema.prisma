@@ -1,0 +1,1078 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// ENUMS
+// ==========================================
+
+enum ItemType {
+  RAW_MATERIAL
+  COMPONENT
+  FINISHED_GOOD
+  SEMI_FINISHED
+  PACKAGING
+  CONSUMABLE
+}
+
+enum UnitOfMeasure {
+  PIECE
+  METER
+  KILOGRAM
+  GRAM
+  LITER
+  BOX
+  ROLL
+  SET
+}
+
+enum StockStatus {
+  AVAILABLE
+  QUARANTINE
+  BLOCKED
+}
+
+enum BatchQualityStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum MovementType {
+  RECEIPT
+  ISSUE
+  TRANSFER
+  ADJUSTMENT
+  PRODUCTION_CONSUMPTION
+  PRODUCTION_OUTPUT
+  SALES_SHIPMENT
+  RETURN
+  REVERSAL
+}
+
+enum DocumentStatus {
+  DRAFT
+  POSTED
+  CANCELLED
+}
+
+enum VersionStatus {
+  DRAFT
+  APPROVED
+  OBSOLETE
+}
+
+enum WorkOrderStatus {
+  DRAFT
+  PLANNED
+  RELEASED
+  IN_PROGRESS
+  PAUSED
+  COMPLETED
+  CANCELLED
+}
+
+enum ProductionRunStatus {
+  IN_PROGRESS
+  PAUSED
+  COMPLETED
+  CANCELLED
+}
+
+enum OperationStatus {
+  PENDING
+  IN_PROGRESS
+  PAUSED
+  COMPLETED
+  SKIPPED
+}
+
+enum QCStage {
+  INCOMING
+  IN_PROCESS
+  FINAL
+}
+
+enum QCResult {
+  PENDING
+  PASSED
+  FAILED
+  CONDITIONAL
+}
+
+enum QuotationStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  REJECTED
+  EXPIRED
+  CONVERTED
+}
+
+enum SalesOrderStatus {
+  DRAFT
+  CONFIRMED
+  IN_PRODUCTION
+  PARTIALLY_DELIVERED
+  DELIVERED
+  CANCELLED
+}
+
+enum DeliveryStatus {
+  DRAFT
+  POSTED
+  CANCELLED
+}
+
+// ==========================================
+// MASTER DATA
+// ==========================================
+
+model Item {
+  id          String        @id @default(cuid())
+  sku         String        @unique
+  name        String
+  description String?
+  itemType    ItemType
+  baseUnit    UnitOfMeasure
+  isActive    Boolean       @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Inventory
+  batches      Batch[]
+  balances     StockBalance[]
+  movements    StockMovement[]
+  reservations StockReservation[]
+  receiptLines GoodsReceiptLine[]
+
+  // Production
+  productProfile       ProductProfile?
+  bomComponents        BomLine[]
+  materialConsumptions MaterialConsumption[]
+  productionOutputs    ProductionOutput[]
+
+  // Sales
+  quotationLines  QuotationLine[]
+  salesOrderLines SalesOrderLine[]
+  deliveryLines   DeliveryLine[]
+
+  @@index([name])
+  @@index([itemType])
+}
+
+// ==========================================
+// SUPPLIERS
+// ==========================================
+
+model Supplier {
+  id         String  @id @default(cuid())
+  code       String  @unique
+  name       String
+  nationalId String?
+  phone      String?
+  email      String?
+  address    String?
+  isActive   Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  goodsReceipts GoodsReceipt[]
+}
+
+// ==========================================
+// WAREHOUSE
+// ==========================================
+
+model Warehouse {
+  id          String  @id @default(cuid())
+  code        String  @unique
+  name        String
+  description String?
+  isActive    Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  locations StockLocation[]
+}
+
+model StockLocation {
+  id          String  @id @default(cuid())
+  warehouseId String
+  code        String
+  name        String
+  description String?
+  isActive    Boolean @default(true)
+
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Restrict)
+
+  balances      StockBalance[]
+  movementsFrom StockMovement[]    @relation("MovementSource")
+  movementsTo   StockMovement[]    @relation("MovementDestination")
+  reservations  StockReservation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([warehouseId, code])
+  @@index([warehouseId])
+}
+
+// ==========================================
+// BATCH TRACEABILITY
+// ==========================================
+
+model Batch {
+  id                  String             @id @default(cuid())
+  itemId              String
+  batchNumber         String
+  supplierBatchNumber String?
+  manufacturingDate   DateTime?
+  expiryDate          DateTime?
+  qualityStatus       BatchQualityStatus @default(PENDING)
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  balances     StockBalance[]
+  movements    StockMovement[]
+  reservations StockReservation[]
+  receiptLines GoodsReceiptLine[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([itemId, batchNumber])
+  @@index([batchNumber])
+  @@index([qualityStatus])
+}
+
+// ==========================================
+// INVENTORY BALANCE
+// ==========================================
+
+model StockBalance {
+  id         String      @id @default(cuid())
+  itemId     String
+  locationId String
+  batchId    String?
+  status     StockStatus @default(AVAILABLE)
+
+  quantity Decimal @default(0) @db.Decimal(18, 4)
+
+  updatedAt DateTime @updatedAt
+
+  item     Item          @relation(fields: [itemId], references: [id], onDelete: Restrict)
+  location StockLocation @relation(fields: [locationId], references: [id], onDelete: Restrict)
+  batch    Batch?        @relation(fields: [batchId], references: [id], onDelete: Restrict)
+
+  // توجه: یکتایی batchId تهی در PostgreSQL نیازمند ایندکس جزئی است.
+  // این محدودیت در مرحله Migration با SQL تکمیلی اعمال خواهد شد.
+  @@unique([itemId, locationId, batchId, status])
+  @@index([itemId, locationId])
+  @@index([batchId])
+}
+
+// ==========================================
+// INVENTORY MOVEMENTS
+// ==========================================
+
+model StockMovement {
+  id      String  @id @default(cuid())
+  itemId  String
+  batchId String?
+
+  sourceLocationId      String?
+  destinationLocationId String?
+
+  movementType MovementType
+  quantity     Decimal      @db.Decimal(18, 4)
+  unitCost     Decimal?     @db.Decimal(18, 4)
+
+  referenceType String?
+  referenceId   String?
+  description   String?
+
+  status   DocumentStatus @default(DRAFT)
+  postedAt DateTime?
+
+  item  Item   @relation(fields: [itemId], references: [id], onDelete: Restrict)
+  batch Batch? @relation(fields: [batchId], references: [id], onDelete: Restrict)
+
+  sourceLocation      StockLocation? @relation("MovementSource", fields: [sourceLocationId], references: [id], onDelete: Restrict)
+  destinationLocation StockLocation? @relation("MovementDestination", fields: [destinationLocationId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([itemId])
+  @@index([batchId])
+  @@index([movementType])
+  @@index([referenceType, referenceId])
+  @@index([postedAt])
+}
+
+// ==========================================
+// STOCK RESERVATIONS
+// ==========================================
+
+model StockReservation {
+  id         String  @id @default(cuid())
+  itemId     String
+  locationId String
+  batchId    String?
+
+  quantity Decimal @db.Decimal(18, 4)
+
+  referenceType String
+  referenceId   String
+  isActive      Boolean @default(true)
+
+  item     Item          @relation(fields: [itemId], references: [id], onDelete: Restrict)
+  location StockLocation @relation(fields: [locationId], references: [id], onDelete: Restrict)
+  batch    Batch?        @relation(fields: [batchId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([itemId, locationId])
+  @@index([referenceType, referenceId])
+  @@index([batchId])
+}
+
+// ==========================================
+// GOODS RECEIPTS
+// ==========================================
+
+model GoodsReceipt {
+  id            String         @id @default(cuid())
+  receiptNumber String         @unique
+  supplierId    String
+  status        DocumentStatus @default(DRAFT)
+
+  receiptDate DateTime @default(now())
+  description String?
+
+  supplier Supplier @relation(fields: [supplierId], references: [id], onDelete: Restrict)
+
+  lines GoodsReceiptLine[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GoodsReceiptLine {
+  id        String  @id @default(cuid())
+  receiptId String
+  itemId    String
+  batchId   String?
+
+  lineNumber  Int
+  quantity    Decimal  @db.Decimal(18, 4)
+  unitCost    Decimal? @db.Decimal(18, 4)
+  description String?
+
+  receipt GoodsReceipt @relation(fields: [receiptId], references: [id], onDelete: Restrict)
+  item    Item         @relation(fields: [itemId], references: [id], onDelete: Restrict)
+  batch   Batch?       @relation(fields: [batchId], references: [id], onDelete: Restrict)
+
+  @@unique([receiptId, lineNumber])
+  @@index([itemId])
+  @@index([batchId])
+}
+
+// ==========================================
+// PRODUCT TECHNICAL PROFILE
+// ==========================================
+
+model ProductProfile {
+  id     String @id @default(cuid())
+  itemId String @unique
+
+  connectorFrom String?
+  connectorTo   String?
+
+  cableLengthMm     Int?
+  conductorMaterial String?
+  jacketMaterial    String?
+
+  ratedPowerW   Decimal? @db.Decimal(10, 2)
+  ratedCurrentA Decimal? @db.Decimal(10, 2)
+
+  supportsData Boolean @default(false)
+  hasChip      Boolean @default(false)
+  chipModel    String?
+
+  technicalNotes String?
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  bomVersions     BomVersion[]
+  routingVersions RoutingVersion[]
+  workOrders      WorkOrder[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// BILL OF MATERIALS
+// ==========================================
+
+model BomVersion {
+  id               String @id @default(cuid())
+  productProfileId String
+
+  versionNumber Int
+  status        VersionStatus @default(DRAFT)
+
+  effectiveFrom  DateTime?
+  effectiveUntil DateTime?
+  notes          String?
+
+  productProfile ProductProfile @relation(fields: [productProfileId], references: [id], onDelete: Restrict)
+
+  lines      BomLine[]
+  workOrders WorkOrder[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([productProfileId, versionNumber])
+  @@index([productProfileId, status])
+}
+
+model BomLine {
+  id              String @id @default(cuid())
+  bomVersionId    String
+  componentItemId String
+
+  quantity        Decimal @db.Decimal(18, 4)
+  wastePercentage Decimal @default(0) @db.Decimal(8, 4)
+
+  sequence   Int
+  isOptional Boolean @default(false)
+  notes      String?
+
+  bomVersion    BomVersion @relation(fields: [bomVersionId], references: [id], onDelete: Restrict)
+  componentItem Item       @relation(fields: [componentItemId], references: [id], onDelete: Restrict)
+
+  @@unique([bomVersionId, sequence])
+  @@index([componentItemId])
+}
+
+// ==========================================
+// ROUTING
+// ==========================================
+
+model RoutingVersion {
+  id               String @id @default(cuid())
+  productProfileId String
+
+  versionNumber Int
+  status        VersionStatus @default(DRAFT)
+
+  notes String?
+
+  productProfile ProductProfile @relation(fields: [productProfileId], references: [id], onDelete: Restrict)
+
+  steps      RoutingStep[]
+  workOrders WorkOrder[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([productProfileId, versionNumber])
+  @@index([productProfileId, status])
+}
+
+model RoutingStep {
+  id               String @id @default(cuid())
+  routingVersionId String
+
+  sequence      Int
+  operationCode String
+  operationName String
+
+  workCenterCode      String?
+  setupTimeMinutes    Decimal? @db.Decimal(10, 2)
+  standardTimeMinutes Decimal? @db.Decimal(10, 2)
+
+  instructions String?
+  requiresQC   Boolean @default(false)
+
+  routingVersion RoutingVersion @relation(fields: [routingVersionId], references: [id], onDelete: Restrict)
+
+  @@unique([routingVersionId, sequence])
+  @@index([operationCode])
+}
+
+// ==========================================
+// WORK ORDERS
+// ==========================================
+
+model WorkOrder {
+  id          String @id @default(cuid())
+  orderNumber String @unique
+
+  productProfileId String
+  bomVersionId     String
+  routingVersionId String
+  salesOrderLineId String?
+
+  plannedQuantity Decimal @db.Decimal(18, 4)
+
+  status WorkOrderStatus @default(DRAFT)
+
+  plannedStartAt DateTime?
+  plannedEndAt   DateTime?
+  actualStartAt  DateTime?
+  actualEndAt    DateTime?
+
+  productSnapshot Json?
+  bomSnapshot     Json?
+  routingSnapshot Json?
+
+  notes String?
+
+  productProfile ProductProfile @relation(fields: [productProfileId], references: [id], onDelete: Restrict)
+  bomVersion     BomVersion     @relation(fields: [bomVersionId], references: [id], onDelete: Restrict)
+  routingVersion RoutingVersion @relation(fields: [routingVersionId], references: [id], onDelete: Restrict)
+
+  salesOrderLine SalesOrderLine? @relation(fields: [salesOrderLineId], references: [id], onDelete: Restrict)
+
+  productionRuns ProductionRun[]
+  inspections    QCInspection[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([productProfileId])
+  @@index([salesOrderLineId])
+}
+
+// ==========================================
+// PRODUCTION RUNS
+// ==========================================
+
+model ProductionRun {
+  id          String @id @default(cuid())
+  runNumber   String @unique
+  workOrderId String
+
+  status ProductionRunStatus @default(IN_PROGRESS)
+
+  startedAt  DateTime  @default(now())
+  finishedAt DateTime?
+
+  notes String?
+
+  workOrder WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Restrict)
+
+  operations ProductionOperation[]
+  outputs    ProductionOutput[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([workOrderId])
+  @@index([status])
+}
+
+// ==========================================
+// PRODUCTION OPERATIONS
+// ==========================================
+
+model ProductionOperation {
+  id              String @id @default(cuid())
+  productionRunId String
+
+  sequence      Int
+  operationCode String
+  operationName String
+
+  workCenterCode String?
+
+  status OperationStatus @default(PENDING)
+
+  plannedQuantity   Decimal? @db.Decimal(18, 4)
+  completedQuantity Decimal? @db.Decimal(18, 4)
+  rejectedQuantity  Decimal? @db.Decimal(18, 4)
+
+  startedAt  DateTime?
+  finishedAt DateTime?
+
+  operatorUserId String?
+  notes          String?
+
+  productionRun ProductionRun @relation(fields: [productionRunId], references: [id], onDelete: Restrict)
+
+  consumptions MaterialConsumption[]
+  inspections  QCInspection[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([productionRunId, sequence])
+  @@index([status])
+}
+
+// ==========================================
+// MATERIAL CONSUMPTION
+// ==========================================
+
+model MaterialConsumption {
+  id                    String @id @default(cuid())
+  productionOperationId String
+
+  itemId  String
+  batchId String?
+
+  quantity        Decimal  @db.Decimal(18, 4)
+  unitCost        Decimal? @db.Decimal(18, 4)
+  stockMovementId String?
+
+  notes String?
+
+  productionOperation ProductionOperation @relation(fields: [productionOperationId], references: [id], onDelete: Restrict)
+  item                Item                @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  @@index([itemId, batchId])
+  @@index([productionOperationId])
+}
+
+// ==========================================
+// PRODUCTION OUTPUT
+// ==========================================
+
+model ProductionOutput {
+  id              String @id @default(cuid())
+  productionRunId String
+
+  itemId  String
+  batchId String
+
+  quantity         Decimal @db.Decimal(18, 4)
+  rejectedQuantity Decimal @default(0) @db.Decimal(18, 4)
+
+  stockMovementId String?
+
+  productionRun ProductionRun @relation(fields: [productionRunId], references: [id], onDelete: Restrict)
+  item          Item          @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  @@index([itemId, batchId])
+  @@index([productionRunId])
+}
+
+// ==========================================
+// QUALITY CONTROL
+// ==========================================
+
+model QCInspection {
+  id               String @id @default(cuid())
+  inspectionNumber String @unique
+
+  workOrderId           String
+  productionOperationId String?
+
+  stage  QCStage
+  result QCResult @default(PENDING)
+
+  batchId String?
+
+  inspectedQuantity Decimal? @db.Decimal(18, 4)
+  passedQuantity    Decimal? @db.Decimal(18, 4)
+  failedQuantity    Decimal? @db.Decimal(18, 4)
+
+  inspectorUserId String?
+  inspectionDate  DateTime @default(now())
+
+  defectDescription String?
+  correctiveAction  String?
+  notes             String?
+
+  workOrder WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Restrict)
+
+  productionOperation ProductionOperation? @relation(fields: [productionOperationId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([workOrderId, stage])
+  @@index([batchId])
+  @@index([result])
+}
+
+// ==========================================
+// CUSTOMERS
+// ==========================================
+
+model Customer {
+  id          String  @id @default(cuid())
+  code        String  @unique
+  name        String
+  nationalId  String?
+  phone       String?
+  mobile      String?
+  email       String?
+  address     String?
+  postalCode  String?
+  description String?
+
+  paymentTermsDays Int @default(0)
+
+  isActive Boolean @default(true)
+
+  quotations  Quotation[]
+  salesOrders SalesOrder[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+  @@index([nationalId])
+}
+
+// ==========================================
+// QUOTATIONS
+// ==========================================
+
+model Quotation {
+  id          String @id @default(cuid())
+  quoteNumber String @unique
+  customerId  String
+
+  status QuotationStatus @default(DRAFT)
+
+  issueDate  DateTime  @default(now())
+  validUntil DateTime?
+
+  currencyCode String  @default("IRR")
+  notes        String?
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Restrict)
+
+  lines      QuotationLine[]
+  salesOrder SalesOrder?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([customerId])
+  @@index([status])
+  @@index([issueDate])
+}
+
+model QuotationLine {
+  id          String @id @default(cuid())
+  quotationId String
+  itemId      String
+
+  lineNumber  Int
+  description String?
+
+  quantity        Decimal @db.Decimal(18, 4)
+  unitPrice       Decimal @db.Decimal(18, 4)
+  discountPercent Decimal @default(0) @db.Decimal(8, 4)
+
+  quotation Quotation @relation(fields: [quotationId], references: [id], onDelete: Restrict)
+  item      Item      @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  @@unique([quotationId, lineNumber])
+  @@index([itemId])
+}
+
+// ==========================================
+// SALES ORDERS
+// ==========================================
+
+model SalesOrder {
+  id          String @id @default(cuid())
+  orderNumber String @unique
+
+  customerId  String
+  quotationId String? @unique
+
+  status SalesOrderStatus @default(DRAFT)
+
+  orderDate             DateTime  @default(now())
+  requestedDeliveryDate DateTime?
+
+  currencyCode String @default("IRR")
+
+  shippingAddress String?
+  billingAddress  String?
+  notes           String?
+
+  customer  Customer   @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  quotation Quotation? @relation(fields: [quotationId], references: [id], onDelete: Restrict)
+
+  lines      SalesOrderLine[]
+  deliveries Delivery[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([customerId])
+  @@index([status])
+  @@index([orderDate])
+}
+
+model SalesOrderLine {
+  id           String @id @default(cuid())
+  salesOrderId String
+  itemId       String
+
+  lineNumber  Int
+  description String?
+
+  quantity        Decimal @db.Decimal(18, 4)
+  unitPrice       Decimal @db.Decimal(18, 4)
+  discountPercent Decimal @default(0) @db.Decimal(8, 4)
+
+  salesOrder SalesOrder @relation(fields: [salesOrderId], references: [id], onDelete: Restrict)
+  item       Item       @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  workOrders    WorkOrder[]
+  deliveryLines DeliveryLine[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([salesOrderId, lineNumber])
+  @@index([itemId])
+}
+
+// ==========================================
+// DELIVERIES
+// ==========================================
+
+model Delivery {
+  id             String @id @default(cuid())
+  deliveryNumber String @unique
+
+  salesOrderId String
+  status       DeliveryStatus @default(DRAFT)
+
+  deliveryDate   DateTime @default(now())
+  trackingNumber String?
+  shippingNotes  String?
+  notes          String?
+
+  salesOrder SalesOrder @relation(fields: [salesOrderId], references: [id], onDelete: Restrict)
+
+  lines DeliveryLine[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([salesOrderId])
+  @@index([status])
+  @@index([deliveryDate])
+}
+
+model DeliveryLine {
+  id               String @id @default(cuid())
+  deliveryId       String
+  salesOrderLineId String
+  itemId           String
+
+  batchId          String?
+  sourceLocationId String?
+
+  quantity Decimal @db.Decimal(18, 4)
+
+  stockMovementId String?
+
+  notes String?
+
+  delivery       Delivery       @relation(fields: [deliveryId], references: [id], onDelete: Restrict)
+  salesOrderLine SalesOrderLine @relation(fields: [salesOrderLineId], references: [id], onDelete: Restrict)
+  item           Item           @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  @@index([deliveryId])
+  @@index([salesOrderLineId])
+  @@index([itemId, batchId])
+}
+
+enum DataScope {
+  ALL
+  OWN
+  DEPARTMENT
+  ASSIGNED
+}
+
+model User {
+  id           String    @id @default(cuid())
+  username     String    @unique
+  email        String?   @unique
+  phone        String?   @unique
+  fullName     String
+  passwordHash String
+  isActive     Boolean   @default(true)
+  isSystem     Boolean   @default(false)
+  lastLoginAt  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  roles     UserRole[]
+  sessions  UserSession[]
+  auditLogs AuditLog[]
+
+  @@index([fullName])
+  @@index([isActive])
+}
+
+model Role {
+  id          String  @id @default(cuid())
+  key         String  @unique
+  name        String
+  description String?
+  isSystem    Boolean @default(false)
+  isActive    Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users       UserRole[]
+  permissions RolePermission[]
+
+  @@index([name])
+  @@index([isActive])
+}
+
+model Module {
+  id          String  @id @default(cuid())
+  key         String  @unique
+  name        String
+  description String?
+  parentId    String?
+  sortOrder   Int     @default(0)
+  isActive    Boolean @default(true)
+
+  parent   Module?  @relation("ModuleTree", fields: [parentId], references: [id], onDelete: Restrict)
+  children Module[] @relation("ModuleTree")
+
+  permissions Permission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([parentId])
+  @@index([sortOrder])
+}
+
+model Permission {
+  id          String  @id @default(cuid())
+  key         String  @unique
+  name        String
+  description String?
+
+  moduleId String
+  module   Module @relation(fields: [moduleId], references: [id], onDelete: Restrict)
+
+  resource String
+  action   String
+
+  roles RolePermission[]
+
+  createdAt DateTime @default(now())
+
+  @@unique([moduleId, resource, action])
+  @@index([moduleId])
+}
+
+model UserRole {
+  id String @id @default(cuid())
+
+  userId String
+  roleId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Restrict)
+
+  assignedById String?
+  expiresAt    DateTime?
+  isActive     Boolean   @default(true)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, roleId])
+  @@index([roleId])
+  @@index([userId, isActive])
+  @@index([expiresAt])
+}
+
+model RolePermission {
+  id String @id @default(cuid())
+
+  roleId       String
+  permissionId String
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Restrict)
+
+  isAllowed Boolean   @default(true)
+  scope     DataScope @default(OWN)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([roleId, permissionId])
+  @@index([permissionId])
+}
+
+model UserSession {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tokenHash String    @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+
+  ipAddress String?
+  userAgent String?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model AuditLog {
+  id String @id @default(cuid())
+
+  actorUserId String?
+  actor       User?   @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  action     String
+  entityType String
+  entityId   String?
+
+  details   Json?
+  ipAddress String?
+
+  createdAt DateTime @default(now())
+
+  @@index([actorUserId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
