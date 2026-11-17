@@ -1,0 +1,5 @@
+export type Unit={id:string;code:string;name:string;description?:string|null;parentId?:string|null;status:"ACTIVE"|"INACTIVE";sortOrder:number;children?:Unit[];assignments?:Assignment[];location?:Location|null};
+export type Location={id:string;code:string;name:string;locationType:string;status:"ACTIVE"|"INACTIVE"};
+export type Position={id:string;code:string;title:string;description?:string|null;level:number;isManagerial:boolean;isActive:boolean};
+export type Assignment={id:string;userId:string;organizationUnitId:string;positionId:string;locationId?:string|null;managerAssignmentId?:string|null;status:"ACTIVE"|"ENDED"|"SUSPENDED";assignmentType:"PRIMARY"|"SECONDARY"|"TEMPORARY"|"PROJECT";isPrimary:boolean;startDate:string;endDate?:string|null;notes?:string|null;user?:{id:string;username?:string;fullName?:string};organizationUnit?:{id:string;name:string};position?:{id:string;title:string};location?:Location|null};
+export type Relationship={id:string;sourceAssignmentId:string;targetAssignmentId:string;relationshipType:string;status:string;startDate:string;endDate?:string|null;description?:string|null;sourceAssignment?:Assignment;targetAssignment?:Assignment};

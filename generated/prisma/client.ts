@@ -224,3 +224,98 @@ export type UserSession = Prisma.UserSessionModel
  * 
  */
 export type AuditLog = Prisma.AuditLogModel
+/**
+ * Model CandidateApplication
+ * 
+ */
+export type CandidateApplication = Prisma.CandidateApplicationModel
+/**
+ * Model CandidateEducation
+ * 
+ */
+export type CandidateEducation = Prisma.CandidateEducationModel
+/**
+ * Model CandidateWorkExperience
+ * 
+ */
+export type CandidateWorkExperience = Prisma.CandidateWorkExperienceModel
+/**
+ * Model CandidateSkill
+ * 
+ */
+export type CandidateSkill = Prisma.CandidateSkillModel
+/**
+ * Model CandidateReference
+ * 
+ */
+export type CandidateReference = Prisma.CandidateReferenceModel
+/**
+ * Model CandidateEmergencyContact
+ * 
+ */
+export type CandidateEmergencyContact = Prisma.CandidateEmergencyContactModel
+/**
+ * Model CandidateSensitiveInfo
+ * 
+ */
+export type CandidateSensitiveInfo = Prisma.CandidateSensitiveInfoModel
+/**
+ * Model CandidateFamilyMember
+ * 
+ */
+export type CandidateFamilyMember = Prisma.CandidateFamilyMemberModel
+/**
+ * Model CandidateDocument
+ * 
+ */
+export type CandidateDocument = Prisma.CandidateDocumentModel
+/**
+ * Model ApplicationApproval
+ * 
+ */
+export type ApplicationApproval = Prisma.ApplicationApprovalModel
+/**
+ * Model OrganizationLocation
+ * 
+ */
+export type OrganizationLocation = Prisma.OrganizationLocationModel
+/**
+ * Model OrganizationUnit
+ * 
+ */
+export type OrganizationUnit = Prisma.OrganizationUnitModel
+/**
+ * Model OrganizationPosition
+ * 
+ */
+export type OrganizationPosition = Prisma.OrganizationPositionModel
+/**
+ * Model EmployeeAssignment
+ * 
+ */
+export type EmployeeAssignment = Prisma.EmployeeAssignmentModel
+/**
+ * Model EmployeeAssignmentRole
+ * 
+ */
+export type EmployeeAssignmentRole = Prisma.EmployeeAssignmentRoleModel
+/**
+ * Model EmployeeAssignmentPermission
+ * 
+ */
+export type EmployeeAssignmentPermission = Prisma.EmployeeAssignmentPermissionModel
+/**
+ * Model OrganizationRelationship
+ * 
+ */
+export type OrganizationRelationship = Prisma.OrganizationRelationshipModel
+/**
+ * Model OrganizationAssignmentHistory
+ * 
+ */
+export type OrganizationAssignmentHistory = Prisma.OrganizationAssignmentHistoryModel
+/**
+ * Model OrganizationAuditLog
+ * 
+ */
+export type OrganizationAuditLog = Prisma.OrganizationAuditLogModel

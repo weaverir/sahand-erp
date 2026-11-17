@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 
 const ACCESS_COOKIE = "sahand_access";
 const REFRESH_COOKIE = "sahand_refresh";
+const CANDIDATE_COOKIE = "sahand_candidate_access";
 
 const secure = process.env.NODE_ENV === "production";
 
@@ -36,7 +37,39 @@ export function setAuthCookies(
   return response;
 }
 
-export function clearAuthCookies(response: NextResponse) {
+export function setCandidateCookie(
+  response: NextResponse,
+  token: string,
+  maxAge: number
+) {
+  response.cookies.set(CANDIDATE_COOKIE, token, {
+    httpOnly: true,
+    secure,
+    sameSite: "lax",
+    path: "/",
+    maxAge,
+  });
+
+  return response;
+}
+
+export function clearCandidateCookie(
+  response: NextResponse
+) {
+  response.cookies.set(CANDIDATE_COOKIE, "", {
+    httpOnly: true,
+    secure,
+    sameSite: "lax",
+    path: "/",
+    maxAge: 0,
+  });
+
+  return response;
+}
+
+export function clearAuthCookies(
+  response: NextResponse
+) {
   response.cookies.set(ACCESS_COOKIE, "", {
     httpOnly: true,
     secure,
@@ -59,4 +92,5 @@ export function clearAuthCookies(response: NextResponse) {
 export const AUTH_COOKIE_NAMES = {
   access: ACCESS_COOKIE,
   refresh: REFRESH_COOKIE,
-};
+  candidate: CANDIDATE_COOKIE,
+} as const;

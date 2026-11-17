@@ -1,0 +1,3661 @@
+﻿
+========== prisma/schema.prisma ==========
+generator client {
+  provider = "prisma-client"
+
+  output = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+
+  url = env("DATABASE_URL")
+}
+
+// ==========================================
+
+// ENUMS
+
+// ==========================================
+
+enum ItemType {
+  RAW_MATERIAL
+
+  COMPONENT
+
+  FINISHED_GOOD
+
+  SEMI_FINISHED
+
+  PACKAGING
+
+  CONSUMABLE
+}
+
+enum UnitOfMeasure {
+  PIECE
+
+  METER
+
+  KILOGRAM
+
+  GRAM
+
+  LITER
+
+  BOX
+
+  ROLL
+
+  SET
+}
+
+enum StockStatus {
+  AVAILABLE
+
+  QUARANTINE
+
+  BLOCKED
+}
+
+enum BatchQualityStatus {
+  PENDING
+
+  APPROVED
+
+  REJECTED
+}
+
+enum MovementType {
+  RECEIPT
+
+  ISSUE
+
+  TRANSFER
+
+  ADJUSTMENT
+
+  PRODUCTION_CONSUMPTION
+
+  PRODUCTION_OUTPUT
+
+  SALES_SHIPMENT
+
+  RETURN
+
+  REVERSAL
+}
+
+enum DocumentStatus {
+  DRAFT
+
+  POSTED
+
+  CANCELLED
+}
+
+enum VersionStatus {
+  DRAFT
+
+  APPROVED
+
+  OBSOLETE
+}
+
+enum WorkOrderStatus {
+  DRAFT
+
+  PLANNED
+
+  RELEASED
+
+  IN_PROGRESS
+
+  PAUSED
+
+  COMPLETED
+
+  CANCELLED
+}
+
+enum ProductionRunStatus {
+  IN_PROGRESS
+
+  PAUSED
+
+  COMPLETED
+
+  CANCELLED
+}
+
+enum OperationStatus {
+  PENDING
+
+  IN_PROGRESS
+
+  PAUSED
+
+  COMPLETED
+
+  SKIPPED
+}
+
+enum QCStage {
+  INCOMING
+
+  IN_PROCESS
+
+  FINAL
+}
+
+enum QCResult {
+  PENDING
+
+  PASSED
+
+  FAILED
+
+  CONDITIONAL
+}
+
+enum QuotationStatus {
+  DRAFT
+
+  SENT
+
+  ACCEPTED
+
+  REJECTED
+
+  EXPIRED
+
+  CONVERTED
+}
+
+enum SalesOrderStatus {
+  DRAFT
+
+  CONFIRMED
+
+  IN_PRODUCTION
+
+  PARTIALLY_DELIVERED
+
+  DELIVERED
+
+  CANCELLED
+}
+
+enum DeliveryStatus {
+  DRAFT
+
+  POSTED
+
+  CANCELLED
+}
+
+// ==========================================
+
+// MASTER DATA
+
+// ==========================================
+
+model Item {
+  id String @id @default(cuid())
+
+  sku String @unique
+
+  name String
+
+  description String?
+
+  itemType ItemType
+
+  baseUnit UnitOfMeasure
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  // Inventory
+
+  batches Batch[]
+
+  balances StockBalance[]
+
+  movements StockMovement[]
+
+  reservations StockReservation[]
+
+  receiptLines GoodsReceiptLine[]
+
+  // Production
+
+  productProfile ProductProfile?
+
+  bomComponents BomLine[]
+
+  materialConsumptions MaterialConsumption[]
+
+  productionOutputs ProductionOutput[]
+
+  // Sales
+
+  quotationLines QuotationLine[]
+
+  salesOrderLines SalesOrderLine[]
+
+  deliveryLines DeliveryLine[]
+
+  @@index([name])
+  @@index([itemType])
+}
+
+// ==========================================
+
+// SUPPLIERS
+
+// ==========================================
+
+model Supplier {
+  id String @id @default(cuid())
+
+  code String @unique
+
+  name String
+
+  nationalId String?
+
+  phone String?
+
+  email String?
+
+  address String?
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  goodsReceipts GoodsReceipt[]
+}
+
+// ==========================================
+
+// WAREHOUSE
+
+// ==========================================
+
+model Warehouse {
+  id String @id @default(cuid())
+
+  code String @unique
+
+  name String
+
+  description String?
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  locations StockLocation[]
+}
+
+model StockLocation {
+  id String @id @default(cuid())
+
+  warehouseId String
+
+  code String
+
+  name String
+
+  description String?
+
+  isActive Boolean @default(true)
+
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Restrict)
+
+  balances StockBalance[]
+
+  movementsFrom StockMovement[] @relation("MovementSource")
+
+  movementsTo StockMovement[] @relation("MovementDestination")
+
+  reservations StockReservation[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([warehouseId, code])
+  @@index([warehouseId])
+}
+
+// ==========================================
+
+// BATCH TRACEABILITY
+
+// ==========================================
+
+model Batch {
+  id String @id @default(cuid())
+
+  itemId String
+
+  batchNumber String
+
+  supplierBatchNumber String?
+
+  manufacturingDate DateTime?
+
+  expiryDate DateTime?
+
+  qualityStatus BatchQualityStatus @default(PENDING)
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  balances StockBalance[]
+
+  movements StockMovement[]
+
+  reservations StockReservation[]
+
+  receiptLines GoodsReceiptLine[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([itemId, batchNumber])
+  @@index([batchNumber])
+  @@index([qualityStatus])
+}
+
+// ==========================================
+
+// INVENTORY BALANCE
+
+// ==========================================
+
+model StockBalance {
+  id String @id @default(cuid())
+
+  itemId String
+
+  locationId String
+
+  batchId String?
+
+  status StockStatus @default(AVAILABLE)
+
+  quantity Decimal @default(0) @db.Decimal(18, 4)
+
+  updatedAt DateTime @updatedAt
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  location StockLocation @relation(fields: [locationId], references: [id], onDelete: Restrict)
+
+  batch Batch? @relation(fields: [batchId], references: [id], onDelete: Restrict)
+
+  // ØªÙˆØ¬Ù‡: ÛŒÚ©ØªØ§ÛŒÛŒ batchId ØªÙ‡ÛŒ Ø¯Ø± PostgreSQL Ù†ÛŒØ§Ø²Ù…Ù†Ø¯ Ø§ÛŒÙ†Ø¯Ú©Ø³ Ø¬Ø²Ø¦ÛŒ Ø§Ø³Øª.
+
+  // Ø§ÛŒÙ† Ù…Ø­Ø¯ÙˆØ¯ÛŒØª Ø¯Ø± Ù…Ø±Ø­Ù„Ù‡ Migration Ø¨Ø§ SQL ØªÚ©Ù…ÛŒÙ„ÛŒ Ø§Ø¹Ù…Ø§Ù„ Ø®ÙˆØ§Ù‡Ø¯ Ø´Ø¯.
+
+  @@unique([itemId, locationId, batchId, status])
+  @@index([itemId, locationId])
+  @@index([batchId])
+}
+
+// ==========================================
+
+// INVENTORY MOVEMENTS
+
+// ==========================================
+
+model StockMovement {
+  id String @id @default(cuid())
+
+  itemId String
+
+  batchId String?
+
+  sourceLocationId String?
+
+  destinationLocationId String?
+
+  movementType MovementType
+
+  quantity Decimal @db.Decimal(18, 4)
+
+  unitCost Decimal? @db.Decimal(18, 4)
+
+  referenceType String?
+
+  referenceId String?
+
+  description String?
+
+  status DocumentStatus @default(DRAFT)
+
+  postedAt DateTime?
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  batch Batch? @relation(fields: [batchId], references: [id], onDelete: Restrict)
+
+  sourceLocation StockLocation? @relation("MovementSource", fields: [sourceLocationId], references: [id], onDelete: Restrict)
+
+  destinationLocation StockLocation? @relation("MovementDestination", fields: [destinationLocationId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([itemId])
+  @@index([batchId])
+  @@index([movementType])
+  @@index([referenceType, referenceId])
+  @@index([postedAt])
+}
+
+// ==========================================
+
+// STOCK RESERVATIONS
+
+// ==========================================
+
+model StockReservation {
+  id String @id @default(cuid())
+
+  itemId String
+
+  locationId String
+
+  batchId String?
+
+  quantity Decimal @db.Decimal(18, 4)
+
+  referenceType String
+
+  referenceId String
+
+  isActive Boolean @default(true)
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  location StockLocation @relation(fields: [locationId], references: [id], onDelete: Restrict)
+
+  batch Batch? @relation(fields: [batchId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([itemId, locationId])
+  @@index([referenceType, referenceId])
+  @@index([batchId])
+}
+
+// ==========================================
+
+// GOODS RECEIPTS
+
+// ==========================================
+
+model GoodsReceipt {
+  id String @id @default(cuid())
+
+  receiptNumber String @unique
+
+  supplierId String
+
+  status DocumentStatus @default(DRAFT)
+
+  receiptDate DateTime @default(now())
+
+  description String?
+
+  supplier Supplier @relation(fields: [supplierId], references: [id], onDelete: Restrict)
+
+  lines GoodsReceiptLine[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+}
+
+model GoodsReceiptLine {
+  id String @id @default(cuid())
+
+  receiptId String
+
+  itemId String
+
+  batchId String?
+
+  lineNumber Int
+
+  quantity Decimal @db.Decimal(18, 4)
+
+  unitCost Decimal? @db.Decimal(18, 4)
+
+  description String?
+
+  receipt GoodsReceipt @relation(fields: [receiptId], references: [id], onDelete: Restrict)
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  batch Batch? @relation(fields: [batchId], references: [id], onDelete: Restrict)
+
+  @@unique([receiptId, lineNumber])
+  @@index([itemId])
+  @@index([batchId])
+}
+
+// ==========================================
+
+// PRODUCT TECHNICAL PROFILE
+
+// ==========================================
+
+model ProductProfile {
+  id String @id @default(cuid())
+
+  itemId String @unique
+
+  connectorFrom String?
+
+  connectorTo String?
+
+  cableLengthMm Int?
+
+  conductorMaterial String?
+
+  jacketMaterial String?
+
+  ratedPowerW Decimal? @db.Decimal(10, 2)
+
+  ratedCurrentA Decimal? @db.Decimal(10, 2)
+
+  supportsData Boolean @default(false)
+
+  hasChip Boolean @default(false)
+
+  chipModel String?
+
+  technicalNotes String?
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  bomVersions BomVersion[]
+
+  routingVersions RoutingVersion[]
+
+  workOrders WorkOrder[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+
+// BILL OF MATERIALS
+
+// ==========================================
+
+model BomVersion {
+  id String @id @default(cuid())
+
+  productProfileId String
+
+  versionNumber Int
+
+  status VersionStatus @default(DRAFT)
+
+  effectiveFrom DateTime?
+
+  effectiveUntil DateTime?
+
+  notes String?
+
+  productProfile ProductProfile @relation(fields: [productProfileId], references: [id], onDelete: Restrict)
+
+  lines BomLine[]
+
+  workOrders WorkOrder[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([productProfileId, versionNumber])
+  @@index([productProfileId, status])
+}
+
+model BomLine {
+  id String @id @default(cuid())
+
+  bomVersionId String
+
+  componentItemId String
+
+  quantity Decimal @db.Decimal(18, 4)
+
+  wastePercentage Decimal @default(0) @db.Decimal(8, 4)
+
+  sequence Int
+
+  isOptional Boolean @default(false)
+
+  notes String?
+
+  bomVersion BomVersion @relation(fields: [bomVersionId], references: [id], onDelete: Restrict)
+
+  componentItem Item @relation(fields: [componentItemId], references: [id], onDelete: Restrict)
+
+  @@unique([bomVersionId, sequence])
+  @@index([componentItemId])
+}
+
+// ==========================================
+
+// ROUTING
+
+// ==========================================
+
+model RoutingVersion {
+  id String @id @default(cuid())
+
+  productProfileId String
+
+  versionNumber Int
+
+  status VersionStatus @default(DRAFT)
+
+  notes String?
+
+  productProfile ProductProfile @relation(fields: [productProfileId], references: [id], onDelete: Restrict)
+
+  steps RoutingStep[]
+
+  workOrders WorkOrder[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([productProfileId, versionNumber])
+  @@index([productProfileId, status])
+}
+
+model RoutingStep {
+  id String @id @default(cuid())
+
+  routingVersionId String
+
+  sequence Int
+
+  operationCode String
+
+  operationName String
+
+  workCenterCode String?
+
+  setupTimeMinutes Decimal? @db.Decimal(10, 2)
+
+  standardTimeMinutes Decimal? @db.Decimal(10, 2)
+
+  instructions String?
+
+  requiresQC Boolean @default(false)
+
+  routingVersion RoutingVersion @relation(fields: [routingVersionId], references: [id], onDelete: Restrict)
+
+  @@unique([routingVersionId, sequence])
+  @@index([operationCode])
+}
+
+// ==========================================
+
+// WORK ORDERS
+
+// ==========================================
+
+model WorkOrder {
+  id String @id @default(cuid())
+
+  orderNumber String @unique
+
+  productProfileId String
+
+  bomVersionId String
+
+  routingVersionId String
+
+  salesOrderLineId String?
+
+  plannedQuantity Decimal @db.Decimal(18, 4)
+
+  status WorkOrderStatus @default(DRAFT)
+
+  plannedStartAt DateTime?
+
+  plannedEndAt DateTime?
+
+  actualStartAt DateTime?
+
+  actualEndAt DateTime?
+
+  productSnapshot Json?
+
+  bomSnapshot Json?
+
+  routingSnapshot Json?
+
+  notes String?
+
+  productProfile ProductProfile @relation(fields: [productProfileId], references: [id], onDelete: Restrict)
+
+  bomVersion BomVersion @relation(fields: [bomVersionId], references: [id], onDelete: Restrict)
+
+  routingVersion RoutingVersion @relation(fields: [routingVersionId], references: [id], onDelete: Restrict)
+
+  salesOrderLine SalesOrderLine? @relation(fields: [salesOrderLineId], references: [id], onDelete: Restrict)
+
+  productionRuns ProductionRun[]
+
+  inspections QCInspection[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([productProfileId])
+  @@index([salesOrderLineId])
+}
+
+// ==========================================
+
+// PRODUCTION RUNS
+
+// ==========================================
+
+model ProductionRun {
+  id String @id @default(cuid())
+
+  runNumber String @unique
+
+  workOrderId String
+
+  status ProductionRunStatus @default(IN_PROGRESS)
+
+  startedAt DateTime @default(now())
+
+  finishedAt DateTime?
+
+  notes String?
+
+  workOrder WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Restrict)
+
+  operations ProductionOperation[]
+
+  outputs ProductionOutput[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([workOrderId])
+  @@index([status])
+}
+
+// ==========================================
+
+// PRODUCTION OPERATIONS
+
+// ==========================================
+
+model ProductionOperation {
+  id String @id @default(cuid())
+
+  productionRunId String
+
+  sequence Int
+
+  operationCode String
+
+  operationName String
+
+  workCenterCode String?
+
+  status OperationStatus @default(PENDING)
+
+  plannedQuantity Decimal? @db.Decimal(18, 4)
+
+  completedQuantity Decimal? @db.Decimal(18, 4)
+
+  rejectedQuantity Decimal? @db.Decimal(18, 4)
+
+  startedAt DateTime?
+
+  finishedAt DateTime?
+
+  operatorUserId String?
+
+  notes String?
+
+  productionRun ProductionRun @relation(fields: [productionRunId], references: [id], onDelete: Restrict)
+
+  consumptions MaterialConsumption[]
+
+  inspections QCInspection[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([productionRunId, sequence])
+  @@index([status])
+}
+
+// ==========================================
+
+// MATERIAL CONSUMPTION
+
+// ==========================================
+
+model MaterialConsumption {
+  id String @id @default(cuid())
+
+  productionOperationId String
+
+  itemId String
+
+  batchId String?
+
+  quantity Decimal @db.Decimal(18, 4)
+
+  unitCost Decimal? @db.Decimal(18, 4)
+
+  stockMovementId String?
+
+  notes String?
+
+  productionOperation ProductionOperation @relation(fields: [productionOperationId], references: [id], onDelete: Restrict)
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  @@index([itemId, batchId])
+  @@index([productionOperationId])
+}
+
+// ==========================================
+
+// PRODUCTION OUTPUT
+
+// ==========================================
+
+model ProductionOutput {
+  id String @id @default(cuid())
+
+  productionRunId String
+
+  itemId String
+
+  batchId String
+
+  quantity Decimal @db.Decimal(18, 4)
+
+  rejectedQuantity Decimal @default(0) @db.Decimal(18, 4)
+
+  stockMovementId String?
+
+  productionRun ProductionRun @relation(fields: [productionRunId], references: [id], onDelete: Restrict)
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  @@index([itemId, batchId])
+  @@index([productionRunId])
+}
+
+// ==========================================
+
+// QUALITY CONTROL
+
+// ==========================================
+
+model QCInspection {
+  id String @id @default(cuid())
+
+  inspectionNumber String @unique
+
+  workOrderId String
+
+  productionOperationId String?
+
+  stage QCStage
+
+  result QCResult @default(PENDING)
+
+  batchId String?
+
+  inspectedQuantity Decimal? @db.Decimal(18, 4)
+
+  passedQuantity Decimal? @db.Decimal(18, 4)
+
+  failedQuantity Decimal? @db.Decimal(18, 4)
+
+  inspectorUserId String?
+
+  inspectionDate DateTime @default(now())
+
+  defectDescription String?
+
+  correctiveAction String?
+
+  notes String?
+
+  workOrder WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Restrict)
+
+  productionOperation ProductionOperation? @relation(fields: [productionOperationId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([workOrderId, stage])
+  @@index([batchId])
+  @@index([result])
+}
+
+// ==========================================
+
+// CUSTOMERS
+
+// ==========================================
+
+model Customer {
+  id String @id @default(cuid())
+
+  code String @unique
+
+  name String
+
+  nationalId String?
+
+  phone String?
+
+  mobile String?
+
+  email String?
+
+  address String?
+
+  postalCode String?
+
+  description String?
+
+  paymentTermsDays Int @default(0)
+
+  isActive Boolean @default(true)
+
+  quotations Quotation[]
+
+  salesOrders SalesOrder[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+  @@index([nationalId])
+}
+
+// ==========================================
+
+// QUOTATIONS
+
+// ==========================================
+
+model Quotation {
+  id String @id @default(cuid())
+
+  quoteNumber String @unique
+
+  customerId String
+
+  status QuotationStatus @default(DRAFT)
+
+  issueDate DateTime @default(now())
+
+  validUntil DateTime?
+
+  currencyCode String @default("IRR")
+
+  notes String?
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Restrict)
+
+  lines QuotationLine[]
+
+  salesOrder SalesOrder?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([customerId])
+  @@index([status])
+  @@index([issueDate])
+}
+
+model QuotationLine {
+  id String @id @default(cuid())
+
+  quotationId String
+
+  itemId String
+
+  lineNumber Int
+
+  description String?
+
+  quantity Decimal @db.Decimal(18, 4)
+
+  unitPrice Decimal @db.Decimal(18, 4)
+
+  discountPercent Decimal @default(0) @db.Decimal(8, 4)
+
+  quotation Quotation @relation(fields: [quotationId], references: [id], onDelete: Restrict)
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  @@unique([quotationId, lineNumber])
+  @@index([itemId])
+}
+
+// ==========================================
+
+// SALES ORDERS
+
+// ==========================================
+
+model SalesOrder {
+  id String @id @default(cuid())
+
+  orderNumber String @unique
+
+  customerId String
+
+  quotationId String? @unique
+
+  status SalesOrderStatus @default(DRAFT)
+
+  orderDate DateTime @default(now())
+
+  requestedDeliveryDate DateTime?
+
+  currencyCode String @default("IRR")
+
+  shippingAddress String?
+
+  billingAddress String?
+
+  notes String?
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Restrict)
+
+  quotation Quotation? @relation(fields: [quotationId], references: [id], onDelete: Restrict)
+
+  lines SalesOrderLine[]
+
+  deliveries Delivery[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([customerId])
+  @@index([status])
+  @@index([orderDate])
+}
+
+model SalesOrderLine {
+  id String @id @default(cuid())
+
+  salesOrderId String
+
+  itemId String
+
+  lineNumber Int
+
+  description String?
+
+  quantity Decimal @db.Decimal(18, 4)
+
+  unitPrice Decimal @db.Decimal(18, 4)
+
+  discountPercent Decimal @default(0) @db.Decimal(8, 4)
+
+  salesOrder SalesOrder @relation(fields: [salesOrderId], references: [id], onDelete: Restrict)
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  workOrders WorkOrder[]
+
+  deliveryLines DeliveryLine[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([salesOrderId, lineNumber])
+  @@index([itemId])
+}
+
+// ==========================================
+
+// DELIVERIES
+
+// ==========================================
+
+model Delivery {
+  id String @id @default(cuid())
+
+  deliveryNumber String @unique
+
+  salesOrderId String
+
+  status DeliveryStatus @default(DRAFT)
+
+  deliveryDate DateTime @default(now())
+
+  trackingNumber String?
+
+  shippingNotes String?
+
+  notes String?
+
+  salesOrder SalesOrder @relation(fields: [salesOrderId], references: [id], onDelete: Restrict)
+
+  lines DeliveryLine[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([salesOrderId])
+  @@index([status])
+  @@index([deliveryDate])
+}
+
+model DeliveryLine {
+  id String @id @default(cuid())
+
+  deliveryId String
+
+  salesOrderLineId String
+
+  itemId String
+
+  batchId String?
+
+  sourceLocationId String?
+
+  quantity Decimal @db.Decimal(18, 4)
+
+  stockMovementId String?
+
+  notes String?
+
+  delivery Delivery @relation(fields: [deliveryId], references: [id], onDelete: Restrict)
+
+  salesOrderLine SalesOrderLine @relation(fields: [salesOrderLineId], references: [id], onDelete: Restrict)
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  @@index([deliveryId])
+  @@index([salesOrderLineId])
+  @@index([itemId, batchId])
+}
+
+enum DataScope {
+  ALL
+
+  OWN
+
+  DEPARTMENT
+
+  ASSIGNED
+}
+
+model User {
+  id String @id @default(cuid())
+
+  username String @unique
+
+  email String? @unique
+
+  phone String? @unique
+
+  fullName String
+
+  passwordHash String
+
+  isActive Boolean @default(true)
+
+  accessLevel UserAccessLevel @default(ERP)
+
+  isSystem Boolean @default(false)
+
+  lastLoginAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  roles UserRole[]
+
+  sessions UserSession[]
+
+  auditLogs AuditLog[]
+
+  // Recruitment relations
+
+  candidateApplication CandidateApplication? @relation("CandidateApplicant")
+
+  applicationReviews ApplicationApproval[] @relation("ApplicationReviewer")
+
+  uploadedCandidateDocuments CandidateDocument[] @relation("CandidateDocumentUploader")
+
+  //chart sazmani
+
+  employeeAssignments EmployeeAssignment[] @relation("EmployeeAssignments")
+
+  @@index([fullName])
+  @@index([isActive])
+}
+
+model Role {
+  id String @id @default(cuid())
+
+  key String @unique
+
+  name String
+
+  description String?
+
+  isSystem Boolean @default(false)
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  users UserRole[]
+
+  permissions RolePermission[]
+
+  assignmentRoles EmployeeAssignmentRole[]
+
+  @@index([name])
+  @@index([isActive])
+}
+
+model Module {
+  id String @id @default(cuid())
+
+  key String @unique
+
+  name String
+
+  description String?
+
+  parentId String?
+
+  sortOrder Int @default(0)
+
+  isActive Boolean @default(true)
+
+  parent Module? @relation("ModuleTree", fields: [parentId], references: [id], onDelete: Restrict)
+
+  children Module[] @relation("ModuleTree")
+
+  permissions Permission[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([parentId])
+  @@index([sortOrder])
+}
+
+model Permission {
+  id String @id @default(cuid())
+
+  key String @unique
+
+  name String
+
+  description String?
+
+  moduleId String
+
+  module Module @relation(fields: [moduleId], references: [id], onDelete: Restrict)
+
+  resource String
+
+  action String
+
+  roles RolePermission[]
+
+  createdAt DateTime @default(now())
+
+  assignmentPermissions EmployeeAssignmentPermission[]
+
+  @@unique([moduleId, resource, action])
+  @@index([moduleId])
+}
+
+model UserRole {
+  id String @id @default(cuid())
+
+  userId String
+
+  roleId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  role Role @relation(fields: [roleId], references: [id], onDelete: Restrict)
+
+  assignedById String?
+
+  expiresAt DateTime?
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, roleId])
+  @@index([roleId])
+  @@index([userId, isActive])
+  @@index([expiresAt])
+}
+
+model RolePermission {
+  id String @id @default(cuid())
+
+  roleId String
+
+  permissionId String
+
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Restrict)
+
+  isAllowed Boolean @default(true)
+
+  scope DataScope @default(OWN)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([roleId, permissionId])
+  @@index([permissionId])
+}
+
+model UserSession {
+  id String @id @default(cuid())
+
+  userId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tokenHash String @unique
+
+  expiresAt DateTime
+
+  revokedAt DateTime?
+
+  ipAddress String?
+
+  userAgent String?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model AuditLog {
+  id String @id @default(cuid())
+
+  actorUserId String?
+
+  actor User? @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  action String
+
+  entityType String
+
+  entityId String?
+
+  details Json?
+
+  ipAddress String?
+
+  createdAt DateTime @default(now())
+
+  @@index([actorUserId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
+
+enum UserAccessLevel {
+  PENDING
+
+  CANDIDATE_PORTAL
+
+  ERP
+}
+
+enum CandidateGender {
+  MALE
+
+  FEMALE
+}
+
+enum CandidateMaritalStatus {
+  SINGLE
+
+  MARRIED
+}
+
+enum CandidateMilitaryStatus {
+  NOT_APPLICABLE
+
+  IN_PROGRESS
+
+  COMPLETED
+
+  EXEMPTED
+}
+
+enum InitialApplicationStatus {
+  DRAFT
+
+  SUBMITTED
+
+  HR_REVIEW
+
+  EXECUTIVE_REVIEW
+
+  NEEDS_CORRECTION
+
+  REJECTED
+
+  APPROVED
+}
+
+enum DocumentsApplicationStatus {
+  LOCKED
+
+  PENDING
+
+  SUBMITTED
+
+  HR_REVIEW
+
+  EXECUTIVE_REVIEW
+
+  NEEDS_CORRECTION
+
+  REJECTED
+
+  APPROVED
+}
+
+enum ApplicationStage {
+  INITIAL
+
+  DOCUMENTS
+}
+
+enum ApplicationReviewerType {
+  HR
+
+  EXECUTIVE
+}
+
+enum ApplicationDecision {
+  APPROVED
+
+  REJECTED
+
+  NEEDS_CORRECTION
+}
+
+enum CandidateDocumentType {
+  PERSONAL_PHOTO
+
+  SPOUSE_CONSENT
+
+  NATIONAL_CARD
+
+  APPLICANT_BIRTH_CERTIFICATE_PAGE
+
+  EDUCATION_CERTIFICATE
+
+  INSURANCE_HISTORY
+
+  MILITARY_SERVICE
+
+  MARRIAGE_CERTIFICATE
+
+  SPOUSE_BIRTH_CERTIFICATE_PAGE
+
+  CHILD_BIRTH_CERTIFICATE_PAGE
+
+  PARENT_CONSENT
+}
+
+enum CandidateFamilyMemberType {
+  SPOUSE
+
+  CHILD
+}
+
+enum CandidateDocumentStatus {
+  UPLOADED
+
+  UNDER_REVIEW
+
+  APPROVED
+
+  REJECTED
+}
+
+// ==========================================
+
+// HUMAN RESOURCES - RECRUITMENT
+
+// ==========================================
+
+model CandidateApplication {
+  id String @id @default(cuid())
+
+  applicationNumber String @unique
+
+  userId String @unique
+
+  user User @relation("CandidateApplicant", fields: [userId], references: [id], onDelete: Restrict)
+
+  // Personal information
+
+  firstName String
+
+  lastName String
+
+  fatherName String
+
+  birthCertificateNumber String
+
+  nationalId String @unique
+
+  gender CandidateGender
+
+  maritalStatus CandidateMaritalStatus
+
+  nationality String
+
+  birthPlace String
+
+  dateOfBirth DateTime @db.Date
+
+  landlinePhone String?
+
+  mobilePhone String
+
+  email String?
+
+  address String
+
+  militaryStatus CandidateMilitaryStatus?
+
+  // Other initial application information
+
+  currentlyEmployed Boolean @default(false)
+
+  currentEmployer String?
+
+  hasExternalCommitment Boolean @default(false)
+
+  hasInsuranceHistory Boolean @default(false)
+
+  minimumEmploymentPeriod String?
+
+  childrenCount Int @default(0)
+
+  requestedSalary Decimal? @db.Decimal(18, 2)
+
+  additionalNotes String?
+
+  // Stage 2 information
+
+  insuranceNumber String?
+
+  bankSinaIban String?
+
+  // Applicant declaration
+
+  declarationAccepted Boolean @default(false)
+
+  declarationTextVersion String?
+
+  declarationAcceptedAt DateTime?
+
+  declarationIpAddress String?
+
+  // Initial application workflow
+
+  initialStatus InitialApplicationStatus @default(DRAFT)
+
+  initialVersion Int @default(1)
+
+  initialSubmittedAt DateTime?
+
+  initialApprovedAt DateTime?
+
+  // Supporting documents workflow
+
+  documentsStatus DocumentsApplicationStatus @default(LOCKED)
+
+  documentsVersion Int @default(1)
+
+  documentsSubmittedAt DateTime?
+
+  documentsApprovedAt DateTime?
+
+  // Related records
+
+  educationRecords CandidateEducation[]
+
+  workExperiences CandidateWorkExperience[]
+
+  skills CandidateSkill[]
+
+  references CandidateReference[]
+
+  emergencyContact CandidateEmergencyContact?
+
+  sensitiveInfo CandidateSensitiveInfo?
+
+  familyMembers CandidateFamilyMember[]
+
+  documents CandidateDocument[]
+
+  approvals ApplicationApproval[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([initialStatus, createdAt])
+  @@index([documentsStatus, createdAt])
+}
+
+model CandidateEducation {
+  id String @id @default(cuid())
+
+  applicationId String
+
+  application CandidateApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  degree String
+
+  fieldOfStudy String
+
+  institution String
+
+  city String?
+
+  startDate DateTime? @db.Date
+
+  endDate DateTime? @db.Date
+
+  isCurrentlyStudying Boolean @default(false)
+
+  grade String?
+
+  description String?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([applicationId])
+}
+
+model CandidateWorkExperience {
+  id String @id @default(cuid())
+
+  applicationId String
+
+  application CandidateApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  companyName String
+
+  startDate DateTime @db.Date
+
+  endDate DateTime? @db.Date
+
+  position String
+
+  leavingReason String?
+
+  salaryReceived Decimal? @db.Decimal(18, 2)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([applicationId])
+}
+
+model CandidateSkill {
+  id String @id @default(cuid())
+
+  applicationId String
+
+  application CandidateApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  specialty String
+
+  description String?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([applicationId])
+}
+
+model CandidateReference {
+  id String @id @default(cuid())
+
+  applicationId String
+
+  application CandidateApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  fullName String
+
+  occupation String
+
+  workplace String
+
+  acquaintanceDuration String
+
+  phone String
+
+  sortOrder Int
+
+  createdAt DateTime @default(now())
+
+  @@unique([applicationId, sortOrder])
+}
+
+model CandidateEmergencyContact {
+  id String @id @default(cuid())
+
+  applicationId String @unique
+
+  application CandidateApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  firstName String
+
+  lastName String
+
+  relationship String
+
+  phone String
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+}
+
+model CandidateSensitiveInfo {
+  id String @id @default(cuid())
+
+  applicationId String @unique
+
+  application CandidateApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  hasProlongedIllness Boolean @default(false)
+
+  illnessDescription String?
+
+  hasCriminalRecord Boolean @default(false)
+
+  convictionDescription String?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+}
+
+model CandidateFamilyMember {
+  id String @id @default(cuid())
+
+  applicationId String
+
+  application CandidateApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  memberType CandidateFamilyMemberType
+
+  firstName String
+
+  lastName String
+
+  insuranceNumber String?
+
+  sortOrder Int
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([applicationId, memberType, sortOrder])
+  @@index([applicationId])
+}
+
+model CandidateDocument {
+  id String @id @default(cuid())
+
+  applicationId String
+
+  application CandidateApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  documentType CandidateDocumentType
+
+  stage ApplicationStage
+
+  status CandidateDocumentStatus @default(UPLOADED)
+
+  pageNumber Int?
+
+  totalPages Int?
+
+  subjectIndex Int?
+
+  stageVersion Int @default(1)
+
+  fileName String
+
+  storageKey String @unique
+
+  mimeType String
+
+  sizeBytes Int
+
+  checksum String?
+
+  isCurrent Boolean @default(true)
+
+  uploadedByUserId String
+
+  uploadedBy User @relation("CandidateDocumentUploader", fields: [uploadedByUserId], references: [id], onDelete: Restrict)
+
+  uploadedAt DateTime @default(now())
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([applicationId, stage, stageVersion])
+  @@index([applicationId, documentType, isCurrent])
+  @@index([status])
+}
+
+model ApplicationApproval {
+  id String @id @default(cuid())
+
+  applicationId String
+
+  application CandidateApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+
+  stage ApplicationStage
+
+  reviewerType ApplicationReviewerType
+
+  reviewerUserId String
+
+  reviewer User @relation("ApplicationReviewer", fields: [reviewerUserId], references: [id], onDelete: Restrict)
+
+  decision ApplicationDecision
+
+  comment String?
+
+  applicationVersion Int
+
+  decidedAt DateTime @default(now())
+
+  @@unique([applicationId, stage, reviewerType, applicationVersion])
+  @@unique([applicationId, stage, reviewerUserId, applicationVersion])
+  @@index([reviewerUserId, decidedAt])
+  @@index([applicationId, stage, applicationVersion])
+}
+
+enum EmployeeAssignmentType {
+  PRIMARY
+  SECONDARY
+  TEMPORARY
+  PROJECT
+}
+
+enum OrganizationRelationshipType {
+  REPORTS_TO
+  FUNCTIONAL_REPORTS_TO
+  SUPERVISES
+  COLLABORATES_WITH
+  ADVISES
+  DELEGATES_TO
+}
+
+enum OrganizationRelationshipStatus {
+  ACTIVE
+  ENDED
+  SUSPENDED
+}
+
+enum OrganizationLocationStatus {
+  ACTIVE
+
+  INACTIVE
+}
+
+enum OrganizationUnitStatus {
+  ACTIVE
+
+  INACTIVE
+}
+
+enum EmployeeAssignmentStatus {
+  ACTIVE
+
+  ENDED
+
+  SUSPENDED
+}
+
+model OrganizationLocation {
+  id String @id @default(cuid())
+
+  code String @unique
+
+  name String
+
+  locationType String
+
+  description String?
+
+  country String?
+
+  province String?
+
+  city String?
+
+  address String?
+
+  phone String?
+
+  status OrganizationLocationStatus @default(ACTIVE)
+
+  units OrganizationUnit[]
+
+  assignments EmployeeAssignment[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([locationType])
+}
+
+model OrganizationUnit {
+  id String @id @default(cuid())
+
+  code String @unique
+
+  name String
+
+  description String?
+
+  parentId String?
+
+  locationId String?
+
+  parent OrganizationUnit? @relation("OrganizationUnitTree", fields: [parentId], references: [id], onDelete: Restrict)
+
+  children OrganizationUnit[] @relation("OrganizationUnitTree")
+
+  location OrganizationLocation? @relation(fields: [locationId], references: [id], onDelete: Restrict)
+
+  status OrganizationUnitStatus @default(ACTIVE)
+
+  sortOrder Int @default(0)
+
+  assignments EmployeeAssignment[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([parentId])
+  @@index([locationId])
+  @@index([status])
+}
+
+model OrganizationPosition {
+  id String @id @default(cuid())
+
+  code String @unique
+
+  title String
+
+  description String?
+
+  level Int @default(1)
+
+  isManagerial Boolean @default(false)
+
+  isActive Boolean @default(true)
+
+  assignments EmployeeAssignment[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([title])
+  @@index([isActive])
+}
+
+model EmployeeAssignment {
+  id String @id @default(cuid())
+
+  userId String
+
+  organizationUnitId String
+
+  positionId String
+
+  locationId String?
+
+  managerAssignmentId String?
+
+  user User @relation("EmployeeAssignments", fields: [userId], references: [id], onDelete: Restrict)
+
+  organizationUnit OrganizationUnit @relation(fields: [organizationUnitId], references: [id], onDelete: Restrict)
+
+  position OrganizationPosition @relation(fields: [positionId], references: [id], onDelete: Restrict)
+
+  location OrganizationLocation? @relation(fields: [locationId], references: [id], onDelete: Restrict)
+
+  managerAssignment EmployeeAssignment? @relation("AssignmentManager", fields: [managerAssignmentId], references: [id], onDelete: Restrict)
+
+  subordinateAssignments EmployeeAssignment[] @relation("AssignmentManager")
+
+  status EmployeeAssignmentStatus @default(ACTIVE)
+
+  assignmentType EmployeeAssignmentType @default(SECONDARY)
+
+  isPrimary Boolean @default(true)
+
+  startDate DateTime
+
+  endDate DateTime?
+
+  notes String?
+
+  history OrganizationAssignmentHistory[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  roles EmployeeAssignmentRole[]
+
+  permissions EmployeeAssignmentPermission[]
+
+  outgoingRelationships OrganizationRelationship[] @relation("OrganizationRelationshipSource")
+  incomingRelationships OrganizationRelationship[] @relation("OrganizationRelationshipTarget")
+
+  @@index([userId, status])
+  @@index([assignmentType, status])
+  @@index([organizationUnitId, status])
+  @@index([positionId])
+  @@index([managerAssignmentId])
+  @@index([locationId])
+}
+
+model EmployeeAssignmentRole {
+  id String @id @default(cuid())
+
+  assignmentId String
+
+  roleId String
+
+  assignedById String?
+
+  expiresAt DateTime?
+
+  isActive Boolean @default(true)
+
+  assignment EmployeeAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  role Role @relation(fields: [roleId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([assignmentId, roleId])
+  @@index([roleId, isActive])
+  @@index([assignmentId, isActive])
+  @@index([expiresAt])
+}
+
+model EmployeeAssignmentPermission {
+  id String @id @default(cuid())
+
+  assignmentId String
+
+  permissionId String
+
+  isAllowed Boolean @default(true)
+
+  scope DataScope @default(OWN)
+
+  assignedById String?
+
+  expiresAt DateTime?
+
+  isActive Boolean @default(true)
+
+  assignment EmployeeAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([assignmentId, permissionId])
+  @@index([permissionId, isActive])
+  @@index([assignmentId, isActive])
+  @@index([expiresAt])
+}
+
+model OrganizationRelationship {
+  id String @id @default(cuid())
+
+  sourceAssignmentId String
+  targetAssignmentId String
+
+  relationshipType OrganizationRelationshipType
+  status           OrganizationRelationshipStatus @default(ACTIVE)
+
+  startDate DateTime  @default(now())
+  endDate   DateTime?
+
+  description     String?
+  createdByUserId String?
+
+  sourceAssignment EmployeeAssignment @relation("OrganizationRelationshipSource", fields: [sourceAssignmentId], references: [id], onDelete: Restrict)
+  targetAssignment EmployeeAssignment @relation("OrganizationRelationshipTarget", fields: [targetAssignmentId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([sourceAssignmentId, targetAssignmentId, relationshipType])
+  @@index([sourceAssignmentId, status])
+  @@index([targetAssignmentId, status])
+  @@index([relationshipType, status])
+  @@index([startDate, endDate])
+}
+
+model OrganizationAssignmentHistory {
+  id String @id @default(cuid())
+
+  assignmentId String
+
+  assignment EmployeeAssignment @relation(fields: [assignmentId], references: [id], onDelete: Restrict)
+
+  action String
+
+  previousData Json?
+
+  newData Json?
+
+  changedByUserId String
+
+  changedAt DateTime @default(now())
+
+  @@index([assignmentId, changedAt])
+  @@index([changedByUserId])
+}
+
+model OrganizationAuditLog {
+  id String @id @default(cuid())
+
+  actorUserId String
+
+  entityType String
+
+  entityId String
+
+  action String
+
+  beforeData Json?
+
+  afterData Json?
+
+  ipAddress String?
+
+  createdAt DateTime @default(now())
+
+  @@index([actorUserId, createdAt])
+  @@index([entityType, entityId])
+}
+
+
+========== app/api/hr/recruitment/applications/route.ts ==========
+
+import { NextRequest } from "next/server";
+
+import { prisma } from "@/libs/prisma";
+
+import {
+  ApplicationStage,
+  ApplicationReviewerType,
+  DocumentsApplicationStatus,
+  InitialApplicationStatus,
+  Prisma,
+} from "@/generated/prisma/client";
+
+import {
+  successResponse,
+  errorResponse,
+} from "@/libs/api-response";
+
+import {
+  authExceptionResponse,
+} from "@/modules/auth/api-error-response";
+
+import {
+  authorizeRecruitmentReviewer,
+} from "@/modules/recruitment/recruitment.authorization";
+
+
+function parseStage(value: string | null) {
+  if (value === "DOCUMENTS") {
+    return ApplicationStage.DOCUMENTS;
+  }
+
+  if (value === "INITIAL" || value === null) {
+    return ApplicationStage.INITIAL;
+  }
+
+  return null;
+}
+
+function parseReviewerType(value: string | null) {
+  if (value === "HR") {
+    return ApplicationReviewerType.HR;
+  }
+
+  if (value === "EXECUTIVE") {
+    return ApplicationReviewerType.EXECUTIVE;
+  }
+
+  return null;
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    const params = request.nextUrl.searchParams;
+
+    const stage = parseStage(params.get("stage"));
+    const reviewerType = parseReviewerType(
+      params.get("reviewerType")
+    );
+
+    if (!stage || !reviewerType) {
+      return errorResponse(
+        "Ù…Ø±Ø­Ù„Ù‡ ÛŒØ§ Ù†ÙˆØ¹ Ø¨Ø±Ø±Ø³ÛŒ Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª.",
+        400
+      );
+    }
+
+    await authorizeRecruitmentReviewer(
+      request,
+      stage,
+      reviewerType
+    );
+
+    const page = Math.max(
+      1,
+      Number(params.get("page") || 1)
+    );
+
+    const limit = Math.min(
+      50,
+      Math.max(1, Number(params.get("limit") || 20))
+    );
+
+    const statuses =
+      reviewerType === ApplicationReviewerType.HR
+        ? [
+            "SUBMITTED",
+            "HR_REVIEW",
+          ]
+        : [
+            "SUBMITTED",
+            "EXECUTIVE_REVIEW",
+          ];
+
+    const where: Prisma.CandidateApplicationWhereInput =
+      stage === ApplicationStage.INITIAL
+        ? {
+            initialStatus: {
+              in: statuses as InitialApplicationStatus[],
+            },
+          }
+        : {
+            initialStatus:
+              InitialApplicationStatus.APPROVED,
+            documentsStatus: {
+              in: statuses as DocumentsApplicationStatus[],
+            },
+          };
+
+    const [applications, total] = await prisma.$transaction([
+      prisma.candidateApplication.findMany({
+        where,
+        orderBy: {
+          initialSubmittedAt: "asc",
+        },
+        skip: (page - 1) * limit,
+        take: limit,
+        select: {
+          id: true,
+          applicationNumber: true,
+          firstName: true,
+          lastName: true,
+          nationalId: true,
+          mobilePhone: true,
+          gender: true,
+          maritalStatus: true,
+          initialStatus: true,
+          documentsStatus: true,
+          initialSubmittedAt: true,
+          documentsSubmittedAt: true,
+          initialVersion: true,
+          documentsVersion: true,
+          createdAt: true,
+        },
+      }),
+
+      prisma.candidateApplication.count({
+        where,
+      }),
+    ]);
+
+    return successResponse({
+      stage,
+      reviewerType,
+      applications,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
+  } catch (error) {
+    return authExceptionResponse(
+      error,
+      "Ø®Ø·Ø§ Ø¯Ø± Ø¯Ø±ÛŒØ§ÙØª Ù¾Ø±ÙˆÙ†Ø¯Ù‡â€ŒÙ‡Ø§ÛŒ Ø§Ø³ØªØ®Ø¯Ø§Ù…ÛŒ."
+    );
+  }
+}
+
+
+========== app/api/hr/recruitment/applications/[id]/route.ts ==========
+
+import { NextRequest } from "next/server";
+
+import { prisma } from "@/libs/prisma";
+
+import {
+  ApplicationStage,
+  ApplicationReviewerType,
+  ApplicationApproval,
+  ApplicationDecision,
+  DocumentsApplicationStatus,
+  InitialApplicationStatus,
+} from "@/generated/prisma/client";
+
+import {
+  successResponse,
+  errorResponse,
+} from "@/libs/api-response";
+
+import {
+  authExceptionResponse,
+} from "@/modules/auth/api-error-response";
+
+import {
+  authorizeRecruitmentReviewer,
+} from "@/modules/recruitment/recruitment.authorization";
+
+type Context = {
+  params: Promise<{ id: string }>;
+};
+
+export async function GET(
+  request: NextRequest,
+  context: Context
+) {
+  try {
+    const params = request.nextUrl.searchParams;
+
+    const stageValue = params.get("stage") || "INITIAL";
+    const reviewerValue =
+      params.get("reviewerType") || "HR";
+
+    const stage =
+      stageValue === "INITIAL"
+        ? ApplicationStage.INITIAL
+        : stageValue === "DOCUMENTS"
+          ? ApplicationStage.DOCUMENTS
+          : null;
+
+    const reviewerType =
+      reviewerValue === "HR"
+        ? ApplicationReviewerType.HR
+        : reviewerValue === "EXECUTIVE"
+          ? ApplicationReviewerType.EXECUTIVE
+          : null;
+
+    if (!stage || !reviewerType) {
+      return errorResponse(
+        "Ù…Ø±Ø­Ù„Ù‡ ÛŒØ§ Ù†ÙˆØ¹ Ø¨Ø±Ø±Ø³ÛŒ Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª.",
+        400
+      );
+    }
+
+    const { user } =
+      await authorizeRecruitmentReviewer(
+        request,
+        stage,
+        reviewerType
+      );
+
+    const { id } = await context.params;
+
+    const application =
+      await prisma.candidateApplication.findUnique({
+        where: { id },
+
+        include: {
+          user: {
+            select: {
+              id: true,
+              username: true,
+              accessLevel: true,
+              isActive: true,
+              createdAt: true,
+            },
+          },
+
+          educationRecords: {
+            orderBy: {
+              createdAt: "asc",
+            },
+          },
+
+          workExperiences: {
+            orderBy: {
+              startDate: "desc",
+            },
+          },
+
+          skills: true,
+
+          references: {
+            orderBy: {
+              sortOrder: "asc",
+            },
+          },
+
+          emergencyContact: true,
+
+          sensitiveInfo: true,
+
+          familyMembers: {
+            orderBy: {
+              sortOrder: "asc",
+            },
+          },
+
+          documents: {
+            where: {
+              stage,
+              isCurrent: true,
+            },
+            orderBy: [
+              { documentType: "asc" },
+              { pageNumber: "asc" },
+            ],
+            select: {
+              id: true,
+              documentType: true,
+              stage: true,
+              status: true,
+              pageNumber: true,
+              totalPages: true,
+              subjectIndex: true,
+              fileName: true,
+              mimeType: true,
+              sizeBytes: true,
+              checksum: true,
+              uploadedAt: true,
+            },
+          },
+        },
+      });
+
+    if (!application) {
+      return errorResponse(
+        "Ù¾Ø±ÙˆÙ†Ø¯Ù‡ Ø§Ø³ØªØ®Ø¯Ø§Ù…ÛŒ Ù¾ÛŒØ¯Ø§ Ù†Ø´Ø¯.",
+        404
+      );
+    }
+
+    const currentStatus =
+      stage === ApplicationStage.INITIAL
+        ? application.initialStatus
+        : application.documentsStatus;
+
+    const allowedStatuses =
+      reviewerType === ApplicationReviewerType.HR
+        ? ["SUBMITTED", "HR_REVIEW"]
+        : ["SUBMITTED", "EXECUTIVE_REVIEW"];
+
+    if (
+      !allowedStatuses.includes(currentStatus)
+    ) {
+      return errorResponse(
+        "Ø§ÛŒÙ† Ù¾Ø±ÙˆÙ†Ø¯Ù‡ Ø¯Ø± Ø­Ø§Ù„ Ø­Ø§Ø¶Ø± Ø¯Ø± Ù†ÙˆØ¨Øª Ø¨Ø±Ø±Ø³ÛŒ Ø´Ù…Ø§ Ù†ÛŒØ³Øª.",
+        409
+      );
+    }
+
+    if (
+      stage === ApplicationStage.DOCUMENTS &&
+      application.initialStatus !==
+        InitialApplicationStatus.APPROVED
+    ) {
+      return errorResponse(
+        "Ù…Ø±Ø­Ù„Ù‡ Ø§ÙˆÙ„ Ù¾Ø±ÙˆÙ†Ø¯Ù‡ Ù‡Ù†ÙˆØ² ØªØ£ÛŒÛŒØ¯ Ù†Ø´Ø¯Ù‡ Ø§Ø³Øª.",
+        409
+      );
+    }
+
+    const applicationVersion =
+      stage === ApplicationStage.INITIAL
+        ? application.initialVersion
+        : application.documentsVersion;
+
+    const approvals =
+      await prisma.applicationApproval.findMany({
+        where: {
+          applicationId: application.id,
+          stage,
+          applicationVersion,
+        },
+        orderBy: {
+          decidedAt: "asc",
+        },
+        select: {
+          reviewerType: true,
+          decision: true,
+          comment: true,
+          decidedAt: true,
+          reviewer: {
+            select: {
+              fullName: true,
+            },
+          },
+        },
+      });
+
+    const documents = application.documents.map(
+      (document) => ({
+        ...document,
+        fileUrl:
+          `/api/hr/recruitment/documents/${document.id}/file`,
+      })
+    );
+
+    return successResponse({
+      application: {
+        ...application,
+        documents,
+      },
+      approvals,
+      currentReviewer: {
+        userId: user.id,
+        reviewerType,
+        stage,
+      },
+    });
+  } catch (error) {
+    return authExceptionResponse(
+      error,
+      "Ø®Ø·Ø§ Ø¯Ø± Ø¯Ø±ÛŒØ§ÙØª Ø¬Ø²Ø¦ÛŒØ§Øª Ù¾Ø±ÙˆÙ†Ø¯Ù‡."
+    );
+  }
+}
+
+
+========== app/api/hr/recruitment/applications/[id]/decision/route.ts ==========
+import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import {
+  ApplicationDecision,
+  ApplicationReviewerType,
+  ApplicationStage,
+  DocumentsApplicationStatus,
+  InitialApplicationStatus,
+  UserAccessLevel,
+} from "@/generated/prisma/client";
+import { prisma } from "@/libs/prisma";
+import { AUTH_COOKIE_NAMES } from "@/modules/auth/auth.constants";
+import { getAuthenticatedUser } from "@/modules/auth/auth.service";
+
+type Context = { params: Promise<{ id: string }> };
+
+class DecisionError extends Error {
+  constructor(message: string, public status = 400) {
+    super(message);
+  }
+}
+
+async function getActor() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(AUTH_COOKIE_NAMES.access)?.value;
+  if (!token) throw new DecisionError("Ø¨Ø±Ø§ÛŒ Ø§Ø¯Ø§Ù…Ù‡ ÙˆØ§Ø±Ø¯ Ø³Ø§Ù…Ø§Ù†Ù‡ Ø´ÙˆÛŒØ¯.", 401);
+
+  const authUser = await getAuthenticatedUser(token);
+  const user = await prisma.user.findFirst({
+    where: { id: authUser.id, isActive: true },
+    select: {
+      id: true,
+      roles: {
+        where: {
+          isActive: true,
+          OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
+          role: { isActive: true },
+        },
+        select: { role: { select: { key: true, isSystem: true } } },
+      },
+    },
+  });
+  if (!user) throw new DecisionError("Ú©Ø§Ø±Ø¨Ø± ÙØ¹Ø§Ù„ ÛŒØ§ÙØª Ù†Ø´Ø¯.", 403);
+  return user;
+}
+
+function responseError(error: unknown) {
+  if (error instanceof DecisionError) {
+    return NextResponse.json(
+      { success: false, message: error.message },
+      { status: error.status }
+    );
+  }
+  if (typeof error === "object" && error !== null && "code" in error && error.code === "P2002") {
+    return NextResponse.json(
+      { success: false, message: "Ø§ÛŒÙ† Ù…Ø±Ø­Ù„Ù‡ Ù‚Ø¨Ù„Ø§Ù‹ ØªÙˆØ³Ø· Ø´Ù…Ø§ Ø¨Ø±Ø±Ø³ÛŒ Ø´Ø¯Ù‡ Ø§Ø³Øª." },
+      { status: 409 }
+    );
+  }
+  console.error("[RECRUITMENT_DECISION_ERROR]", error);
+  return NextResponse.json(
+    { success: false, message: "Ø®Ø·Ø§ÛŒ Ø¯Ø§Ø®Ù„ÛŒ Ø¯Ø± Ø«Ø¨Øª ØªØµÙ…ÛŒÙ… Ø¨Ø±Ø±Ø³ÛŒ." },
+    { status: 500 }
+  );
+}
+
+export async function POST(request: NextRequest, context: Context) {
+  try {
+    const actor = await getActor();
+    const body = await request.json();
+
+    const stage = body.stage as ApplicationStage;
+    const decision = body.decision as ApplicationDecision;
+    const comment =
+      typeof body.comment === "string" ? body.comment.trim().slice(0, 2000) : null;
+
+    if (!Object.values(ApplicationStage).includes(stage)) {
+      throw new DecisionError("Ù…Ø±Ø­Ù„Ù‡ Ø¨Ø±Ø±Ø³ÛŒ Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª.");
+    }
+    if (!Object.values(ApplicationDecision).includes(decision)) {
+      throw new DecisionError("ØªØµÙ…ÛŒÙ… Ø§Ù†ØªØ®Ø§Ø¨â€ŒØ´Ø¯Ù‡ Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª.");
+    }
+    if (decision !== "APPROVED" && !comment) {
+      throw new DecisionError("Ø¨Ø±Ø§ÛŒ Ø±Ø¯ ÛŒØ§ Ø¯Ø±Ø®ÙˆØ§Ø³Øª Ø§ØµÙ„Ø§Ø­ØŒ ØªÙˆØ¶ÛŒØ­Ø§Øª Ø§Ù„Ø²Ø§Ù…ÛŒ Ø§Ø³Øª.");
+    }
+
+    const roleKeys = actor.roles.map((item) => item.role.key);
+    const isSystemAdmin = actor.roles.some(
+      (item) => item.role.key === "system_admin" && item.role.isSystem
+    );
+    const isSuperAdmin = actor.roles.some(
+      (item) => item.role.key === "super_admin" && item.role.isSystem
+    );
+
+    let reviewerType: ApplicationReviewerType;
+    if (roleKeys.includes("hr_manager")) {
+      reviewerType = ApplicationReviewerType.HR;
+    } else if (roleKeys.includes("ceo") || roleKeys.includes("ceo_deputy")) {
+      reviewerType = ApplicationReviewerType.EXECUTIVE;
+    } else if (isSystemAdmin || isSuperAdmin) {
+      throw new DecisionError(
+        "Ù…Ø¯ÛŒØ± Ø³ÛŒØ³ØªÙ… ÙÙ†ÛŒ Ø¨Ù‡â€ŒØªÙ†Ù‡Ø§ÛŒÛŒ Ù…Ø±Ø¬Ø¹ ØªØ£ÛŒÛŒØ¯ Ø§Ø³ØªØ®Ø¯Ø§Ù… Ù†ÛŒØ³ØªØ› Ø¨Ø±Ø§ÛŒ Ø¨Ø±Ø±Ø³ÛŒ Ø¨Ø§ÛŒØ¯ Ù†Ù‚Ø´ HR ÛŒØ§ Ù…Ø¯ÛŒØ±Ø¹Ø§Ù…Ù„/Ù‚Ø§Ø¦Ù…â€ŒÙ…Ù‚Ø§Ù… Ø¯Ø§Ø´ØªÙ‡ Ø¨Ø§Ø´ÛŒØ¯.",
+        403
+      );
+    } else {
+      throw new DecisionError("Ø´Ù…Ø§ Ù…Ø¬ÙˆØ² Ø¨Ø±Ø±Ø³ÛŒ Ù¾Ø±ÙˆÙ†Ø¯Ù‡ Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø±Ø§ Ù†Ø¯Ø§Ø±ÛŒØ¯.", 403);
+    }
+
+    const { id } = await context.params;
+    const application = await prisma.candidateApplication.findUnique({
+      where: { id },
+      include: { approvals: true, user: { select: { id: true, isActive: true, accessLevel: true } } },
+    });
+    if (!application) throw new DecisionError("Ù¾Ø±ÙˆÙ†Ø¯Ù‡ Ø§Ø³ØªØ®Ø¯Ø§Ù… Ù¾ÛŒØ¯Ø§ Ù†Ø´Ø¯.", 404);
+    if (application.userId === actor.id) {
+      throw new DecisionError("Ù…ØªÙ‚Ø§Ø¶ÛŒ Ù†Ù…ÛŒâ€ŒØªÙˆØ§Ù†Ø¯ Ù¾Ø±ÙˆÙ†Ø¯Ù‡ Ø®ÙˆØ¯Ø´ Ø±Ø§ ØªØ£ÛŒÛŒØ¯ Ú©Ù†Ø¯.", 403);
+    }
+
+    const currentVersion =
+      stage === ApplicationStage.INITIAL
+        ? application.initialVersion
+        : application.documentsVersion;
+
+    const currentStatus =
+      stage === ApplicationStage.INITIAL
+        ? application.initialStatus
+        : application.documentsStatus;
+
+    const expectedStatus =
+      reviewerType === ApplicationReviewerType.HR
+        ? stage === ApplicationStage.INITIAL
+          ? InitialApplicationStatus.SUBMITTED
+          : DocumentsApplicationStatus.SUBMITTED
+        : stage === ApplicationStage.INITIAL
+          ? InitialApplicationStatus.EXECUTIVE_REVIEW
+          : DocumentsApplicationStatus.EXECUTIVE_REVIEW;
+
+    if (currentStatus !== expectedStatus) {
+      throw new DecisionError(
+        reviewerType === ApplicationReviewerType.HR
+          ? "Ø§ÛŒÙ† Ù¾Ø±ÙˆÙ†Ø¯Ù‡ Ø¯Ø± ØµÙ Ø¨Ø±Ø±Ø³ÛŒ Ù…Ù†Ø§Ø¨Ø¹ Ø§Ù†Ø³Ø§Ù†ÛŒ Ù†ÛŒØ³Øª."
+          : "Ù¾Ø±ÙˆÙ†Ø¯Ù‡ Ù‡Ù†ÙˆØ² ØªØ£ÛŒÛŒØ¯ Ù…Ù†Ø§Ø¨Ø¹ Ø§Ù†Ø³Ø§Ù†ÛŒ Ø±Ø§ Ø¯Ø±ÛŒØ§ÙØª Ù†Ú©Ø±Ø¯Ù‡ Ø§Ø³Øª.",
+        409
+      );
+    }
+
+    const alreadyReviewed = application.approvals.some(
+      (approval) =>
+        approval.stage === stage &&
+        approval.reviewerType === reviewerType &&
+        approval.applicationVersion === currentVersion
+    );
+    if (alreadyReviewed) {
+      throw new DecisionError("Ø¨Ø±Ø§ÛŒ Ø§ÛŒÙ† Ù†Ø³Ø®Ù‡ Ø§Ø² Ù¾Ø±ÙˆÙ†Ø¯Ù‡ Ù‚Ø¨Ù„Ø§Ù‹ ØªØµÙ…ÛŒÙ… Ø«Ø¨Øª Ø´Ø¯Ù‡ Ø§Ø³Øª.", 409);
+    }
+
+    const now = new Date();
+    const nextStatus =
+      decision === ApplicationDecision.APPROVED
+        ? reviewerType === ApplicationReviewerType.HR
+          ? stage === ApplicationStage.INITIAL
+            ? InitialApplicationStatus.EXECUTIVE_REVIEW
+            : DocumentsApplicationStatus.EXECUTIVE_REVIEW
+          : stage === ApplicationStage.INITIAL
+            ? InitialApplicationStatus.APPROVED
+            : DocumentsApplicationStatus.APPROVED
+        : decision === ApplicationDecision.REJECTED
+          ? stage === ApplicationStage.INITIAL
+            ? InitialApplicationStatus.REJECTED
+            : DocumentsApplicationStatus.REJECTED
+          : stage === ApplicationStage.INITIAL
+            ? InitialApplicationStatus.NEEDS_CORRECTION
+            : DocumentsApplicationStatus.NEEDS_CORRECTION;
+
+    await prisma.$transaction(async (tx) => {
+      await tx.applicationApproval.create({
+        data: {
+          applicationId: application.id,
+          stage,
+          reviewerType,
+          reviewerUserId: actor.id,
+          decision,
+          comment,
+          applicationVersion: currentVersion,
+          decidedAt: now,
+        },
+      });
+
+      if (stage === ApplicationStage.INITIAL) {
+        await tx.candidateApplication.update({
+          where: { id: application.id },
+          data: {
+            initialStatus: nextStatus as InitialApplicationStatus,
+            ...(reviewerType === ApplicationReviewerType.EXECUTIVE &&
+              decision === ApplicationDecision.APPROVED
+              ? {
+                  initialApprovedAt: now,
+                  documentsStatus: DocumentsApplicationStatus.PENDING,
+                }
+              : {}),
+          },
+        });
+
+        if (
+          reviewerType === ApplicationReviewerType.EXECUTIVE &&
+          decision === ApplicationDecision.APPROVED
+        ) {
+          await tx.user.update({
+            where: { id: application.userId },
+            data: {
+              isActive: true,
+              accessLevel: UserAccessLevel.CANDIDATE_PORTAL,
+            },
+          });
+        }
+      } else {
+        await tx.candidateApplication.update({
+          where: { id: application.id },
+          data: {
+            documentsStatus: nextStatus as DocumentsApplicationStatus,
+            ...(reviewerType === ApplicationReviewerType.EXECUTIVE &&
+              decision === ApplicationDecision.APPROVED
+              ? { documentsApprovedAt: now }
+              : {}),
+          },
+        });
+
+        // ÙˆØ±ÙˆØ¯ Ø¨Ù‡ ERP ÙÙ‚Ø· Ù¾Ø³ Ø§Ø² ØªÚ©Ù…ÛŒÙ„ Ùˆ ØªØ£ÛŒÛŒØ¯ Ù…Ø¯Ø§Ø±Ú© Ù…Ø±Ø­Ù„Ù‡ Ø¯ÙˆÙ… ÙØ¹Ø§Ù„ Ù…ÛŒâ€ŒØ´ÙˆØ¯.
+        if (
+          reviewerType === ApplicationReviewerType.EXECUTIVE &&
+          decision === ApplicationDecision.APPROVED
+        ) {
+          await tx.user.update({
+            where: { id: application.userId },
+            data: {
+              isActive: true,
+              accessLevel: UserAccessLevel.ERP,
+            },
+          });
+        }
+      }
+
+      await tx.auditLog.create({
+        data: {
+          actorUserId: actor.id,
+          action: `CANDIDATE_${stage}_${reviewerType}_${decision}`,
+          entityType: "CandidateApplication",
+          entityId: application.id,
+          ipAddress: request.headers.get("x-real-ip") || undefined,
+          details: {
+            applicationNumber: application.applicationNumber,
+            stage,
+            reviewerType,
+            decision,
+            comment,
+            applicationVersion: currentVersion,
+            previousStatus: currentStatus,
+            nextStatus,
+          },
+        },
+      });
+    });
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        applicationId: application.id,
+        stage,
+        reviewerType,
+        decision,
+        status: nextStatus,
+        message:
+          decision === "APPROVED"
+            ? reviewerType === "HR"
+              ? "ØªØ£ÛŒÛŒØ¯ Ù…Ù†Ø§Ø¨Ø¹ Ø§Ù†Ø³Ø§Ù†ÛŒ Ø«Ø¨Øª Ø´Ø¯Ø› Ù¾Ø±ÙˆÙ†Ø¯Ù‡ Ø¨Ø±Ø§ÛŒ ØªØ£ÛŒÛŒØ¯ Ù…Ø¯ÛŒØ±Ø¹Ø§Ù…Ù„/Ù‚Ø§Ø¦Ù…â€ŒÙ…Ù‚Ø§Ù… Ø§Ø±Ø³Ø§Ù„ Ø´Ø¯."
+              : stage === "INITIAL"
+                ? "Ù…Ø±Ø­Ù„Ù‡ Ø§ÙˆÙ„ Ø¨Ø§ ØªØ£ÛŒÛŒØ¯ Ù‡Ø± Ø¯Ùˆ Ù…Ø±Ø¬Ø¹ ØªÚ©Ù…ÛŒÙ„ Ø´Ø¯Ø› Ø­Ø³Ø§Ø¨ Ù…ØªÙ‚Ø§Ø¶ÛŒ ÙØ¹Ø§Ù„ Ùˆ Ù…Ø±Ø­Ù„Ù‡ Ù…Ø¯Ø§Ø±Ú© Ø¨Ø§Ø² Ø´Ø¯."
+                : "Ù…Ø¯Ø§Ø±Ú© Ø¨Ø§ ØªØ£ÛŒÛŒØ¯ Ù‡Ø± Ø¯Ùˆ Ù…Ø±Ø¬Ø¹ Ù†Ù‡Ø§ÛŒÛŒ Ø´Ø¯Ø› Ø¯Ø³ØªØ±Ø³ÛŒ ERP ÙØ¹Ø§Ù„ Ø´Ø¯."
+            : decision === "NEEDS_CORRECTION"
+              ? "Ù¾Ø±ÙˆÙ†Ø¯Ù‡ Ø¨Ø±Ø§ÛŒ Ø§ØµÙ„Ø§Ø­ Ø¨Ù‡ Ù…ØªÙ‚Ø§Ø¶ÛŒ Ø¨Ø±Ú¯Ø´Øª Ø¯Ø§Ø¯Ù‡ Ø´Ø¯."
+              : "Ø¯Ø±Ø®ÙˆØ§Ø³Øª Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø±Ø¯ Ø´Ø¯.",
+      },
+    });
+  } catch (error) {
+    return responseError(error);
+  }
+}
+
+
+========== modules/recruitment/recruitment.service.ts ==========
+import "server-only";
+
+import { prisma } from "@/libs/prisma";
+
+import {
+  randomBytes,
+  randomUUID,
+} from "node:crypto";
+
+import { hash } from "bcryptjs";
+
+import {
+  ApplicationStage,
+  CandidateDocumentStatus,
+  CandidateDocumentType,
+  DocumentsApplicationStatus,
+  InitialApplicationStatus,
+  UserAccessLevel,
+} from "@/generated/prisma/client";
+
+import {
+  INITIAL_DECLARATION_VERSION,
+  MAX_PERSONAL_PHOTO_SIZE,
+  PERSONAL_PHOTO_MIME_TYPES,
+  RECRUITMENT_USERNAME_PREFIX,
+} from "./recruitment.constants";
+
+import type {
+  InitialApplicationInput,
+} from "./recruitment.validation";
+
+import {
+  storePrivateFile,
+  deletePrivateFile,
+  type StoredPrivateFile,
+} from "@/libs/private-file-storage";
+
+export class RecruitmentError extends Error {
+  constructor(
+    message: string,
+    public statusCode = 400
+  ) {
+    super(message);
+    this.name = "RecruitmentError";
+  }
+}
+
+type CreateInitialApplicationParams = {
+  data: InitialApplicationInput;
+  personalPhoto: File;
+  ipAddress?: string;
+};
+
+function toDate(value?: string | null) {
+  if (!value) return undefined;
+
+  const date = new Date(`${value}T00:00:00.000Z`);
+
+  if (Number.isNaN(date.getTime())) {
+    throw new RecruitmentError("ØªØ§Ø±ÛŒØ® ÙˆØ§Ø±Ø¯Ø´Ø¯Ù‡ Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª.");
+  }
+
+  return date;
+}
+
+function generatePassword() {
+  return randomBytes(24).toString("base64url");
+}
+
+function generateApplicationNumber() {
+  const date = new Date()
+    .toISOString()
+    .slice(0, 10)
+    .replace(/-/g, "");
+
+  return `HR-${date}-${randomBytes(4).toString("hex").toUpperCase()}`;
+}
+
+async function generateUniqueUsername() {
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const username =
+      `${RECRUITMENT_USERNAME_PREFIX}${randomBytes(6).toString("hex")}`;
+
+    const existing = await prisma.user.findUnique({
+      where: { username },
+      select: { id: true },
+    });
+
+    if (!existing) return username;
+  }
+
+  throw new RecruitmentError(
+    "Ø³Ø§Ø®Øª Ù†Ø§Ù… Ú©Ø§Ø±Ø¨Ø±ÛŒ Ø§Ù…Ú©Ø§Ù†â€ŒÙ¾Ø°ÛŒØ± Ù†Ø´Ø¯.",
+    500
+  );
+}
+
+export async function createInitialApplication({
+  data,
+  personalPhoto,
+  ipAddress,
+}: CreateInitialApplicationParams) {
+  if (!data.declarationAccepted) {
+    throw new RecruitmentError(
+      "ØªØ£ÛŒÛŒØ¯ ØªØ¹Ù‡Ø¯Ù†Ø§Ù…Ù‡ Ø¨Ø±Ø§ÛŒ Ø«Ø¨Øª Ø¯Ø±Ø®ÙˆØ§Ø³Øª Ø§Ù„Ø²Ø§Ù…ÛŒ Ø§Ø³Øª."
+    );
+  }
+
+  const userId = randomUUID();
+  const applicationId = randomUUID();
+
+  const username = await generateUniqueUsername();
+  const temporaryPassword = generatePassword();
+
+  const passwordHash = await hash(temporaryPassword, 12);
+  const applicationNumber = generateApplicationNumber();
+
+  const fullName =
+    `${data.firstName} ${data.lastName}`.trim();
+
+  const storedFiles: StoredPrivateFile[] = [];
+
+  try {
+    // Ø¯Ø± Ù…Ø±Ø­Ù„Ù‡ Ø§ÙˆÙ„ ÙÙ‚Ø· Ø¹Ú©Ø³ Ù¾Ø±Ø³Ù†Ù„ÛŒ Ø¯Ø±ÛŒØ§ÙØª Ù…ÛŒâ€ŒØ´ÙˆØ¯.
+    const photo = await storePrivateFile(personalPhoto, {
+      directory: `recruitment/${applicationId}/initial`,
+      maxBytes: MAX_PERSONAL_PHOTO_SIZE,
+      allowedMimeTypes: PERSONAL_PHOTO_MIME_TYPES,
+    });
+
+    storedFiles.push(photo);
+
+    await prisma.$transaction(async (tx) => {
+      await tx.user.create({
+        data: {
+          id: userId,
+          username,
+          email: data.email || null,
+          phone: data.mobilePhone,
+          fullName,
+          passwordHash,
+          isActive: false,
+          accessLevel: UserAccessLevel.PENDING,
+        },
+      });
+
+      await tx.candidateApplication.create({
+        data: {
+          id: applicationId,
+          applicationNumber,
+          userId,
+
+          firstName: data.firstName,
+          lastName: data.lastName,
+          fatherName: data.fatherName,
+          birthCertificateNumber: data.birthCertificateNumber,
+          nationalId: data.nationalId,
+
+          gender: data.gender,
+          maritalStatus: data.maritalStatus,
+
+          nationality: data.nationality,
+          birthPlace: data.birthPlace,
+          dateOfBirth: toDate(data.dateOfBirth)!,
+
+          landlinePhone: data.landlinePhone || null,
+          mobilePhone: data.mobilePhone,
+          email: data.email || null,
+          address: data.address,
+
+          militaryStatus: data.militaryStatus || null,
+
+          currentlyEmployed: data.currentlyEmployed,
+          currentEmployer: data.currentlyEmployed
+            ? data.currentEmployer || null
+            : null,
+
+          hasExternalCommitment: data.hasExternalCommitment,
+          hasInsuranceHistory: data.hasInsuranceHistory,
+          minimumEmploymentPeriod:
+            data.minimumEmploymentPeriod || null,
+
+          requestedSalary: data.requestedSalary || null,
+          additionalNotes: data.additionalNotes || null,
+
+          declarationAccepted: true,
+          declarationTextVersion: INITIAL_DECLARATION_VERSION,
+          declarationAcceptedAt: new Date(),
+          declarationIpAddress: ipAddress,
+
+          initialStatus: InitialApplicationStatus.SUBMITTED,
+          initialSubmittedAt: new Date(),
+
+          // Ù…Ø±Ø­Ù„Ù‡ Ø¯ÙˆÙ… ØªØ§ Ù¾Ø§ÛŒØ§Ù† ØªØ£ÛŒÛŒØ¯Ù‡Ø§ÛŒ Ù…Ø±Ø­Ù„Ù‡ Ø§ÙˆÙ„ Ù‚ÙÙ„ Ù…ÛŒâ€ŒÙ…Ø§Ù†Ø¯.
+          documentsStatus: DocumentsApplicationStatus.LOCKED,
+
+          educationRecords: {
+            create: data.educationRecords.map((item) => ({
+              degree: item.degree,
+              fieldOfStudy: item.fieldOfStudy,
+              institution: item.institution,
+              city: item.city || null,
+              startDate: toDate(item.startDate),
+              endDate: toDate(item.endDate),
+              isCurrentlyStudying: item.isCurrentlyStudying,
+              grade: item.grade || null,
+              description: item.description || null,
+            })),
+          },
+
+          workExperiences: {
+            create: data.workExperiences.map((item) => ({
+              companyName: item.companyName,
+              startDate: toDate(item.startDate)!,
+              endDate: toDate(item.endDate),
+              position: item.position,
+              leavingReason: item.leavingReason || null,
+              salaryReceived: item.salaryReceived || null,
+            })),
+          },
+
+          skills: {
+            create: data.skills.map((item) => ({
+              specialty: item.specialty,
+              description: item.description || null,
+            })),
+          },
+
+          references: {
+            create: data.references.map((item, index) => ({
+              fullName: item.fullName,
+              occupation: item.occupation,
+              workplace: item.workplace,
+              acquaintanceDuration: item.acquaintanceDuration,
+              phone: item.phone,
+              sortOrder: index + 1,
+            })),
+          },
+
+          emergencyContact: {
+            create: {
+              firstName: data.emergencyContact.firstName,
+              lastName: data.emergencyContact.lastName,
+              relationship: data.emergencyContact.relationship,
+              phone: data.emergencyContact.phone,
+            },
+          },
+
+          sensitiveInfo: {
+            create: {
+              hasProlongedIllness:
+                data.sensitiveInfo.hasProlongedIllness,
+              illnessDescription:
+                data.sensitiveInfo.hasProlongedIllness
+                  ? data.sensitiveInfo.illnessDescription || null
+                  : null,
+              hasCriminalRecord:
+                data.sensitiveInfo.hasCriminalRecord,
+              convictionDescription:
+                data.sensitiveInfo.hasCriminalRecord
+                  ? data.sensitiveInfo.convictionDescription || null
+                  : null,
+            },
+          },
+        },
+      });
+
+      // Ø¯Ø± Ù…Ø±Ø­Ù„Ù‡ Ø§ÙˆÙ„ ÙÙ‚Ø· Ø³Ù†Ø¯ Ø¹Ú©Ø³ Ù¾Ø±Ø³Ù†Ù„ÛŒ Ø«Ø¨Øª Ù…ÛŒâ€ŒØ´ÙˆØ¯.
+      await tx.candidateDocument.create({
+        data: {
+          applicationId,
+          documentType: CandidateDocumentType.PERSONAL_PHOTO,
+          stage: ApplicationStage.INITIAL,
+          status: CandidateDocumentStatus.UPLOADED,
+
+          fileName: photo.fileName,
+          storageKey: photo.storageKey,
+          mimeType: photo.mimeType,
+          sizeBytes: photo.sizeBytes,
+          checksum: photo.checksum,
+
+          uploadedByUserId: userId,
+        },
+      });
+
+      await tx.auditLog.create({
+        data: {
+          actorUserId: userId,
+          action: "CANDIDATE_APPLICATION_SUBMITTED",
+          entityType: "CandidateApplication",
+          entityId: applicationId,
+          ipAddress,
+          details: {
+            applicationNumber,
+            initialStatus: InitialApplicationStatus.SUBMITTED,
+            documentsStatus: DocumentsApplicationStatus.LOCKED,
+          },
+        },
+      });
+    });
+
+    return {
+      applicationNumber,
+      username,
+      temporaryPassword,
+      accessLevel: UserAccessLevel.PENDING,
+      initialStatus: InitialApplicationStatus.SUBMITTED,
+      documentsStatus: DocumentsApplicationStatus.LOCKED,
+      message:
+        "Ø«Ø¨Øªâ€ŒÙ†Ø§Ù… Ø§ÙˆÙ„ÛŒÙ‡ Ø¨Ø§ Ù…ÙˆÙÙ‚ÛŒØª Ø§Ù†Ø¬Ø§Ù… Ø´Ø¯. Ø­Ø³Ø§Ø¨ Ú©Ø§Ø±Ø¨Ø±ÛŒ Ù¾Ø³ Ø§Ø² ØªØ£ÛŒÛŒØ¯Ù‡Ø§ÛŒ Ø³Ø§Ø²Ù…Ø§Ù†ÛŒ ÙØ¹Ø§Ù„ Ø®ÙˆØ§Ù‡Ø¯ Ø´Ø¯.",
+    };
+  } catch (error) {
+    // Ø§Ú¯Ø± ØªØ±Ø§Ú©Ù†Ø´ Ø¯ÛŒØªØ§Ø¨ÛŒØ³ Ø´Ú©Ø³Øª Ø®ÙˆØ±Ø¯ØŒ ÙØ§ÛŒÙ„ Ø°Ø®ÛŒØ±Ù‡â€ŒØ´Ø¯Ù‡ Ù‡Ù… Ù¾Ø§Ú© Ù…ÛŒâ€ŒØ´ÙˆØ¯.
+    await Promise.allSettled(
+      storedFiles.map((file) => deletePrivateFile(file.storageKey))
+    );
+
+    throw error;
+  }
+}
+
+
+========== modules/auth/auth.service.ts ==========
+
+import "server-only";
+
+import { prisma } from "@/libs/prisma";
+import { getAuthConfig } from "./auth.config";
+
+import {
+  SignJWT,
+  jwtVerify,
+  type JWTPayload,
+} from "jose";
+
+import {
+  createHash,
+  randomUUID,
+  timingSafeEqual,
+} from "node:crypto";
+
+import { compare } from "bcryptjs";
+
+const DAY = 24 * 60 * 60 * 1000;
+
+export class AuthError extends Error {
+  constructor(
+    message = "Ø§Ø­Ø±Ø§Ø² Ù‡ÙˆÛŒØª Ù†Ø§Ù…Ø¹ØªØ¨Ø± Ø§Ø³Øª.",
+    public statusCode = 401
+  ) {
+    super(message);
+    this.name = "AuthError";
+  }
+}
+
+type TokenType = "access" | "refresh";
+
+type TokenPayload = JWTPayload & {
+  sid: string;
+  typ: TokenType;
+};
+
+type AuthTokens = {
+  accessToken: string;
+  refreshToken: string;
+};
+
+function hashToken(token: string): string {
+  return createHash("sha256")
+    .update(token)
+    .digest("hex");
+}
+
+function safeHashEqual(a: string, b: string): boolean {
+  const left = Buffer.from(a, "hex");
+  const right = Buffer.from(b, "hex");
+
+  if (left.length !== right.length) {
+    return false;
+  }
+
+  return timingSafeEqual(left, right);
+}
+
+async function signToken(
+  userId: string,
+  sessionId: string,
+  type: TokenType
+): Promise<string> {
+  const config = getAuthConfig();
+
+  const isAccess = type === "access";
+
+  const secret = isAccess
+    ? config.accessSecret
+    : config.refreshSecret;
+
+  const expiration = isAccess
+    ? config.accessTokenTtl
+    : config.refreshTokenTtl;
+
+  return new SignJWT({
+    sid: sessionId,
+    typ: type,
+  })
+    .setProtectedHeader({ alg: "HS256" })
+    .setSubject(userId)
+    .setJti(randomUUID())
+    .setIssuer(config.issuer)
+    .setAudience(config.audience)
+    .setIssuedAt()
+    .setExpirationTime(expiration)
+    .sign(secret);
+}
+
+async function verifyToken(
+  token: string,
+  type: TokenType
+): Promise<TokenPayload> {
+  const config = getAuthConfig();
+
+  const secret = type === "access"
+    ? config.accessSecret
+    : config.refreshSecret;
+
+  try {
+    const { payload } = await jwtVerify(token, secret, {
+      issuer: config.issuer,
+      audience: config.audience,
+      algorithms: ["HS256"],
+    });
+
+    if (
+      typeof payload.sub !== "string" ||
+      typeof payload.sid !== "string" ||
+      payload.typ !== type
+    ) {
+      throw new AuthError();
+    }
+
+    return payload as TokenPayload;
+  } catch {
+    throw new AuthError("ØªÙˆÚ©Ù† Ù†Ø§Ù…Ø¹ØªØ¨Ø± ÛŒØ§ Ù…Ù†Ù‚Ø¶ÛŒ Ø´Ø¯Ù‡ Ø§Ø³Øª.");
+  }
+}
+
+async function createTokens(
+  userId: string,
+  sessionId: string
+): Promise<AuthTokens> {
+  const [accessToken, refreshToken] = await Promise.all([
+    signToken(userId, sessionId, "access"),
+    signToken(userId, sessionId, "refresh"),
+  ]);
+
+  return { accessToken, refreshToken };
+}
+
+export async function loginUser(
+  identifier: string,
+  password: string,
+  metadata?: {
+    ipAddress?: string;
+    userAgent?: string;
+  }
+) {
+  const user = await prisma.user.findFirst({
+    where: {
+      OR: [
+        { username: identifier },
+        { email: identifier },
+      ],
+      isActive: true,
+    },
+    select: {
+  id: true,
+  username: true,
+  email: true,
+  fullName: true,
+  passwordHash: true,
+  accessLevel: true,
+},
+  });
+
+  // Ù¾ÛŒØ§Ù… ÛŒÚ©Ø³Ø§Ù† Ø¨Ø±Ø§ÛŒ Ø¬Ù„ÙˆÚ¯ÛŒØ±ÛŒ Ø§Ø² Ø§ÙØ´Ø§ÛŒ ÙˆØ¬ÙˆØ¯ Ø­Ø³Ø§Ø¨ Ú©Ø§Ø±Ø¨Ø±ÛŒ
+  if (!user) {
+    throw new AuthError("Ù†Ø§Ù… Ú©Ø§Ø±Ø¨Ø±ÛŒ ÛŒØ§ Ø±Ù…Ø² Ø¹Ø¨ÙˆØ± Ø§Ø´ØªØ¨Ø§Ù‡ Ø§Ø³Øª.");
+  }
+
+  const passwordIsValid = await compare(
+    password,
+    user.passwordHash
+  );
+
+  if (!passwordIsValid) {
+    throw new AuthError("Ù†Ø§Ù… Ú©Ø§Ø±Ø¨Ø±ÛŒ ÛŒØ§ Ø±Ù…Ø² Ø¹Ø¨ÙˆØ± Ø§Ø´ØªØ¨Ø§Ù‡ Ø§Ø³Øª.");
+  }
+
+  const config = getAuthConfig();
+
+  // Ø§Ø¨ØªØ¯Ø§ Ù†Ø´Ø³Øª Ø§ÛŒØ¬Ø§Ø¯ Ù…ÛŒâ€ŒØ´ÙˆØ¯Ø› Ø³Ù¾Ø³ Hash ØªÙˆÚ©Ù† ÙˆØ§Ù‚Ø¹ÛŒ Ø¯Ø± Ø¢Ù† Ù‚Ø±Ø§Ø± Ù…ÛŒâ€ŒÚ¯ÛŒØ±Ø¯.
+  const session = await prisma.userSession.create({
+    data: {
+      userId: user.id,
+      tokenHash: hashToken(randomUUID()),
+      expiresAt: new Date(Date.now() + 7 * DAY),
+      ipAddress: metadata?.ipAddress,
+      userAgent: metadata?.userAgent,
+    },
+  });
+
+  try {
+    const tokens = await createTokens(user.id, session.id);
+
+    await prisma.userSession.update({
+      where: { id: session.id },
+      data: {
+        tokenHash: hashToken(tokens.refreshToken),
+      },
+    });
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { lastLoginAt: new Date() },
+    });
+
+    return {
+      ...tokens,
+      user: {
+  id: user.id,
+  username: user.username,
+  email: user.email,
+  fullName: user.fullName,
+  accessLevel: user.accessLevel,
+},
+      accessTokenMaxAge: config.accessTokenMaxAge,
+      refreshTokenMaxAge: config.refreshTokenMaxAge,
+    };
+  } catch (error) {
+    await prisma.userSession.update({
+      where: { id: session.id },
+      data: { revokedAt: new Date() },
+    });
+
+    throw error;
+  }
+}
+
+export async function refreshUserSession(
+  refreshToken: string
+) {
+  const payload = await verifyToken(refreshToken, "refresh");
+  const userId = payload.sub!;
+  const sessionId = payload.sid;
+
+  const session = await prisma.userSession.findFirst({
+    where: {
+      id: sessionId,
+      userId,
+      revokedAt: null,
+      expiresAt: { gt: new Date() },
+      user: { isActive: true },
+    },
+    select: {
+      id: true,
+      tokenHash: true,
+      userId: true,
+    },
+  });
+
+  if (!session) {
+    throw new AuthError("Ù†Ø´Ø³Øª Ø´Ù…Ø§ Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª.");
+  }
+
+  const presentedHash = hashToken(refreshToken);
+
+  // Ø§Ø³ØªÙØ§Ø¯Ù‡ Ù…Ø¬Ø¯Ø¯ Ø§Ø² Refresh Token Ù‚Ø¨Ù„ÛŒ Ù†Ø´Ø§Ù†Ù‡ Ø§Ø­ØªÙ…Ø§Ù„ÛŒ Ø³Ø±Ù‚Øª ØªÙˆÚ©Ù† Ø§Ø³Øª.
+  if (!safeHashEqual(session.tokenHash, presentedHash)) {
+    await prisma.userSession.updateMany({
+      where: {
+        id: session.id,
+        revokedAt: null,
+      },
+      data: {
+        revokedAt: new Date(),
+      },
+    });
+
+    throw new AuthError(
+      "Ù†Ø´Ø³Øª Ø¨Ù‡ Ø¯Ù„ÛŒÙ„ Ø§Ø³ØªÙØ§Ø¯Ù‡ Ù…Ø¬Ø¯Ø¯ Ø§Ø² ØªÙˆÚ©Ù† Ù„ØºÙˆ Ø´Ø¯."
+    );
+  }
+
+  const tokens = await createTokens(userId, sessionId);
+
+  // Ø´Ø±Ø· tokenHash Ù…Ø§Ù†Ø¹ Ø§Ø³ØªÙØ§Ø¯Ù‡ Ù‡Ù…â€ŒØ²Ù…Ø§Ù† Ø§Ø² ÛŒÚ© ØªÙˆÚ©Ù† Ø¨Ø±Ø§ÛŒ Ø¯Ùˆ Ø¨Ø§Ø± ØªÙ…Ø¯ÛŒØ¯ Ù…ÛŒâ€ŒØ´ÙˆØ¯.
+  const updated = await prisma.userSession.updateMany({
+    where: {
+      id: session.id,
+      userId,
+      tokenHash: presentedHash,
+      revokedAt: null,
+      expiresAt: { gt: new Date() },
+    },
+    data: {
+      tokenHash: hashToken(tokens.refreshToken),
+      expiresAt: new Date(Date.now() + 7 * DAY),
+    },
+  });
+
+  if (updated.count !== 1) {
+    throw new AuthError(
+      "ØªÙ…Ø¯ÛŒØ¯ Ù†Ø´Ø³Øª Ø§Ù†Ø¬Ø§Ù… Ù†Ø´Ø¯Ø› Ø¯ÙˆØ¨Ø§Ø±Ù‡ ÙˆØ§Ø±Ø¯ Ø´ÙˆÛŒØ¯."
+    );
+  }
+
+  return tokens;
+}
+
+export async function getAuthenticatedUser(
+  accessToken: string
+) {
+  const payload = await verifyToken(accessToken, "access");
+
+  const session = await prisma.userSession.findFirst({
+    where: {
+      id: payload.sid,
+      userId: payload.sub!,
+      revokedAt: null,
+      expiresAt: { gt: new Date() },
+      user: { isActive: true },
+    },
+    select: {
+      id: true,
+      user: {
+        select: {
+          id: true,
+          username: true,
+          email: true,
+          fullName: true,
+          isActive: true,
+        },
+      },
+    },
+  });
+
+  if (!session) {
+    throw new AuthError("Ù†Ø´Ø³Øª Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª.");
+  }
+
+  return session.user;
+}
+
+export async function logoutSession(
+  token: string | undefined,
+  type: TokenType
+) {
+  if (!token) return;
+
+  try {
+    const payload = await verifyToken(token, type);
+
+    await prisma.userSession.updateMany({
+      where: {
+        id: payload.sid,
+        userId: payload.sub!,
+        revokedAt: null,
+      },
+      data: {
+        revokedAt: new Date(),
+      },
+    });
+  } catch {
+    // Ø®Ø±ÙˆØ¬ Ø¨Ø§ÛŒØ¯ Ø­ØªÛŒ Ø¨Ø§ ØªÙˆÚ©Ù† Ù…Ù†Ù‚Ø¶ÛŒâ€ŒØ´Ø¯Ù‡ Ù†ÛŒØ² CookieÙ‡Ø§ Ø±Ø§ Ù¾Ø§Ú© Ú©Ù†Ø¯.
+  }
+}
+

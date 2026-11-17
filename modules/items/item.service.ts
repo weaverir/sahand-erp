@@ -1,5 +1,12 @@
-import { prisma } from "../../libs/prisma";
+import "server-only";
+
+import { prisma } from "@/libs/prisma";
 import type { ItemInput } from "./item.validation";
+
+type AuditContext = {
+  actorUserId: string;
+  ipAddress?: string;
+};
 
 export async function getItems(params: {
   search?: string;
@@ -49,20 +56,84 @@ export async function getItemById(id: string) {
   });
 }
 
-export async function createItem(data: ItemInput) {
-  return prisma.item.create({ data });
-}
+export async function createItem(
+  data: ItemInput,
+  audit: AuditContext
+) {
+  return prisma.$transaction(async (tx) => {
+    const item = await tx.item.create({ data });
 
-export async function updateItem(id: string, data: Partial<ItemInput>) {
-  return prisma.item.update({
-    where: { id },
-    data,
+    await tx.auditLog.create({
+      data: {
+        actorUserId: audit.actorUserId,
+        action: "ITEM_CREATED",
+        entityType: "Item",
+        entityId: item.id,
+        ipAddress: audit.ipAddress,
+        details: {
+          sku: item.sku,
+          name: item.name,
+          itemType: item.itemType,
+        },
+      },
+    });
+
+    return item;
   });
 }
 
-export async function deactivateItem(id: string) {
-  return prisma.item.update({
-    where: { id },
-    data: { isActive: false },
+export async function updateItem(
+  id: string,
+  data: Partial<ItemInput>,
+  audit: AuditContext
+) {
+  return prisma.$transaction(async (tx) => {
+    const item = await tx.item.update({
+      where: { id },
+      data,
+    });
+
+    await tx.auditLog.create({
+      data: {
+        actorUserId: audit.actorUserId,
+        action: "ITEM_UPDATED",
+        entityType: "Item",
+        entityId: item.id,
+        ipAddress: audit.ipAddress,
+        details: {
+          changedFields: Object.keys(data),
+        },
+      },
+    });
+
+    return item;
+  });
+}
+
+export async function deactivateItem(
+  id: string,
+  audit: AuditContext
+) {
+  return prisma.$transaction(async (tx) => {
+    const item = await tx.item.update({
+      where: { id },
+      data: { isActive: false },
+    });
+
+    await tx.auditLog.create({
+      data: {
+        actorUserId: audit.actorUserId,
+        action: "ITEM_DEACTIVATED",
+        entityType: "Item",
+        entityId: item.id,
+        ipAddress: audit.ipAddress,
+        details: {
+          sku: item.sku,
+          name: item.name,
+        },
+      },
+    });
+
+    return item;
   });
 }

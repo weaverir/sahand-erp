@@ -2926,3 +2926,45 @@ tbody tr:hover {
 .auth-link-button {
   text-decoration: none;
 }
+
+.login-type-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 22px 0 14px;
+}
+
+.login-type-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 48px;
+  padding: 10px;
+  border: 1px solid var(--border, #d1d5db);
+  border-radius: 12px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  transition: 0.2s ease;
+}
+
+.login-type-option:hover {
+  border-color: var(--primary, #64748b);
+}
+
+.login-type-option.active {
+  border-color: var(--primary, #64748b);
+  background: var(--primary-soft, rgba(100, 116, 139, 0.12));
+  font-weight: 700;
+}
+
+.login-type-option:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.login-subheading {
+  margin-bottom: 18px;
+}

@@ -150,12 +150,13 @@ export async function loginUser(
       isActive: true,
     },
     select: {
-      id: true,
-      username: true,
-      email: true,
-      fullName: true,
-      passwordHash: true,
-    },
+  id: true,
+  username: true,
+  email: true,
+  fullName: true,
+  passwordHash: true,
+  accessLevel: true,
+},
   });
 
   // پیام یکسان برای جلوگیری از افشای وجود حساب کاربری
@@ -203,11 +204,12 @@ export async function loginUser(
     return {
       ...tokens,
       user: {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        fullName: user.fullName,
-      },
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      fullName: user.fullName,
+      accessLevel: user.accessLevel,
+},
       accessTokenMaxAge: config.accessTokenMaxAge,
       refreshTokenMaxAge: config.refreshTokenMaxAge,
     };
@@ -349,3 +351,148 @@ export async function logoutSession(
     // خروج باید حتی با توکن منقضی‌شده نیز Cookieها را پاک کند.
   }
 }
+
+
+export async function loginCandidate(
+  identifier: string,
+  password: string
+) {
+  const user = await prisma.user.findFirst({
+    where: {
+      OR: [
+        { username: identifier },
+        { email: identifier },
+      ],
+    },
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      fullName: true,
+      passwordHash: true,
+      accessLevel: true,
+    },
+  });
+
+  if (!user) {
+    throw new AuthError(
+      "نام کاربری یا رمز عبور اشتباه است."
+    );
+  }
+
+  const passwordIsValid = await compare(
+    password,
+    user.passwordHash
+  );
+
+  if (!passwordIsValid) {
+    throw new AuthError(
+      "نام کاربری یا رمز عبور اشتباه است."
+    );
+  }
+
+  // فقط حسابی که پرونده استخدامی دارد مجاز به ورود از این مسیر است.
+  const application =
+    await prisma.candidateApplication.findUnique({
+      where: { userId: user.id },
+      select: {
+        id: true,
+        initialStatus: true,
+      },
+    });
+
+  if (!application) {
+    throw new AuthError(
+      "برای این حساب پرونده متقاضی استخدام وجود ندارد.",
+      403
+    );
+  }
+
+  const config = getAuthConfig();
+
+  const token = await new SignJWT({
+    typ: "candidate",
+  })
+    .setProtectedHeader({ alg: "HS256" })
+    .setSubject(user.id)
+    .setJti(randomUUID())
+    .setIssuer(config.issuer)
+    .setAudience(config.audience)
+    .setIssuedAt()
+    .setExpirationTime(config.accessTokenTtl)
+    .sign(config.accessSecret);
+
+  return {
+    token,
+    maxAge: config.accessTokenMaxAge,
+    user: {
+      id: user.id,
+      username: user.username,
+      fullName: user.fullName,
+      accessLevel: user.accessLevel,
+    },
+  };
+}
+
+export async function getAuthenticatedCandidate(
+  token: string
+) {
+  const config = getAuthConfig();
+
+  let userId: string;
+
+  try {
+    const { payload } = await jwtVerify(
+      token,
+      config.accessSecret,
+      {
+        issuer: config.issuer,
+        audience: config.audience,
+        algorithms: ["HS256"],
+      }
+    );
+
+    if (
+      payload.typ !== "candidate" ||
+      typeof payload.sub !== "string"
+    ) {
+      throw new AuthError(
+        "نشست متقاضی معتبر نیست."
+      );
+    }
+
+    userId = payload.sub;
+  } catch {
+    throw new AuthError(
+      "نشست متقاضی نامعتبر یا منقضی شده است."
+    );
+  }
+
+  const application =
+    await prisma.candidateApplication.findUnique({
+      where: { userId },
+      select: {
+        id: true,
+        user: {
+          select: {
+            id: true,
+            username: true,
+            fullName: true,
+            accessLevel: true,
+          },
+        },
+      },
+    });
+
+  if (!application) {
+    throw new AuthError(
+      "پرونده متقاضی پیدا نشد."
+    );
+  }
+
+  return {
+    ...application.user,
+    applicationId: application.id,
+  };
+}
+

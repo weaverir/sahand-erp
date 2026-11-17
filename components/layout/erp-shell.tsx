@@ -7,12 +7,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import {
-  Activity,
   ArrowDownLeft,
   Bell,
   Cable,
   CalendarDays,
+  ChevronDown,
   ClipboardList,
+  Clock3,
   Factory,
   LayoutDashboard,
   Menu,
@@ -25,7 +26,9 @@ import {
   ShoppingCart,
   Sun,
   Users,
+  UserCheck,
   Warehouse,
+  Network,
   X,
   Zap,
 } from "lucide-react";
@@ -286,9 +289,28 @@ const navigation = [
     href: "/items",
     icon: Cable,
   },
+];
+
+const hrNavigation = [
   {
-    title: "منابع انسانی",
-    href: "/hr",
+    title: "چارت سازمانی",
+    href: "/organization",
+    icon: Network,
+  },
+  {
+    title: "تأیید پرونده‌های استخدام",
+    href: "/hr/recruitment",
+    icon: UserCheck,
+  },
+];
+
+const hrFutureNavigation = [
+  {
+    title: "حضور و غیاب منابع انسانی",
+    icon: Clock3,
+  },
+  {
+    title: "اطلاعات پرسنل",
     icon: Users,
   },
 ];
@@ -339,6 +361,12 @@ export default function ErpShell({ children }: ErpShellProps) {
 
   const [search, setSearch] = useState("");
 
+  const [hrMenuOpen, setHrMenuOpen] = useState(
+    pathname === "/organization" ||
+      pathname.startsWith("/organization/") ||
+      pathname.startsWith("/hr/")
+  );
+
   useEffect(() => {
     void useThemeStore.persist.rehydrate();
   }, []);
@@ -359,8 +387,8 @@ export default function ErpShell({ children }: ErpShellProps) {
   };
 
   const currentPage =
-    [...navigation, ...managementNavigation].find((item) =>
-      isActive(item.href)
+    [...navigation, ...managementNavigation, ...hrNavigation].find(
+      (item) => isActive(item.href)
     )?.title ?? "سامانه مدیریت سهند";
 
   return (
@@ -371,6 +399,7 @@ export default function ErpShell({ children }: ErpShellProps) {
       <div className="ambient-glow ambient-two" />
 
       {/* Mobile Overlay */}
+
       {mobileMenuOpen && (
         <button
           type="button"
@@ -381,10 +410,7 @@ export default function ErpShell({ children }: ErpShellProps) {
       )}
 
       <div className="app-layout">
-
-        {/* =================================
-            Main Sidebar
-        ================================= */}
+        {/* Main Sidebar */}
 
         <aside
           className={`sidebar glass ${
@@ -392,6 +418,7 @@ export default function ErpShell({ children }: ErpShellProps) {
           }`}
         >
           {/* Brand */}
+
           <div className="brand">
             <div className="brand-mark">
               <Zap size={23} strokeWidth={2.4} />
@@ -415,6 +442,7 @@ export default function ErpShell({ children }: ErpShellProps) {
           </div>
 
           {/* Main Navigation */}
+
           <div className="sidebar-label">منوی اصلی</div>
 
           <nav className="nav-list">
@@ -441,9 +469,104 @@ export default function ErpShell({ children }: ErpShellProps) {
                 </Link>
               );
             })}
+
+            {/* HR expandable menu */}
+
+            <div>
+              <button
+                type="button"
+                className={`nav-item ${
+                  hrMenuOpen ||
+                  pathname.startsWith("/hr/") ||
+                  isActive("/organization")
+                    ? "active"
+                    : ""
+                }`}
+                onClick={() => setHrMenuOpen((prev) => !prev)}
+                aria-expanded={hrMenuOpen}
+                aria-controls="hr-submenu"
+                style={{
+                  width: "100%",
+                  border: "none",
+                  cursor: "pointer",
+                  textAlign: "right",
+                  font: "inherit",
+                }}
+              >
+                <Users size={18} />
+                <span style={{ flex: 1 }}>منابع انسانی</span>
+
+                <ChevronDown
+                  size={16}
+                  style={{
+                    transform: hrMenuOpen
+                      ? "rotate(180deg)"
+                      : "rotate(0deg)",
+                    transition: "transform 0.2s ease",
+                  }}
+                />
+              </button>
+
+              {hrMenuOpen && (
+                <div
+                  id="hr-submenu"
+                  className="nav-list"
+                  style={{
+                    paddingRight: 16,
+                    marginTop: 6,
+                    marginBottom: 8,
+                    gap: 4,
+                    borderRight: "1px solid var(--border)",
+                  }}
+                >
+                  {hrNavigation.map((item) => {
+                    const Icon = item.icon;
+                    const active = isActive(item.href);
+
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={closeMobileMenu}
+                        className={`nav-item ${
+                          active ? "active" : ""
+                        }`}
+                        aria-current={active ? "page" : undefined}
+                        style={{ fontSize: 13 }}
+                      >
+                        <Icon size={16} />
+                        <span>{item.title}</span>
+                      </Link>
+                    );
+                  })}
+
+                  {hrFutureNavigation.map((item) => {
+                    const Icon = item.icon;
+
+                    return (
+                      <div
+                        key={item.title}
+                        className="nav-item"
+                        aria-disabled="true"
+                        title="این بخش در حال توسعه است"
+                        style={{
+                          opacity: 0.45,
+                          cursor: "not-allowed",
+                          fontSize: 13,
+                        }}
+                      >
+                        <Icon size={16} />
+                        <span>{item.title}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </nav>
 
           {/* Management Navigation */}
+
           <div className="sidebar-label">
             مدیریت و نظارت
           </div>
@@ -475,6 +598,7 @@ export default function ErpShell({ children }: ErpShellProps) {
           </nav>
 
           {/* Sidebar Bottom */}
+
           <div className="sidebar-bottom">
             <div className="sidebar-user">
               <div className="avatar">س</div>
@@ -492,13 +616,11 @@ export default function ErpShell({ children }: ErpShellProps) {
           </div>
         </aside>
 
-        {/* =================================
-            Main Content
-        ================================= */}
+        {/* Main Content */}
 
         <main className="main-content">
-
           {/* Topbar */}
+
           <header className="topbar">
             <div className="page-heading">
               <h1>{currentPage}</h1>
@@ -506,8 +628,8 @@ export default function ErpShell({ children }: ErpShellProps) {
             </div>
 
             <div className="topbar-actions">
-
               {/* Mobile Menu */}
+
               <button
                 type="button"
                 className="icon-button mobile-menu"
@@ -522,6 +644,7 @@ export default function ErpShell({ children }: ErpShellProps) {
               </button>
 
               {/* Search */}
+
               <label className="search-box">
                 <Search size={16} />
 
@@ -535,12 +658,14 @@ export default function ErpShell({ children }: ErpShellProps) {
               </label>
 
               {/* Date */}
+
               <div className="date-chip">
                 <CalendarDays size={15} />
                 <span>امروز</span>
               </div>
 
               {/* Theme */}
+
               <button
                 type="button"
                 className="icon-button"
@@ -556,6 +681,7 @@ export default function ErpShell({ children }: ErpShellProps) {
               </button>
 
               {/* Notifications */}
+
               <button
                 type="button"
                 className="icon-button"
@@ -568,10 +694,10 @@ export default function ErpShell({ children }: ErpShellProps) {
           </header>
 
           {/* Page Content */}
+
           <div className="page-content">
             {children}
           </div>
-
         </main>
       </div>
     </div>

@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "hr:test:create": "tsx scripts/create-hr-test.ts",
+    "ceo:test:create": "tsx scripts/create-ceo-test.ts" ,
     "dev": "next dev",
     "admin:create": "tsx scripts/create-admin.ts",
     "build": "next build",
@@ -17,6 +19,7 @@
     "@prisma/client": "^6.19.3",
     "@tanstack/react-query": "^5.107.1",
     "bcryptjs": "^3.0.3",
+    "dotenv": "^18.0.10",
     "jose": "^6.2.17",
     "lucide-react": "^1.72.0",
     "motion": "^14.14.0",

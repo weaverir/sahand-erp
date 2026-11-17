@@ -180,3 +180,181 @@ export const DataScope = {
 } as const
 
 export type DataScope = (typeof DataScope)[keyof typeof DataScope]
+
+
+export const UserAccessLevel = {
+  PENDING: 'PENDING',
+  CANDIDATE_PORTAL: 'CANDIDATE_PORTAL',
+  ERP: 'ERP'
+} as const
+
+export type UserAccessLevel = (typeof UserAccessLevel)[keyof typeof UserAccessLevel]
+
+
+export const CandidateGender = {
+  MALE: 'MALE',
+  FEMALE: 'FEMALE'
+} as const
+
+export type CandidateGender = (typeof CandidateGender)[keyof typeof CandidateGender]
+
+
+export const CandidateMaritalStatus = {
+  SINGLE: 'SINGLE',
+  MARRIED: 'MARRIED'
+} as const
+
+export type CandidateMaritalStatus = (typeof CandidateMaritalStatus)[keyof typeof CandidateMaritalStatus]
+
+
+export const CandidateMilitaryStatus = {
+  NOT_APPLICABLE: 'NOT_APPLICABLE',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  EXEMPTED: 'EXEMPTED'
+} as const
+
+export type CandidateMilitaryStatus = (typeof CandidateMilitaryStatus)[keyof typeof CandidateMilitaryStatus]
+
+
+export const InitialApplicationStatus = {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  HR_REVIEW: 'HR_REVIEW',
+  EXECUTIVE_REVIEW: 'EXECUTIVE_REVIEW',
+  NEEDS_CORRECTION: 'NEEDS_CORRECTION',
+  REJECTED: 'REJECTED',
+  APPROVED: 'APPROVED'
+} as const
+
+export type InitialApplicationStatus = (typeof InitialApplicationStatus)[keyof typeof InitialApplicationStatus]
+
+
+export const DocumentsApplicationStatus = {
+  LOCKED: 'LOCKED',
+  PENDING: 'PENDING',
+  SUBMITTED: 'SUBMITTED',
+  HR_REVIEW: 'HR_REVIEW',
+  EXECUTIVE_REVIEW: 'EXECUTIVE_REVIEW',
+  NEEDS_CORRECTION: 'NEEDS_CORRECTION',
+  REJECTED: 'REJECTED',
+  APPROVED: 'APPROVED'
+} as const
+
+export type DocumentsApplicationStatus = (typeof DocumentsApplicationStatus)[keyof typeof DocumentsApplicationStatus]
+
+
+export const ApplicationStage = {
+  INITIAL: 'INITIAL',
+  DOCUMENTS: 'DOCUMENTS'
+} as const
+
+export type ApplicationStage = (typeof ApplicationStage)[keyof typeof ApplicationStage]
+
+
+export const ApplicationReviewerType = {
+  HR: 'HR',
+  EXECUTIVE: 'EXECUTIVE'
+} as const
+
+export type ApplicationReviewerType = (typeof ApplicationReviewerType)[keyof typeof ApplicationReviewerType]
+
+
+export const ApplicationDecision = {
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  NEEDS_CORRECTION: 'NEEDS_CORRECTION'
+} as const
+
+export type ApplicationDecision = (typeof ApplicationDecision)[keyof typeof ApplicationDecision]
+
+
+export const CandidateDocumentType = {
+  PERSONAL_PHOTO: 'PERSONAL_PHOTO',
+  SPOUSE_CONSENT: 'SPOUSE_CONSENT',
+  NATIONAL_CARD: 'NATIONAL_CARD',
+  APPLICANT_BIRTH_CERTIFICATE_PAGE: 'APPLICANT_BIRTH_CERTIFICATE_PAGE',
+  EDUCATION_CERTIFICATE: 'EDUCATION_CERTIFICATE',
+  INSURANCE_HISTORY: 'INSURANCE_HISTORY',
+  MILITARY_SERVICE: 'MILITARY_SERVICE',
+  MARRIAGE_CERTIFICATE: 'MARRIAGE_CERTIFICATE',
+  SPOUSE_BIRTH_CERTIFICATE_PAGE: 'SPOUSE_BIRTH_CERTIFICATE_PAGE',
+  CHILD_BIRTH_CERTIFICATE_PAGE: 'CHILD_BIRTH_CERTIFICATE_PAGE',
+  PARENT_CONSENT: 'PARENT_CONSENT'
+} as const
+
+export type CandidateDocumentType = (typeof CandidateDocumentType)[keyof typeof CandidateDocumentType]
+
+
+export const CandidateFamilyMemberType = {
+  SPOUSE: 'SPOUSE',
+  CHILD: 'CHILD'
+} as const
+
+export type CandidateFamilyMemberType = (typeof CandidateFamilyMemberType)[keyof typeof CandidateFamilyMemberType]
+
+
+export const CandidateDocumentStatus = {
+  UPLOADED: 'UPLOADED',
+  UNDER_REVIEW: 'UNDER_REVIEW',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type CandidateDocumentStatus = (typeof CandidateDocumentStatus)[keyof typeof CandidateDocumentStatus]
+
+
+export const EmployeeAssignmentType = {
+  PRIMARY: 'PRIMARY',
+  SECONDARY: 'SECONDARY',
+  TEMPORARY: 'TEMPORARY',
+  PROJECT: 'PROJECT'
+} as const
+
+export type EmployeeAssignmentType = (typeof EmployeeAssignmentType)[keyof typeof EmployeeAssignmentType]
+
+
+export const OrganizationRelationshipType = {
+  REPORTS_TO: 'REPORTS_TO',
+  FUNCTIONAL_REPORTS_TO: 'FUNCTIONAL_REPORTS_TO',
+  SUPERVISES: 'SUPERVISES',
+  COLLABORATES_WITH: 'COLLABORATES_WITH',
+  ADVISES: 'ADVISES',
+  DELEGATES_TO: 'DELEGATES_TO'
+} as const
+
+export type OrganizationRelationshipType = (typeof OrganizationRelationshipType)[keyof typeof OrganizationRelationshipType]
+
+
+export const OrganizationRelationshipStatus = {
+  ACTIVE: 'ACTIVE',
+  ENDED: 'ENDED',
+  SUSPENDED: 'SUSPENDED'
+} as const
+
+export type OrganizationRelationshipStatus = (typeof OrganizationRelationshipStatus)[keyof typeof OrganizationRelationshipStatus]
+
+
+export const OrganizationLocationStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE'
+} as const
+
+export type OrganizationLocationStatus = (typeof OrganizationLocationStatus)[keyof typeof OrganizationLocationStatus]
+
+
+export const OrganizationUnitStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE'
+} as const
+
+export type OrganizationUnitStatus = (typeof OrganizationUnitStatus)[keyof typeof OrganizationUnitStatus]
+
+
+export const EmployeeAssignmentStatus = {
+  ACTIVE: 'ACTIVE',
+  ENDED: 'ENDED',
+  SUSPENDED: 'SUSPENDED'
+} as const
+
+export type EmployeeAssignmentStatus = (typeof EmployeeAssignmentStatus)[keyof typeof EmployeeAssignmentStatus]

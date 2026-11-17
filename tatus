@@ -1,0 +1,191 @@
+ .gitignore                                         |    2 [32m+[m
+ app/(auth)/layout.tsx                              |   13 [32m+[m
+ app/(auth)/page.tsx                                |  144 [32m+[m
+ app/(auth)/register/page.tsx                       |   45 [32m+[m
+ app/(erp)/dashboard/page.tsx                       |  239 [32m++[m
+ app/(erp)/items/page.tsx                           | 1812 [32m+++++++++[m
+ app/(erp)/layout.tsx                               |   13 [32m+[m
+ app/api/auth/login/route.ts                        |   57 [32m+[m
+ app/api/auth/logout/route.ts                       |   35 [32m+[m
+ app/api/auth/me/route.ts                           |   40 [32m+[m
+ app/api/auth/refresh/route.ts                      |   65 [32m+[m
+ app/api/health/route.ts                            |   20 [32m+[m
+ app/api/items/[id]/route.ts                        |  126 [32m+[m
+ app/api/items/route.ts                             |   70 [32m+[m
+ app/asdas.tsx                                      |  532 [32m+++[m
+ app/globals.css                                    | 2930 [32m+++++++++++++[m[31m-[m
+ app/layout.tsx                                     |   43 [32m+[m[31m-[m
+ app/page.tsx                                       |   69 [31m-[m
+ app/template.tsx                                   |   39 [32m+[m
+ components/layout/erp-shell.tsx                    |  579 [32m+++[m
+ components/providers/theme-provider.tsx            |   69 [32m+[m
+ components/ui/theme-toggle.tsx                     |   44 [32m+[m
+ fonts/Abar FaNum/Webfonts/fontiran.css             |  138 [32m+[m
+ fonts/Abar FaNum/Webfonts/webfont test.html        |  221 [32m+[m
+ .../Webfonts/woff/AbarHighFaNum-Black.woff         |  Bin [31m0[m -> [32m57220[m bytes
+ .../Webfonts/woff/AbarHighFaNum-Bold.woff          |  Bin [31m0[m -> [32m58464[m bytes
+ .../Webfonts/woff/AbarHighFaNum-ExtraBold.woff     |  Bin [31m0[m -> [32m59024[m bytes
+ .../Webfonts/woff/AbarHighFaNum-Regular.woff       |  Bin [31m0[m -> [32m55016[m bytes
+ .../Webfonts/woff/AbarHighFaNum-SemiBold.woff      |  Bin [31m0[m -> [32m58336[m bytes
+ .../Webfonts/woff/AbarLowFaNum-Black.woff          |  Bin [31m0[m -> [32m52968[m bytes
+ .../Webfonts/woff/AbarLowFaNum-Bold.woff           |  Bin [31m0[m -> [32m53564[m bytes
+ .../Webfonts/woff/AbarLowFaNum-ExtraBold.woff      |  Bin [31m0[m -> [32m54148[m bytes
+ .../Webfonts/woff/AbarLowFaNum-Regular.woff        |  Bin [31m0[m -> [32m51760[m bytes
+ .../Webfonts/woff/AbarLowFaNum-SemiBold.woff       |  Bin [31m0[m -> [32m53692[m bytes
+ .../Webfonts/woff/AbarMidFaNum-Black.woff          |  Bin [31m0[m -> [32m57124[m bytes
+ .../Webfonts/woff/AbarMidFaNum-Bold.woff           |  Bin [31m0[m -> [32m57928[m bytes
+ .../Webfonts/woff/AbarMidFaNum-ExtraBold.woff      |  Bin [31m0[m -> [32m58660[m bytes
+ .../Webfonts/woff/AbarMidFaNum-Regular.woff        |  Bin [31m0[m -> [32m55824[m bytes
+ .../Webfonts/woff/AbarMidFaNum-SemiBold.woff       |  Bin [31m0[m -> [32m58360[m bytes
+ .../Webfonts/woff2/AbarHighFaNum-Black.woff2       |  Bin [31m0[m -> [32m45520[m bytes
+ .../Webfonts/woff2/AbarHighFaNum-Bold.woff2        |  Bin [31m0[m -> [32m46580[m bytes
+ .../Webfonts/woff2/AbarHighFaNum-ExtraBold.woff2   |  Bin [31m0[m -> [32m47152[m bytes
+ .../Webfonts/woff2/AbarHighFaNum-Regular.woff2     |  Bin [31m0[m -> [32m43660[m bytes
+ .../Webfonts/woff2/AbarHighFaNum-SemiBold.woff2    |  Bin [31m0[m -> [32m46516[m bytes
+ .../Webfonts/woff2/AbarLowFaNum-Black.woff2        |  Bin [31m0[m -> [32m42064[m bytes
+ .../Webfonts/woff2/AbarLowFaNum-Bold.woff2         |  Bin [31m0[m -> [32m42452[m bytes
+ .../Webfonts/woff2/AbarLowFaNum-ExtraBold.woff2    |  Bin [31m0[m -> [32m42852[m bytes
+ .../Webfonts/woff2/AbarLowFaNum-Regular.woff2      |  Bin [31m0[m -> [32m40796[m bytes
+ .../Webfonts/woff2/AbarLowFaNum-SemiBold.woff2     |  Bin [31m0[m -> [32m42596[m bytes
+ .../Webfonts/woff2/AbarMidFaNum-Black.woff2        |  Bin [31m0[m -> [32m45412[m bytes
+ .../Webfonts/woff2/AbarMidFaNum-Bold.woff2         |  Bin [31m0[m -> [32m46052[m bytes
+ .../Webfonts/woff2/AbarMidFaNum-ExtraBold.woff2    |  Bin [31m0[m -> [32m46716[m bytes
+ .../Webfonts/woff2/AbarMidFaNum-Regular.woff2      |  Bin [31m0[m -> [32m44288[m bytes
+ .../Webfonts/woff2/AbarMidFaNum-SemiBold.woff2     |  Bin [31m0[m -> [32m46440[m bytes
+ fonts/Abar FaNum/otf/AbarHighFaNum-Black.otf       |  Bin [31m0[m -> [32m83248[m bytes
+ fonts/Abar FaNum/otf/AbarHighFaNum-Bold.otf        |  Bin [31m0[m -> [32m83836[m bytes
+ fonts/Abar FaNum/otf/AbarHighFaNum-ExtraBold.otf   |  Bin [31m0[m -> [32m84580[m bytes
+ fonts/Abar FaNum/otf/AbarHighFaNum-Regular.otf     |  Bin [31m0[m -> [32m80824[m bytes
+ fonts/Abar FaNum/otf/AbarHighFaNum-SemiBold.otf    |  Bin [31m0[m -> [32m84120[m bytes
+ fonts/Abar FaNum/otf/AbarLowFaNum-Black.otf        |  Bin [31m0[m -> [32m85664[m bytes
+ fonts/Abar FaNum/otf/AbarLowFaNum-Bold.otf         |  Bin [31m0[m -> [32m87376[m bytes
+ fonts/Abar FaNum/otf/AbarLowFaNum-ExtraBold.otf    |  Bin [31m0[m -> [32m88104[m bytes
+ fonts/Abar FaNum/otf/AbarLowFaNum-Regular.otf      |  Bin [31m0[m -> [32m82040[m bytes
+ fonts/Abar FaNum/otf/AbarLowFaNum-SemiBold.otf     |  Bin [31m0[m -> [32m86588[m bytes
+ fonts/Abar FaNum/otf/AbarMidFaNum-Black.otf        |  Bin [31m0[m -> [32m84384[m bytes
+ fonts/Abar FaNum/otf/AbarMidFaNum-Bold.otf         |  Bin [31m0[m -> [32m85464[m bytes
+ fonts/Abar FaNum/otf/AbarMidFaNum-ExtraBold.otf    |  Bin [31m0[m -> [32m86240[m bytes
+ fonts/Abar FaNum/otf/AbarMidFaNum-Regular.otf      |  Bin [31m0[m -> [32m82828[m bytes
+ fonts/Abar FaNum/otf/AbarMidFaNum-SemiBold.otf     |  Bin [31m0[m -> [32m86068[m bytes
+ fonts/Abar FaNum/ttf/AbarHighFaNum-Black.ttf       |  Bin [31m0[m -> [32m127472[m bytes
+ fonts/Abar FaNum/ttf/AbarHighFaNum-Bold.ttf        |  Bin [31m0[m -> [32m128308[m bytes
+ fonts/Abar FaNum/ttf/AbarHighFaNum-ExtraBold.ttf   |  Bin [31m0[m -> [32m129616[m bytes
+ fonts/Abar FaNum/ttf/AbarHighFaNum-Regular.ttf     |  Bin [31m0[m -> [32m124328[m bytes
+ fonts/Abar FaNum/ttf/AbarHighFaNum-SemiBold.ttf    |  Bin [31m0[m -> [32m129240[m bytes
+ fonts/Abar FaNum/ttf/AbarLowFaNum-Black.ttf        |  Bin [31m0[m -> [32m118864[m bytes
+ fonts/Abar FaNum/ttf/AbarLowFaNum-Bold.ttf         |  Bin [31m0[m -> [32m118240[m bytes
+ fonts/Abar FaNum/ttf/AbarLowFaNum-ExtraBold.ttf    |  Bin [31m0[m -> [32m119496[m bytes
+ fonts/Abar FaNum/ttf/AbarLowFaNum-Regular.ttf      |  Bin [31m0[m -> [32m116612[m bytes
+ fonts/Abar FaNum/ttf/AbarLowFaNum-SemiBold.ttf     |  Bin [31m0[m -> [32m119400[m bytes
+ fonts/Abar FaNum/ttf/AbarMidFaNum-Black.ttf        |  Bin [31m0[m -> [32m125648[m bytes
+ fonts/Abar FaNum/ttf/AbarMidFaNum-Bold.ttf         |  Bin [31m0[m -> [32m125952[m bytes
+ fonts/Abar FaNum/ttf/AbarMidFaNum-ExtraBold.ttf    |  Bin [31m0[m -> [32m127372[m bytes
+ fonts/Abar FaNum/ttf/AbarMidFaNum-Regular.ttf      |  Bin [31m0[m -> [32m125328[m bytes
+ fonts/Abar FaNum/ttf/AbarMidFaNum-SemiBold.ttf     |  Bin [31m0[m -> [32m127712[m bytes
+ generated/prisma/browser.ts                        |  199 [32m+[m
+ generated/prisma/client.ts                         |  226 [32m++[m
+ generated/prisma/commonInputTypes.ts               | 1133 [32m++++++[m
+ generated/prisma/enums.ts                          |  182 [32m+[m
+ generated/prisma/internal/class.ts                 |  568 [32m+++[m
+ generated/prisma/internal/prismaNamespace.ts       | 4271 [32m++++++++++++++++++++[m
+ .../prisma/internal/prismaNamespaceBrowser.ts      |  719 [32m++++[m
+ generated/prisma/models.ts                         |   47 [32m+[m
+ generated/prisma/models/AuditLog.ts                | 1458 [32m+++++++[m
+ generated/prisma/models/Batch.ts                   | 2081 [32m++++++++++[m
+ generated/prisma/models/BomLine.ts                 | 1645 [32m++++++++[m
+ generated/prisma/models/BomVersion.ts              | 1821 [32m+++++++++[m
+ generated/prisma/models/Customer.ts                | 1804 [32m+++++++++[m
+ generated/prisma/models/Delivery.ts                | 1676 [32m++++++++[m
+ generated/prisma/models/DeliveryLine.ts            | 1859 [32m+++++++++[m
+ generated/prisma/models/GoodsReceipt.ts            | 1594 [32m++++++++[m
+ generated/prisma/models/GoodsReceiptLine.ts        | 1810 [32m+++++++++[m
+ generated/prisma/models/Item.ts                    | 3330 [32m+++++++++++++++[m
+ generated/prisma/models/MaterialConsumption.ts     | 1674 [32m++++++++[m
+ generated/prisma/models/Module.ts                  | 1837 [32m+++++++++[m
+ generated/prisma/models/Permission.ts              | 1601 [32m++++++++[m
+ generated/prisma/models/ProductProfile.ts          | 2175 [32m++++++++++[m
+ generated/prisma/models/ProductionOperation.ts     | 2147 [32m++++++++++[m
+ generated/prisma/models/ProductionOutput.ts        | 1633 [32m++++++++[m
+ generated/prisma/models/ProductionRun.ts           | 1771 [32m++++++++[m
+ generated/prisma/models/QCInspection.ts            | 2035 [32m++++++++++[m
+ generated/prisma/models/Quotation.ts               | 1807 [32m+++++++++[m
+ generated/prisma/models/QuotationLine.ts           | 1651 [32m++++++++[m
+ generated/prisma/models/Role.ts                    | 1544 [32m+++++++[m
+ generated/prisma/models/RolePermission.ts          | 1552 [32m+++++++[m
+ generated/prisma/models/RoutingStep.ts             | 1577 [32m++++++++[m
+ generated/prisma/models/RoutingVersion.ts          | 1731 [32m++++++++[m
+ generated/prisma/models/SalesOrder.ts              | 2093 [32m++++++++++[m
+ generated/prisma/models/SalesOrderLine.ts          | 2043 [32m++++++++++[m
+ generated/prisma/models/StockBalance.ts            | 1757 [32m++++++++[m
+ generated/prisma/models/StockLocation.ts           | 2023 [32m+++++++++[m
+ generated/prisma/models/StockMovement.ts           | 2353 [32m+++++++++++[m
+ generated/prisma/models/StockReservation.ts        | 1878 [32m+++++++++[m
+ generated/prisma/models/Supplier.ts                | 1482 [32m+++++++[m
+ generated/prisma/models/User.ts                    | 1805 [32m+++++++++[m
+ generated/prisma/models/UserRole.ts                | 1548 [32m+++++++[m
+ generated/prisma/models/UserSession.ts             | 1445 [32m+++++++[m
+ generated/prisma/models/Warehouse.ts               | 1386 [32m+++++++[m
+ generated/prisma/models/WorkOrder.ts               | 2821 [32m+++++++++++++[m
+ generated/prisma/query_engine-windows.dll.node     |  Bin [31m0[m -> [32m21182976[m bytes
+ libs/api-response.ts                               |   28 [32m+[m
+ libs/prisma.ts                                     |   12 [32m+[m
+ modules/auth/auth.config.ts                        |   31 [32m+[m
+ modules/auth/auth.cookies.ts                       |   62 [32m+[m
+ modules/auth/auth.middleware.ts                    |   51 [32m+[m
+ modules/auth/auth.service.ts                       |  351 [32m++[m
+ modules/auth/auth.validation.ts                    |   35 [32m+[m
+ modules/items/item.service.ts                      |   68 [32m+[m
+ modules/items/item.validation.ts                   |  104 [32m+[m
+ modules/permissions/access-control.ts              |  191 [32m+[m
+ package-lock.json                                  | 1101 [32m++++[m[31m-[m
+ package.json                                       |   19 [32m+[m[31m-[m
+ prisma.config.ts                                   |   16 [32m+[m
+ .../20261114060729_init_erp/migration.sql          |  861 [32m++++[m
+ .../20261114082858_add_auth_and_rbac/migration.sql |  218 [32m+[m
+ prisma/migrations/migration_lock.toml              |    3 [32m+[m
+ prisma/schema.prisma                               | 1078 [32m+++++[m
+ prisma/seed.ts                                     |  152 [32m+[m
+ scripts/check-admin.ts                             |   37 [32m+[m
+ scripts/create-admin.ts                            |  113 [32m+[m
+ src/generated/prisma/browser.ts                    |  159 [32m+[m
+ src/generated/prisma/client.ts                     |  186 [32m+[m
+ src/generated/prisma/commonInputTypes.ts           | 1099 [32m+++++[m
+ src/generated/prisma/enums.ts                      |  172 [32m+[m
+ src/generated/prisma/internal/class.ts             |  488 [32m+++[m
+ src/generated/prisma/internal/prismaNamespace.ts   | 3535 [32m++++++++++++++++[m
+ .../prisma/internal/prismaNamespaceBrowser.ts      |  597 [32m+++[m
+ src/generated/prisma/models.ts                     |   39 [32m+[m
+ src/generated/prisma/models/Batch.ts               | 2081 [32m++++++++++[m
+ src/generated/prisma/models/BomLine.ts             | 1645 [32m++++++++[m
+ src/generated/prisma/models/BomVersion.ts          | 1821 [32m+++++++++[m
+ src/generated/prisma/models/Customer.ts            | 1804 [32m+++++++++[m
+ src/generated/prisma/models/Delivery.ts            | 1676 [32m++++++++[m
+ src/generated/prisma/models/DeliveryLine.ts        | 1859 [32m+++++++++[m
+ src/generated/prisma/models/GoodsReceipt.ts        | 1594 [32m++++++++[m
+ src/generated/prisma/models/GoodsReceiptLine.ts    | 1810 [32m+++++++++[m
+ src/generated/prisma/models/Item.ts                | 3330 [32m+++++++++++++++[m
+ src/generated/prisma/models/MaterialConsumption.ts | 1674 [32m++++++++[m
+ src/generated/prisma/models/ProductProfile.ts      | 2175 [32m++++++++++[m
+ src/generated/prisma/models/ProductionOperation.ts | 2147 [32m++++++++++[m
+ src/generated/prisma/models/ProductionOutput.ts    | 1633 [32m++++++++[m
+ src/generated/prisma/models/ProductionRun.ts       | 1771 [32m++++++++[m
+ src/generated/prisma/models/QCInspection.ts        | 2035 [32m++++++++++[m
+ src/generated/prisma/models/Quotation.ts           | 1807 [32m+++++++++[m
+ src/generated/prisma/models/QuotationLine.ts       | 1651 [32m++++++++[m
+ src/generated/prisma/models/RoutingStep.ts         | 1577 [32m++++++++[m
+ src/generated/prisma/models/RoutingVersion.ts      | 1731 [32m++++++++[m
+ src/generated/prisma/models/SalesOrder.ts          | 2093 [32m++++++++++[m
+ src/generated/prisma/models/SalesOrderLine.ts      | 2043 [32m++++++++++[m
+ src/generated/prisma/models/StockBalance.ts        | 1757 [32m++++++++[m
+ src/generated/prisma/models/StockLocation.ts       | 2023 [32m+++++++++[m
+ src/generated/prisma/models/StockMovement.ts       | 2353 [32m+++++++++++[m
+ src/generated/prisma/models/StockReservation.ts    | 1878 [32m+++++++++[m
+ src/generated/prisma/models/Supplier.ts            | 1482 [32m+++++++[m
+ src/generated/prisma/models/Warehouse.ts           | 1386 [32m+++++++[m
+ src/generated/prisma/models/WorkOrder.ts           | 2821 [32m+++++++++++++[m
+ src/generated/prisma/query_engine-windows.dll.node |  Bin [31m0[m -> [32m21182976[m bytes
+ stores/auth.store.ts                               |    0
+ stores/search.store.ts                             |    0
+ stores/theme.store.ts                              |   35 [32m+[m
+ stores/ui.store.ts                                 |   38 [32m+[m
+ 190 files changed, 145564 insertions(+), 109 deletions(-)

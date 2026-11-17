@@ -4,17 +4,30 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Loader2, LockKeyhole, UserRound, Zap } from "lucide-react";
+import {
+  Loader2,
+  LockKeyhole,
+  UserRound,
+  Zap,
+  Users,
+  FileUser,
+} from "lucide-react";
 import { toast } from "sonner";
+
+type LoginType = "employee" | "candidate";
 
 export default function LoginPage() {
   const router = useRouter();
 
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
+  const [loginType, setLoginType] =
+    useState<LoginType>("employee");
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(
+    event: FormEvent<HTMLFormElement>
+  ) {
     event.preventDefault();
 
     if (!identifier.trim() || !password) {
@@ -25,7 +38,12 @@ export default function LoginPage() {
     try {
       setLoading(true);
 
-      const response = await fetch("/api/auth/login", {
+      const endpoint =
+        loginType === "candidate"
+          ? "/api/recruitment/candidate-login"
+          : "/api/auth/login";
+
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -41,13 +59,19 @@ export default function LoginPage() {
 
       if (!response.ok) {
         throw new Error(
-          result.message || "نام کاربری یا رمز عبور صحیح نیست."
+          result.message ||
+            "نام کاربری یا رمز عبور صحیح نیست."
         );
       }
 
       toast.success("ورود موفقیت‌آمیز بود.");
 
-      router.replace("/dashboard");
+      router.replace(
+        loginType === "candidate"
+          ? "/candidate-portal"
+          : "/dashboard"
+      );
+
       router.refresh();
     } catch (error) {
       toast.error(
@@ -76,7 +100,47 @@ export default function LoginPage() {
 
         <div className="auth-heading">
           <h2>خوش آمدید</h2>
-          <p>برای ورود به سامانه اطلاعات حساب خود را وارد کنید.</p>
+          <p>
+            نوع حساب خود را انتخاب و اطلاعات ورود را وارد کنید.
+          </p>
+        </div>
+
+        <div className="login-type-selector">
+          <button
+            type="button"
+            className={
+              loginType === "employee"
+                ? "login-type-option active"
+                : "login-type-option"
+            }
+            onClick={() => setLoginType("employee")}
+            disabled={loading}
+          >
+            <Users size={19} />
+            <span>کارکنان سازمان</span>
+          </button>
+
+          <button
+            type="button"
+            className={
+              loginType === "candidate"
+                ? "login-type-option active"
+                : "login-type-option"
+            }
+            onClick={() => setLoginType("candidate")}
+            disabled={loading}
+          >
+            <FileUser size={19} />
+            <span>متقاضی استخدام</span>
+          </button>
+        </div>
+
+        <div className="auth-heading login-subheading">
+          <p>
+            {loginType === "employee"
+              ? "ورود کارکنان و مدیران به سامانه سهند"
+              : "پیگیری و تکمیل پرونده استخدامی"}
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
@@ -125,9 +189,14 @@ export default function LoginPage() {
           >
             {loading ? (
               <>
-                <Loader2 className="animate-spin" size={18} />
+                <Loader2
+                  className="animate-spin"
+                  size={18}
+                />
                 در حال ورود...
               </>
+            ) : loginType === "candidate" ? (
+              "ورود به پنل متقاضی"
             ) : (
               "ورود به سامانه"
             )}
@@ -136,7 +205,9 @@ export default function LoginPage() {
 
         <div className="auth-footer">
           <span>حساب کاربری ندارید؟</span>
-          <Link href="/register">درخواست ایجاد حساب</Link>
+          <Link href="/register">
+            درخواست ایجاد حساب
+          </Link>
         </div>
       </section>
     </main>
