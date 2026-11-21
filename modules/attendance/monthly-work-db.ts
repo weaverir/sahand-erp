@@ -1,0 +1,223 @@
+import "server-only";
+
+import { prisma } from "@/libs/prisma";
+import type { Prisma } from "@/generated/prisma/client";
+import { attendanceStatusIssue } from "./attendance-status-policy";
+import { aggregateMonthlyWork, type MonthlyWorkDay } from "./monthly-work-aggregation";
+import { defaultShiftInterval } from "./default-shift-policy";
+import {classifyDayKind} from "./holiday-work-policy";
+import { splitPresenceByTehranDate } from "./holiday-attendance-split";
+
+type Interval = { startAt: string; endAt: string };
+type Punch = { eventType: string; occurredAt: Date };
+
+function intervalsFromPunches(punches: Punch[]): { intervals: Interval[]; issues: string[] } {
+  const intervals: Interval[] = [];
+  const issues: string[] = [];
+  let active: Date | null = null;
+  let breakStart: Date | null = null;
+  for (const punch of [...punches].sort((a, b) => a.occurredAt.getTime() - b.occurredAt.getTime())) {
+    if (punch.eventType === "CHECK_IN") {
+      if (active) issues.push("Duplicate CHECK_IN");
+      else active = punch.occurredAt;
+    } else if (punch.eventType === "BREAK_START") {
+      if (!active || breakStart) issues.push("Invalid BREAK_START");
+      else {
+        if (punch.occurredAt > active) intervals.push({ startAt: active.toISOString(), endAt: punch.occurredAt.toISOString() });
+        active = null;
+        breakStart = punch.occurredAt;
+      }
+    } else if (punch.eventType === "BREAK_END") {
+      if (!breakStart || active) issues.push("Invalid BREAK_END");
+      else { active = punch.occurredAt; breakStart = null; }
+    } else if (punch.eventType === "CHECK_OUT" || punch.eventType === "AUTO_CHECK_OUT") {
+      if (!active || breakStart) issues.push("Unpaired CHECK_OUT");
+      else {
+        if (punch.occurredAt > active) intervals.push({ startAt: active.toISOString(), endAt: punch.occurredAt.toISOString() });
+        else issues.push("Nonpositive attendance interval");
+        active = null;
+      }
+    }
+  }
+  if (active || breakStart) issues.push("Unclosed attendance interval");
+  return { intervals, issues };
+}
+
+function isoDate(date: Date): string {
+  return date.toISOString().slice(0, 10);
+}
+function tehranDateKey(instant: Date): string {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Tehran", year: "numeric", month: "2-digit", day: "2-digit",
+  }).formatToParts(instant);
+  const get = (type: string) => parts.find((part) => part.type === type)?.value ?? "";
+  return `${get("year")}-${get("month")}-${get("day")}`;
+}
+function dateDays(start: Date, end: Date): Date[] {
+  const first = new Date(`${tehranDateKey(start)}T00:00:00.000Z`);
+  const exclusive = new Date(`${tehranDateKey(end)}T00:00:00.000Z`);
+  const result: Date[] = [];
+  for (let t = first.getTime(); t < exclusive.getTime(); t += 86400000) {
+    result.push(new Date(t));
+    if (result.length > 35) throw new Error("Monthly period exceeds 35 days");
+  }
+  return result;
+}
+
+/**
+ * Read-only database-backed preview. It deliberately does not modify
+ * MonthlyWorkSummary or monthly period state before HR reviews issues.
+ * This service requires a full closed period and finalized attendance.
+ */
+export async function previewMonthlyWorkFromDatabase(
+  periodId: string,
+  employeeUserId: string,
+  db: Prisma.TransactionClient = prisma,
+) {
+  if (!periodId.trim() || !employeeUserId.trim()) throw new Error("Invalid identifiers");
+  const period = await db.attendanceMonthlyPeriod.findUnique({
+    where: { id: periodId },
+    select: { id: true, startsAt: true, endsAt: true, status: true },
+  });
+  if (!period) throw new Error("Monthly period not found");
+  if (period.endsAt <= period.startsAt) throw new Error("Invalid period boundaries");
+
+  const assignments = await db.employeeAssignment.findMany({
+    where: { userId: employeeUserId },
+    select: { id: true },
+  });
+  const assignmentIds = assignments.map((a) => a.id);
+
+  // A day can begin before the period's first instant and end inside it.
+  // Include a one-day buffer to catch overnight shifts.
+  const startBuffer = new Date(period.startsAt.getTime() - 86400000);
+  const endBuffer = new Date(period.endsAt.getTime() + 86400000);
+  const [schedules, records, leaves, holidayDays] = await Promise.all([
+    db.employeeShiftSchedule.findMany({
+      where: {
+        employeeUserId,
+        status: "APPROVED",
+        weekStartDate: { gte: new Date(Date.UTC(startBuffer.getUTCFullYear(), startBuffer.getUTCMonth(), startBuffer.getUTCDate() - 7)),
+                         lte: new Date(Date.UTC(endBuffer.getUTCFullYear(), endBuffer.getUTCMonth(), endBuffer.getUTCDate())) },
+      },
+      select: {
+        id: true, version: true, weekStartDate: true,
+        segments: { select: { workDate: true, startsAt: true, endsAt: true, requiredMinutes: true } },
+      },
+    }),
+    db.attendanceRecord.findMany({
+      where: {
+        employeeAssignmentId: { in: assignmentIds },
+        workDate: { gte: new Date(Date.UTC(startBuffer.getUTCFullYear(), startBuffer.getUTCMonth(), startBuffer.getUTCDate())),
+                    lt: new Date(Date.UTC(endBuffer.getUTCFullYear(), endBuffer.getUTCMonth(), endBuffer.getUTCDate() + 1)) },
+      },
+      select: {
+        workDate: true, status: true, events: {
+          select: { eventType: true, occurredAt: true },
+          orderBy: { occurredAt: "asc" },
+        },
+        adjustments: { select: { status: true } },
+      },
+    }),
+    db.leaveRequest.findMany({
+      where: { employeeUserId, status: "APPROVED", startAt: { lt: endBuffer }, endAt: { gt: startBuffer } },
+      select: { startAt: true, endAt: true },
+    }),
+    db.holidayCalendarDay.findMany({
+      where: {
+        date: { gte: new Date(`${tehranDateKey(period.startsAt)}T00:00:00.000Z`), lt: new Date(`${tehranDateKey(period.endsAt)}T00:00:00.000Z`) },
+        calendar: { isActive: true },
+      },
+      select: { date: true, isHoliday: true, isWorkingDayOverride: true },
+    }),
+  ]);
+
+  const byDate = new Map<string, MonthlyWorkDay>();
+  for (const date of dateDays(period.startsAt, period.endsAt)) {
+    const key = isoDate(date);
+    byDate.set(key, { workDate: key, required: [], attendance: [], approvedLeave: [], unresolvedReasons: [] });
+  }
+
+  const scheduleDays = new Set<string>();
+  const scheduleVersion = new Map<string, number>();
+  for (const schedule of schedules) {
+    for (const seg of schedule.segments) {
+      const key = isoDate(seg.workDate);
+      const day = byDate.get(key);
+      if (!day) continue;
+      scheduleDays.add(key);
+      if (seg.endsAt <= seg.startsAt || seg.requiredMinutes < 0) {
+        day.unresolvedReasons!.push("Invalid approved schedule segment");
+        continue;
+      }
+      const previousVersion = scheduleVersion.get(key);
+      if (previousVersion !== undefined && previousVersion !== schedule.version) {
+        day.unresolvedReasons!.push("Multiple approved schedule versions");
+      }
+      scheduleVersion.set(key, schedule.version);
+      day.required.push({ startAt: seg.startsAt.toISOString(), endAt: seg.endsAt.toISOString() });
+      const duration = (seg.endsAt.getTime() - seg.startsAt.getTime()) / 60000;
+      if (duration !== seg.requiredMinutes) day.unresolvedReasons!.push("Segment duration differs from required minutes");
+    }
+  }
+
+  // An approved week with no segment is an explicit day off; never overwrite it.
+  // Only a genuinely absent approved week receives the company fallback.
+  const holidayByDate = new Map(holidayDays.map((h) => [isoDate(h.date), h]));
+  for (const day of byDate.values()) {
+    const workDate = new Date(`${day.workDate}T00:00:00.000Z`);
+    const saturdayOffset = (workDate.getUTCDay() + 1) % 7;
+    const weekStart = new Date(workDate.getTime() - saturdayOffset * 86400000);
+    const hasApprovedWeek = schedules.some((s) => isoDate(s.weekStartDate) === isoDate(weekStart));
+    const holiday = holidayByDate.get(day.workDate);
+    day.dayKind = classifyDayKind({workDate:day.workDate,isHoliday:holiday?.isHoliday ?? false,isWorkingDayOverride:holiday?.isWorkingDayOverride ?? null});
+    if (hasApprovedWeek) {
+      scheduleDays.add(day.workDate);
+      continue;
+    }
+    const fallback = defaultShiftInterval({
+      workDate: day.workDate,
+      isHoliday: holiday?.isHoliday ?? false,
+      isWorkingDayOverride: holiday?.isWorkingDayOverride ?? null,
+    });
+    if (fallback) day.required.push(fallback);
+  }
+
+  // Each attendance record is paired independently; an overnight checkout
+  // remains in the record belonging to the original work date.
+  for (const record of records) {
+    const key = isoDate(record.workDate);
+    const day = byDate.get(key);
+    if (!day) continue;
+    const statusIssue = attendanceStatusIssue(record.status);
+    if (statusIssue) day.unresolvedReasons!.push(statusIssue);
+    if (record.adjustments.some((a) => a.status === "PENDING")) day.unresolvedReasons!.push("Pending attendance correction");
+    const parsed = intervalsFromPunches(record.events);
+    day.attendance.push(...parsed.intervals);
+    // Preserve the existing worked/required calculation, but classify holiday
+    // presence by the actual Tehran calendar date, including overnight punches.
+    for (const [calendarDate, pieces] of splitPresenceByTehranDate(parsed.intervals)) {
+      const target = byDate.get(calendarDate);
+      if (target) (target.holidayAttendance ??= []).push(...pieces);
+    }
+    day.unresolvedReasons!.push(...parsed.issues);
+  }
+
+  // Leave may span several work dates. Clip it to each day's approved
+  // scheduled segments; overlap is resolved by calculateDailyWork.
+  for (const day of byDate.values()) {
+    for (const leave of leaves) {
+      for (const segment of day.required) {
+        const start = Math.max(new Date(segment.startAt).getTime(), leave.startAt.getTime());
+        const end = Math.min(new Date(segment.endAt).getTime(), leave.endAt.getTime());
+        if (start < end) day.approvedLeave.push({ startAt: new Date(start).toISOString(), endAt: new Date(end).toISOString() });
+      }
+    }
+  }
+
+  // Explicit empty arrays prevent fallback to origin-day attendance on days
+  // with no calendar-day presence, avoiding double counting overnight work.
+  for (const day of byDate.values()) day.holidayAttendance ??= [];
+  const totals = aggregateMonthlyWork([...byDate.values()]);
+  return { periodId, employeeUserId, totals };
+}

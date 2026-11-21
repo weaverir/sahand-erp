@@ -238,13 +238,32 @@ export type UserWhereInput = {
   lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceListRelationFilter
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceListRelationFilter
   roles?: Prisma.UserRoleListRelationFilter
   sessions?: Prisma.UserSessionListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
   candidateApplication?: Prisma.XOR<Prisma.CandidateApplicationNullableScalarRelationFilter, Prisma.CandidateApplicationWhereInput> | null
+  employeeProfile?: Prisma.XOR<Prisma.EmployeeProfileNullableScalarRelationFilter, Prisma.EmployeeProfileWhereInput> | null
   applicationReviews?: Prisma.ApplicationApprovalListRelationFilter
   uploadedCandidateDocuments?: Prisma.CandidateDocumentListRelationFilter
   employeeAssignments?: Prisma.EmployeeAssignmentListRelationFilter
+  attendanceApprovals?: Prisma.AttendanceRecordListRelationFilter
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentListRelationFilter
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentListRelationFilter
+  attendanceChallenges?: Prisma.AttendanceChallengeListRelationFilter
+  faceIdentityProfile?: Prisma.XOR<Prisma.FaceIdentityProfileNullableScalarRelationFilter, Prisma.FaceIdentityProfileWhereInput> | null
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleListRelationFilter
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleListRelationFilter
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleListRelationFilter
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleListRelationFilter
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionListRelationFilter
+  leaveRequests?: Prisma.LeaveRequestListRelationFilter
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepListRelationFilter
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryListRelationFilter
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryListRelationFilter
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryListRelationFilter
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -260,13 +279,32 @@ export type UserOrderByWithRelationInput = {
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceOrderByRelationAggregateInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceOrderByRelationAggregateInput
   roles?: Prisma.UserRoleOrderByRelationAggregateInput
   sessions?: Prisma.UserSessionOrderByRelationAggregateInput
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
   candidateApplication?: Prisma.CandidateApplicationOrderByWithRelationInput
+  employeeProfile?: Prisma.EmployeeProfileOrderByWithRelationInput
   applicationReviews?: Prisma.ApplicationApprovalOrderByRelationAggregateInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentOrderByRelationAggregateInput
   employeeAssignments?: Prisma.EmployeeAssignmentOrderByRelationAggregateInput
+  attendanceApprovals?: Prisma.AttendanceRecordOrderByRelationAggregateInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentOrderByRelationAggregateInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentOrderByRelationAggregateInput
+  attendanceChallenges?: Prisma.AttendanceChallengeOrderByRelationAggregateInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileOrderByWithRelationInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleOrderByRelationAggregateInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleOrderByRelationAggregateInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleOrderByRelationAggregateInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleOrderByRelationAggregateInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionOrderByRelationAggregateInput
+  leaveRequests?: Prisma.LeaveRequestOrderByRelationAggregateInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepOrderByRelationAggregateInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryOrderByRelationAggregateInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryOrderByRelationAggregateInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryOrderByRelationAggregateInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -285,13 +323,32 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceListRelationFilter
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceListRelationFilter
   roles?: Prisma.UserRoleListRelationFilter
   sessions?: Prisma.UserSessionListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
   candidateApplication?: Prisma.XOR<Prisma.CandidateApplicationNullableScalarRelationFilter, Prisma.CandidateApplicationWhereInput> | null
+  employeeProfile?: Prisma.XOR<Prisma.EmployeeProfileNullableScalarRelationFilter, Prisma.EmployeeProfileWhereInput> | null
   applicationReviews?: Prisma.ApplicationApprovalListRelationFilter
   uploadedCandidateDocuments?: Prisma.CandidateDocumentListRelationFilter
   employeeAssignments?: Prisma.EmployeeAssignmentListRelationFilter
+  attendanceApprovals?: Prisma.AttendanceRecordListRelationFilter
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentListRelationFilter
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentListRelationFilter
+  attendanceChallenges?: Prisma.AttendanceChallengeListRelationFilter
+  faceIdentityProfile?: Prisma.XOR<Prisma.FaceIdentityProfileNullableScalarRelationFilter, Prisma.FaceIdentityProfileWhereInput> | null
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleListRelationFilter
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleListRelationFilter
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleListRelationFilter
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleListRelationFilter
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionListRelationFilter
+  leaveRequests?: Prisma.LeaveRequestListRelationFilter
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepListRelationFilter
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryListRelationFilter
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryListRelationFilter
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryListRelationFilter
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodListRelationFilter
 }, "id" | "username" | "email" | "phone">
 
 export type UserOrderByWithAggregationInput = {
@@ -343,13 +400,32 @@ export type UserCreateInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
   roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
   candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
   applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
   employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -365,13 +441,32 @@ export type UserUncheckedCreateInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
   roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
   candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
   applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
   employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
 }
 
 export type UserUpdateInput = {
@@ -387,13 +482,32 @@ export type UserUpdateInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
   roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
   candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
   applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
   employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -409,13 +523,32 @@ export type UserUncheckedUpdateInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
   roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
   candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
   applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
   employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -622,6 +755,286 @@ export type UserUpdateOneRequiredWithoutEmployeeAssignmentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutEmployeeAssignmentsInput, Prisma.UserUpdateWithoutEmployeeAssignmentsInput>, Prisma.UserUncheckedUpdateWithoutEmployeeAssignmentsInput>
 }
 
+export type UserCreateNestedOneWithoutEmployeeProfileInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutEmployeeProfileInput, Prisma.UserUncheckedCreateWithoutEmployeeProfileInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutEmployeeProfileInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutEmployeeProfileNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutEmployeeProfileInput, Prisma.UserUncheckedCreateWithoutEmployeeProfileInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutEmployeeProfileInput
+  upsert?: Prisma.UserUpsertWithoutEmployeeProfileInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutEmployeeProfileInput, Prisma.UserUpdateWithoutEmployeeProfileInput>, Prisma.UserUncheckedUpdateWithoutEmployeeProfileInput>
+}
+
+export type UserCreateNestedOneWithoutAttendanceApprovalsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAttendanceApprovalsInput, Prisma.UserUncheckedCreateWithoutAttendanceApprovalsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAttendanceApprovalsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutAttendanceApprovalsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAttendanceApprovalsInput, Prisma.UserUncheckedCreateWithoutAttendanceApprovalsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAttendanceApprovalsInput
+  upsert?: Prisma.UserUpsertWithoutAttendanceApprovalsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAttendanceApprovalsInput, Prisma.UserUpdateWithoutAttendanceApprovalsInput>, Prisma.UserUncheckedUpdateWithoutAttendanceApprovalsInput>
+}
+
+export type UserCreateNestedOneWithoutAttendanceAdjustmentRequestsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAttendanceAdjustmentRequestsInput, Prisma.UserUncheckedCreateWithoutAttendanceAdjustmentRequestsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAttendanceAdjustmentRequestsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutAttendanceAdjustmentReviewsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAttendanceAdjustmentReviewsInput, Prisma.UserUncheckedCreateWithoutAttendanceAdjustmentReviewsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAttendanceAdjustmentReviewsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutAttendanceAdjustmentRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAttendanceAdjustmentRequestsInput, Prisma.UserUncheckedCreateWithoutAttendanceAdjustmentRequestsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAttendanceAdjustmentRequestsInput
+  upsert?: Prisma.UserUpsertWithoutAttendanceAdjustmentRequestsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAttendanceAdjustmentRequestsInput, Prisma.UserUpdateWithoutAttendanceAdjustmentRequestsInput>, Prisma.UserUncheckedUpdateWithoutAttendanceAdjustmentRequestsInput>
+}
+
+export type UserUpdateOneWithoutAttendanceAdjustmentReviewsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAttendanceAdjustmentReviewsInput, Prisma.UserUncheckedCreateWithoutAttendanceAdjustmentReviewsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAttendanceAdjustmentReviewsInput
+  upsert?: Prisma.UserUpsertWithoutAttendanceAdjustmentReviewsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAttendanceAdjustmentReviewsInput, Prisma.UserUpdateWithoutAttendanceAdjustmentReviewsInput>, Prisma.UserUncheckedUpdateWithoutAttendanceAdjustmentReviewsInput>
+}
+
+export type UserCreateNestedOneWithoutAttendanceChallengesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAttendanceChallengesInput, Prisma.UserUncheckedCreateWithoutAttendanceChallengesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAttendanceChallengesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutAttendanceChallengesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAttendanceChallengesInput, Prisma.UserUncheckedCreateWithoutAttendanceChallengesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAttendanceChallengesInput
+  upsert?: Prisma.UserUpsertWithoutAttendanceChallengesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAttendanceChallengesInput, Prisma.UserUpdateWithoutAttendanceChallengesInput>, Prisma.UserUncheckedUpdateWithoutAttendanceChallengesInput>
+}
+
+export type UserCreateNestedOneWithoutFaceIdentityProfileInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFaceIdentityProfileInput, Prisma.UserUncheckedCreateWithoutFaceIdentityProfileInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFaceIdentityProfileInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutFaceIdentityProfileNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFaceIdentityProfileInput, Prisma.UserUncheckedCreateWithoutFaceIdentityProfileInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFaceIdentityProfileInput
+  upsert?: Prisma.UserUpsertWithoutFaceIdentityProfileInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFaceIdentityProfileInput, Prisma.UserUpdateWithoutFaceIdentityProfileInput>, Prisma.UserUncheckedUpdateWithoutFaceIdentityProfileInput>
+}
+
+export type UserCreateNestedOneWithoutWeeklyShiftSchedulesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWeeklyShiftSchedulesInput, Prisma.UserUncheckedCreateWithoutWeeklyShiftSchedulesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWeeklyShiftSchedulesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutCreatedShiftSchedulesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedShiftSchedulesInput, Prisma.UserUncheckedCreateWithoutCreatedShiftSchedulesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedShiftSchedulesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutSubmittedShiftSchedulesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSubmittedShiftSchedulesInput, Prisma.UserUncheckedCreateWithoutSubmittedShiftSchedulesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSubmittedShiftSchedulesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutReviewedShiftSchedulesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReviewedShiftSchedulesInput, Prisma.UserUncheckedCreateWithoutReviewedShiftSchedulesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReviewedShiftSchedulesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutWeeklyShiftSchedulesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWeeklyShiftSchedulesInput, Prisma.UserUncheckedCreateWithoutWeeklyShiftSchedulesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWeeklyShiftSchedulesInput
+  upsert?: Prisma.UserUpsertWithoutWeeklyShiftSchedulesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutWeeklyShiftSchedulesInput, Prisma.UserUpdateWithoutWeeklyShiftSchedulesInput>, Prisma.UserUncheckedUpdateWithoutWeeklyShiftSchedulesInput>
+}
+
+export type UserUpdateOneRequiredWithoutCreatedShiftSchedulesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedShiftSchedulesInput, Prisma.UserUncheckedCreateWithoutCreatedShiftSchedulesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedShiftSchedulesInput
+  upsert?: Prisma.UserUpsertWithoutCreatedShiftSchedulesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedShiftSchedulesInput, Prisma.UserUpdateWithoutCreatedShiftSchedulesInput>, Prisma.UserUncheckedUpdateWithoutCreatedShiftSchedulesInput>
+}
+
+export type UserUpdateOneWithoutSubmittedShiftSchedulesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSubmittedShiftSchedulesInput, Prisma.UserUncheckedCreateWithoutSubmittedShiftSchedulesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSubmittedShiftSchedulesInput
+  upsert?: Prisma.UserUpsertWithoutSubmittedShiftSchedulesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSubmittedShiftSchedulesInput, Prisma.UserUpdateWithoutSubmittedShiftSchedulesInput>, Prisma.UserUncheckedUpdateWithoutSubmittedShiftSchedulesInput>
+}
+
+export type UserUpdateOneWithoutReviewedShiftSchedulesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReviewedShiftSchedulesInput, Prisma.UserUncheckedCreateWithoutReviewedShiftSchedulesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReviewedShiftSchedulesInput
+  upsert?: Prisma.UserUpsertWithoutReviewedShiftSchedulesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReviewedShiftSchedulesInput, Prisma.UserUpdateWithoutReviewedShiftSchedulesInput>, Prisma.UserUncheckedUpdateWithoutReviewedShiftSchedulesInput>
+}
+
+export type UserCreateNestedOneWithoutShiftScheduleRevisionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutShiftScheduleRevisionsInput, Prisma.UserUncheckedCreateWithoutShiftScheduleRevisionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutShiftScheduleRevisionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutShiftScheduleRevisionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutShiftScheduleRevisionsInput, Prisma.UserUncheckedCreateWithoutShiftScheduleRevisionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutShiftScheduleRevisionsInput
+  upsert?: Prisma.UserUpsertWithoutShiftScheduleRevisionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutShiftScheduleRevisionsInput, Prisma.UserUpdateWithoutShiftScheduleRevisionsInput>, Prisma.UserUncheckedUpdateWithoutShiftScheduleRevisionsInput>
+}
+
+export type UserCreateNestedOneWithoutClosedMonthlyPeriodsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutClosedMonthlyPeriodsInput, Prisma.UserUncheckedCreateWithoutClosedMonthlyPeriodsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutClosedMonthlyPeriodsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutClosedMonthlyPeriodsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutClosedMonthlyPeriodsInput, Prisma.UserUncheckedCreateWithoutClosedMonthlyPeriodsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutClosedMonthlyPeriodsInput
+  upsert?: Prisma.UserUpsertWithoutClosedMonthlyPeriodsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutClosedMonthlyPeriodsInput, Prisma.UserUpdateWithoutClosedMonthlyPeriodsInput>, Prisma.UserUncheckedUpdateWithoutClosedMonthlyPeriodsInput>
+}
+
+export type UserCreateNestedOneWithoutMonthlyWorkSummariesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMonthlyWorkSummariesInput, Prisma.UserUncheckedCreateWithoutMonthlyWorkSummariesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMonthlyWorkSummariesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutMonthlyWorkSummariesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMonthlyWorkSummariesInput, Prisma.UserUncheckedCreateWithoutMonthlyWorkSummariesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMonthlyWorkSummariesInput
+  upsert?: Prisma.UserUpsertWithoutMonthlyWorkSummariesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMonthlyWorkSummariesInput, Prisma.UserUpdateWithoutMonthlyWorkSummariesInput>, Prisma.UserUncheckedUpdateWithoutMonthlyWorkSummariesInput>
+}
+
+export type UserCreateNestedOneWithoutLeaveRequestsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLeaveRequestsInput, Prisma.UserUncheckedCreateWithoutLeaveRequestsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLeaveRequestsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutLeaveRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLeaveRequestsInput, Prisma.UserUncheckedCreateWithoutLeaveRequestsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLeaveRequestsInput
+  upsert?: Prisma.UserUpsertWithoutLeaveRequestsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLeaveRequestsInput, Prisma.UserUpdateWithoutLeaveRequestsInput>, Prisma.UserUncheckedUpdateWithoutLeaveRequestsInput>
+}
+
+export type UserCreateNestedOneWithoutLeaveApprovalDecisionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLeaveApprovalDecisionsInput, Prisma.UserUncheckedCreateWithoutLeaveApprovalDecisionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLeaveApprovalDecisionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutLeaveApprovalDecisionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLeaveApprovalDecisionsInput, Prisma.UserUncheckedCreateWithoutLeaveApprovalDecisionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLeaveApprovalDecisionsInput
+  upsert?: Prisma.UserUpsertWithoutLeaveApprovalDecisionsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLeaveApprovalDecisionsInput, Prisma.UserUpdateWithoutLeaveApprovalDecisionsInput>, Prisma.UserUncheckedUpdateWithoutLeaveApprovalDecisionsInput>
+}
+
+export type UserCreateNestedOneWithoutLeaveLedgerEntriesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLeaveLedgerEntriesInput, Prisma.UserUncheckedCreateWithoutLeaveLedgerEntriesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLeaveLedgerEntriesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutLeaveLedgerCreatorsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLeaveLedgerCreatorsInput, Prisma.UserUncheckedCreateWithoutLeaveLedgerCreatorsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLeaveLedgerCreatorsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutLeaveLedgerEntriesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLeaveLedgerEntriesInput, Prisma.UserUncheckedCreateWithoutLeaveLedgerEntriesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLeaveLedgerEntriesInput
+  upsert?: Prisma.UserUpsertWithoutLeaveLedgerEntriesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLeaveLedgerEntriesInput, Prisma.UserUpdateWithoutLeaveLedgerEntriesInput>, Prisma.UserUncheckedUpdateWithoutLeaveLedgerEntriesInput>
+}
+
+export type UserUpdateOneWithoutLeaveLedgerCreatorsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLeaveLedgerCreatorsInput, Prisma.UserUncheckedCreateWithoutLeaveLedgerCreatorsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLeaveLedgerCreatorsInput
+  upsert?: Prisma.UserUpsertWithoutLeaveLedgerCreatorsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLeaveLedgerCreatorsInput, Prisma.UserUpdateWithoutLeaveLedgerCreatorsInput>, Prisma.UserUncheckedUpdateWithoutLeaveLedgerCreatorsInput>
+}
+
+export type UserCreateNestedOneWithoutLeaveOpeningBalancesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLeaveOpeningBalancesInput, Prisma.UserUncheckedCreateWithoutLeaveOpeningBalancesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLeaveOpeningBalancesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutLeaveOpeningsCreatedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLeaveOpeningsCreatedInput, Prisma.UserUncheckedCreateWithoutLeaveOpeningsCreatedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLeaveOpeningsCreatedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutLeaveOpeningBalancesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLeaveOpeningBalancesInput, Prisma.UserUncheckedCreateWithoutLeaveOpeningBalancesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLeaveOpeningBalancesInput
+  upsert?: Prisma.UserUpsertWithoutLeaveOpeningBalancesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLeaveOpeningBalancesInput, Prisma.UserUpdateWithoutLeaveOpeningBalancesInput>, Prisma.UserUncheckedUpdateWithoutLeaveOpeningBalancesInput>
+}
+
+export type UserUpdateOneRequiredWithoutLeaveOpeningsCreatedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLeaveOpeningsCreatedInput, Prisma.UserUncheckedCreateWithoutLeaveOpeningsCreatedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLeaveOpeningsCreatedInput
+  upsert?: Prisma.UserUpsertWithoutLeaveOpeningsCreatedInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLeaveOpeningsCreatedInput, Prisma.UserUpdateWithoutLeaveOpeningsCreatedInput>, Prisma.UserUncheckedUpdateWithoutLeaveOpeningsCreatedInput>
+}
+
 export type UserCreateWithoutRolesInput = {
   id?: string
   username: string
@@ -635,12 +1048,31 @@ export type UserCreateWithoutRolesInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
   sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
   candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
   applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
   employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
 }
 
 export type UserUncheckedCreateWithoutRolesInput = {
@@ -656,12 +1088,31 @@ export type UserUncheckedCreateWithoutRolesInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
   sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
   candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
   applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
   employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
 }
 
 export type UserCreateOrConnectWithoutRolesInput = {
@@ -693,12 +1144,31 @@ export type UserUpdateWithoutRolesInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
   sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
   candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
   applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
   employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRolesInput = {
@@ -714,12 +1184,31 @@ export type UserUncheckedUpdateWithoutRolesInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
   sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
   candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
   applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
   employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -735,12 +1224,31 @@ export type UserCreateWithoutSessionsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
   roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
   candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
   applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
   employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -756,12 +1264,31 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
   roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
   candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
   applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
   employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -793,12 +1320,31 @@ export type UserUpdateWithoutSessionsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
   roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
   candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
   applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
   employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -814,12 +1360,31 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
   roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
   candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
   applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
   employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
 }
 
 export type UserCreateWithoutAuditLogsInput = {
@@ -835,12 +1400,31 @@ export type UserCreateWithoutAuditLogsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
   roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
   candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
   applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
   employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
 }
 
 export type UserUncheckedCreateWithoutAuditLogsInput = {
@@ -856,12 +1440,31 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
   roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
   candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
   applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
   employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
 }
 
 export type UserCreateOrConnectWithoutAuditLogsInput = {
@@ -893,12 +1496,31 @@ export type UserUpdateWithoutAuditLogsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
   roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
   candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
   applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
   employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuditLogsInput = {
@@ -914,12 +1536,31 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
   roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
   candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
   applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
   employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
 }
 
 export type UserCreateWithoutCandidateApplicationInput = {
@@ -935,12 +1576,31 @@ export type UserCreateWithoutCandidateApplicationInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
   roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
   applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
   employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
 }
 
 export type UserUncheckedCreateWithoutCandidateApplicationInput = {
@@ -956,12 +1616,31 @@ export type UserUncheckedCreateWithoutCandidateApplicationInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
   roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
   applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
   employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
 }
 
 export type UserCreateOrConnectWithoutCandidateApplicationInput = {
@@ -993,12 +1672,31 @@ export type UserUpdateWithoutCandidateApplicationInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
   roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
   applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
   employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCandidateApplicationInput = {
@@ -1014,12 +1712,31 @@ export type UserUncheckedUpdateWithoutCandidateApplicationInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
   roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
   applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
   employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
 }
 
 export type UserCreateWithoutUploadedCandidateDocumentsInput = {
@@ -1035,12 +1752,31 @@ export type UserCreateWithoutUploadedCandidateDocumentsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
   roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
   candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
   applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
   employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
 }
 
 export type UserUncheckedCreateWithoutUploadedCandidateDocumentsInput = {
@@ -1056,12 +1792,31 @@ export type UserUncheckedCreateWithoutUploadedCandidateDocumentsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
   roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
   candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
   applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
   employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
 }
 
 export type UserCreateOrConnectWithoutUploadedCandidateDocumentsInput = {
@@ -1093,12 +1848,31 @@ export type UserUpdateWithoutUploadedCandidateDocumentsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
   roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
   candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
   applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
   employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadedCandidateDocumentsInput = {
@@ -1114,12 +1888,31 @@ export type UserUncheckedUpdateWithoutUploadedCandidateDocumentsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
   roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
   candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
   applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
   employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
 }
 
 export type UserCreateWithoutApplicationReviewsInput = {
@@ -1135,12 +1928,31 @@ export type UserCreateWithoutApplicationReviewsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
   roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
   candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
   employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
 }
 
 export type UserUncheckedCreateWithoutApplicationReviewsInput = {
@@ -1156,12 +1968,31 @@ export type UserUncheckedCreateWithoutApplicationReviewsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
   roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
   candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
   employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
 }
 
 export type UserCreateOrConnectWithoutApplicationReviewsInput = {
@@ -1193,12 +2024,31 @@ export type UserUpdateWithoutApplicationReviewsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
   roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
   candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
   employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApplicationReviewsInput = {
@@ -1214,12 +2064,31 @@ export type UserUncheckedUpdateWithoutApplicationReviewsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
   roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
   candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
   employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
 }
 
 export type UserCreateWithoutEmployeeAssignmentsInput = {
@@ -1235,12 +2104,31 @@ export type UserCreateWithoutEmployeeAssignmentsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
   roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
   candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
   applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
 }
 
 export type UserUncheckedCreateWithoutEmployeeAssignmentsInput = {
@@ -1256,12 +2144,31 @@ export type UserUncheckedCreateWithoutEmployeeAssignmentsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
   roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
   candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
   applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
 }
 
 export type UserCreateOrConnectWithoutEmployeeAssignmentsInput = {
@@ -1293,12 +2200,31 @@ export type UserUpdateWithoutEmployeeAssignmentsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
   roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
   candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
   applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmployeeAssignmentsInput = {
@@ -1314,12 +2240,3375 @@ export type UserUncheckedUpdateWithoutEmployeeAssignmentsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserCreateWithoutEmployeeProfileInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
+}
+
+export type UserUncheckedCreateWithoutEmployeeProfileInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
+}
+
+export type UserCreateOrConnectWithoutEmployeeProfileInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutEmployeeProfileInput, Prisma.UserUncheckedCreateWithoutEmployeeProfileInput>
+}
+
+export type UserUpsertWithoutEmployeeProfileInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutEmployeeProfileInput, Prisma.UserUncheckedUpdateWithoutEmployeeProfileInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutEmployeeProfileInput, Prisma.UserUncheckedCreateWithoutEmployeeProfileInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutEmployeeProfileInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutEmployeeProfileInput, Prisma.UserUncheckedUpdateWithoutEmployeeProfileInput>
+}
+
+export type UserUpdateWithoutEmployeeProfileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutEmployeeProfileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
   roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
   candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
   applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
   uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserCreateWithoutAttendanceApprovalsInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
+}
+
+export type UserUncheckedCreateWithoutAttendanceApprovalsInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
+}
+
+export type UserCreateOrConnectWithoutAttendanceApprovalsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAttendanceApprovalsInput, Prisma.UserUncheckedCreateWithoutAttendanceApprovalsInput>
+}
+
+export type UserUpsertWithoutAttendanceApprovalsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAttendanceApprovalsInput, Prisma.UserUncheckedUpdateWithoutAttendanceApprovalsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAttendanceApprovalsInput, Prisma.UserUncheckedCreateWithoutAttendanceApprovalsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAttendanceApprovalsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAttendanceApprovalsInput, Prisma.UserUncheckedUpdateWithoutAttendanceApprovalsInput>
+}
+
+export type UserUpdateWithoutAttendanceApprovalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAttendanceApprovalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserCreateWithoutAttendanceAdjustmentRequestsInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
+}
+
+export type UserUncheckedCreateWithoutAttendanceAdjustmentRequestsInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
+}
+
+export type UserCreateOrConnectWithoutAttendanceAdjustmentRequestsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAttendanceAdjustmentRequestsInput, Prisma.UserUncheckedCreateWithoutAttendanceAdjustmentRequestsInput>
+}
+
+export type UserCreateWithoutAttendanceAdjustmentReviewsInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
+}
+
+export type UserUncheckedCreateWithoutAttendanceAdjustmentReviewsInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
+}
+
+export type UserCreateOrConnectWithoutAttendanceAdjustmentReviewsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAttendanceAdjustmentReviewsInput, Prisma.UserUncheckedCreateWithoutAttendanceAdjustmentReviewsInput>
+}
+
+export type UserUpsertWithoutAttendanceAdjustmentRequestsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAttendanceAdjustmentRequestsInput, Prisma.UserUncheckedUpdateWithoutAttendanceAdjustmentRequestsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAttendanceAdjustmentRequestsInput, Prisma.UserUncheckedCreateWithoutAttendanceAdjustmentRequestsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAttendanceAdjustmentRequestsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAttendanceAdjustmentRequestsInput, Prisma.UserUncheckedUpdateWithoutAttendanceAdjustmentRequestsInput>
+}
+
+export type UserUpdateWithoutAttendanceAdjustmentRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAttendanceAdjustmentRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUpsertWithoutAttendanceAdjustmentReviewsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAttendanceAdjustmentReviewsInput, Prisma.UserUncheckedUpdateWithoutAttendanceAdjustmentReviewsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAttendanceAdjustmentReviewsInput, Prisma.UserUncheckedCreateWithoutAttendanceAdjustmentReviewsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAttendanceAdjustmentReviewsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAttendanceAdjustmentReviewsInput, Prisma.UserUncheckedUpdateWithoutAttendanceAdjustmentReviewsInput>
+}
+
+export type UserUpdateWithoutAttendanceAdjustmentReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAttendanceAdjustmentReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserCreateWithoutAttendanceChallengesInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
+}
+
+export type UserUncheckedCreateWithoutAttendanceChallengesInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
+}
+
+export type UserCreateOrConnectWithoutAttendanceChallengesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAttendanceChallengesInput, Prisma.UserUncheckedCreateWithoutAttendanceChallengesInput>
+}
+
+export type UserUpsertWithoutAttendanceChallengesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAttendanceChallengesInput, Prisma.UserUncheckedUpdateWithoutAttendanceChallengesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAttendanceChallengesInput, Prisma.UserUncheckedCreateWithoutAttendanceChallengesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAttendanceChallengesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAttendanceChallengesInput, Prisma.UserUncheckedUpdateWithoutAttendanceChallengesInput>
+}
+
+export type UserUpdateWithoutAttendanceChallengesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAttendanceChallengesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserCreateWithoutFaceIdentityProfileInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
+}
+
+export type UserUncheckedCreateWithoutFaceIdentityProfileInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
+}
+
+export type UserCreateOrConnectWithoutFaceIdentityProfileInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutFaceIdentityProfileInput, Prisma.UserUncheckedCreateWithoutFaceIdentityProfileInput>
+}
+
+export type UserUpsertWithoutFaceIdentityProfileInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutFaceIdentityProfileInput, Prisma.UserUncheckedUpdateWithoutFaceIdentityProfileInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutFaceIdentityProfileInput, Prisma.UserUncheckedCreateWithoutFaceIdentityProfileInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutFaceIdentityProfileInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutFaceIdentityProfileInput, Prisma.UserUncheckedUpdateWithoutFaceIdentityProfileInput>
+}
+
+export type UserUpdateWithoutFaceIdentityProfileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutFaceIdentityProfileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserCreateWithoutWeeklyShiftSchedulesInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
+}
+
+export type UserUncheckedCreateWithoutWeeklyShiftSchedulesInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
+}
+
+export type UserCreateOrConnectWithoutWeeklyShiftSchedulesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutWeeklyShiftSchedulesInput, Prisma.UserUncheckedCreateWithoutWeeklyShiftSchedulesInput>
+}
+
+export type UserCreateWithoutCreatedShiftSchedulesInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
+}
+
+export type UserUncheckedCreateWithoutCreatedShiftSchedulesInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
+}
+
+export type UserCreateOrConnectWithoutCreatedShiftSchedulesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedShiftSchedulesInput, Prisma.UserUncheckedCreateWithoutCreatedShiftSchedulesInput>
+}
+
+export type UserCreateWithoutSubmittedShiftSchedulesInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
+}
+
+export type UserUncheckedCreateWithoutSubmittedShiftSchedulesInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
+}
+
+export type UserCreateOrConnectWithoutSubmittedShiftSchedulesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSubmittedShiftSchedulesInput, Prisma.UserUncheckedCreateWithoutSubmittedShiftSchedulesInput>
+}
+
+export type UserCreateWithoutReviewedShiftSchedulesInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
+}
+
+export type UserUncheckedCreateWithoutReviewedShiftSchedulesInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
+}
+
+export type UserCreateOrConnectWithoutReviewedShiftSchedulesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReviewedShiftSchedulesInput, Prisma.UserUncheckedCreateWithoutReviewedShiftSchedulesInput>
+}
+
+export type UserUpsertWithoutWeeklyShiftSchedulesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutWeeklyShiftSchedulesInput, Prisma.UserUncheckedUpdateWithoutWeeklyShiftSchedulesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutWeeklyShiftSchedulesInput, Prisma.UserUncheckedCreateWithoutWeeklyShiftSchedulesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutWeeklyShiftSchedulesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutWeeklyShiftSchedulesInput, Prisma.UserUncheckedUpdateWithoutWeeklyShiftSchedulesInput>
+}
+
+export type UserUpdateWithoutWeeklyShiftSchedulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutWeeklyShiftSchedulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUpsertWithoutCreatedShiftSchedulesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedShiftSchedulesInput, Prisma.UserUncheckedUpdateWithoutCreatedShiftSchedulesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedShiftSchedulesInput, Prisma.UserUncheckedCreateWithoutCreatedShiftSchedulesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCreatedShiftSchedulesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedShiftSchedulesInput, Prisma.UserUncheckedUpdateWithoutCreatedShiftSchedulesInput>
+}
+
+export type UserUpdateWithoutCreatedShiftSchedulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCreatedShiftSchedulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUpsertWithoutSubmittedShiftSchedulesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSubmittedShiftSchedulesInput, Prisma.UserUncheckedUpdateWithoutSubmittedShiftSchedulesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSubmittedShiftSchedulesInput, Prisma.UserUncheckedCreateWithoutSubmittedShiftSchedulesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSubmittedShiftSchedulesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSubmittedShiftSchedulesInput, Prisma.UserUncheckedUpdateWithoutSubmittedShiftSchedulesInput>
+}
+
+export type UserUpdateWithoutSubmittedShiftSchedulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSubmittedShiftSchedulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUpsertWithoutReviewedShiftSchedulesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReviewedShiftSchedulesInput, Prisma.UserUncheckedUpdateWithoutReviewedShiftSchedulesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReviewedShiftSchedulesInput, Prisma.UserUncheckedCreateWithoutReviewedShiftSchedulesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReviewedShiftSchedulesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReviewedShiftSchedulesInput, Prisma.UserUncheckedUpdateWithoutReviewedShiftSchedulesInput>
+}
+
+export type UserUpdateWithoutReviewedShiftSchedulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReviewedShiftSchedulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserCreateWithoutShiftScheduleRevisionsInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
+}
+
+export type UserUncheckedCreateWithoutShiftScheduleRevisionsInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
+}
+
+export type UserCreateOrConnectWithoutShiftScheduleRevisionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutShiftScheduleRevisionsInput, Prisma.UserUncheckedCreateWithoutShiftScheduleRevisionsInput>
+}
+
+export type UserUpsertWithoutShiftScheduleRevisionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutShiftScheduleRevisionsInput, Prisma.UserUncheckedUpdateWithoutShiftScheduleRevisionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutShiftScheduleRevisionsInput, Prisma.UserUncheckedCreateWithoutShiftScheduleRevisionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutShiftScheduleRevisionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutShiftScheduleRevisionsInput, Prisma.UserUncheckedUpdateWithoutShiftScheduleRevisionsInput>
+}
+
+export type UserUpdateWithoutShiftScheduleRevisionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutShiftScheduleRevisionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserCreateWithoutClosedMonthlyPeriodsInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+}
+
+export type UserUncheckedCreateWithoutClosedMonthlyPeriodsInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+}
+
+export type UserCreateOrConnectWithoutClosedMonthlyPeriodsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutClosedMonthlyPeriodsInput, Prisma.UserUncheckedCreateWithoutClosedMonthlyPeriodsInput>
+}
+
+export type UserUpsertWithoutClosedMonthlyPeriodsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutClosedMonthlyPeriodsInput, Prisma.UserUncheckedUpdateWithoutClosedMonthlyPeriodsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutClosedMonthlyPeriodsInput, Prisma.UserUncheckedCreateWithoutClosedMonthlyPeriodsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutClosedMonthlyPeriodsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutClosedMonthlyPeriodsInput, Prisma.UserUncheckedUpdateWithoutClosedMonthlyPeriodsInput>
+}
+
+export type UserUpdateWithoutClosedMonthlyPeriodsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+}
+
+export type UserUncheckedUpdateWithoutClosedMonthlyPeriodsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+}
+
+export type UserCreateWithoutMonthlyWorkSummariesInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
+}
+
+export type UserUncheckedCreateWithoutMonthlyWorkSummariesInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
+}
+
+export type UserCreateOrConnectWithoutMonthlyWorkSummariesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutMonthlyWorkSummariesInput, Prisma.UserUncheckedCreateWithoutMonthlyWorkSummariesInput>
+}
+
+export type UserUpsertWithoutMonthlyWorkSummariesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutMonthlyWorkSummariesInput, Prisma.UserUncheckedUpdateWithoutMonthlyWorkSummariesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutMonthlyWorkSummariesInput, Prisma.UserUncheckedCreateWithoutMonthlyWorkSummariesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutMonthlyWorkSummariesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutMonthlyWorkSummariesInput, Prisma.UserUncheckedUpdateWithoutMonthlyWorkSummariesInput>
+}
+
+export type UserUpdateWithoutMonthlyWorkSummariesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutMonthlyWorkSummariesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserCreateWithoutLeaveRequestsInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
+}
+
+export type UserUncheckedCreateWithoutLeaveRequestsInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
+}
+
+export type UserCreateOrConnectWithoutLeaveRequestsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutLeaveRequestsInput, Prisma.UserUncheckedCreateWithoutLeaveRequestsInput>
+}
+
+export type UserUpsertWithoutLeaveRequestsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutLeaveRequestsInput, Prisma.UserUncheckedUpdateWithoutLeaveRequestsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutLeaveRequestsInput, Prisma.UserUncheckedCreateWithoutLeaveRequestsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutLeaveRequestsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutLeaveRequestsInput, Prisma.UserUncheckedUpdateWithoutLeaveRequestsInput>
+}
+
+export type UserUpdateWithoutLeaveRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutLeaveRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserCreateWithoutLeaveApprovalDecisionsInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
+}
+
+export type UserUncheckedCreateWithoutLeaveApprovalDecisionsInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
+}
+
+export type UserCreateOrConnectWithoutLeaveApprovalDecisionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutLeaveApprovalDecisionsInput, Prisma.UserUncheckedCreateWithoutLeaveApprovalDecisionsInput>
+}
+
+export type UserUpsertWithoutLeaveApprovalDecisionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutLeaveApprovalDecisionsInput, Prisma.UserUncheckedUpdateWithoutLeaveApprovalDecisionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutLeaveApprovalDecisionsInput, Prisma.UserUncheckedCreateWithoutLeaveApprovalDecisionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutLeaveApprovalDecisionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutLeaveApprovalDecisionsInput, Prisma.UserUncheckedUpdateWithoutLeaveApprovalDecisionsInput>
+}
+
+export type UserUpdateWithoutLeaveApprovalDecisionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutLeaveApprovalDecisionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserCreateWithoutLeaveLedgerEntriesInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
+}
+
+export type UserUncheckedCreateWithoutLeaveLedgerEntriesInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
+}
+
+export type UserCreateOrConnectWithoutLeaveLedgerEntriesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutLeaveLedgerEntriesInput, Prisma.UserUncheckedCreateWithoutLeaveLedgerEntriesInput>
+}
+
+export type UserCreateWithoutLeaveLedgerCreatorsInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
+}
+
+export type UserUncheckedCreateWithoutLeaveLedgerCreatorsInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
+}
+
+export type UserCreateOrConnectWithoutLeaveLedgerCreatorsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutLeaveLedgerCreatorsInput, Prisma.UserUncheckedCreateWithoutLeaveLedgerCreatorsInput>
+}
+
+export type UserUpsertWithoutLeaveLedgerEntriesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutLeaveLedgerEntriesInput, Prisma.UserUncheckedUpdateWithoutLeaveLedgerEntriesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutLeaveLedgerEntriesInput, Prisma.UserUncheckedCreateWithoutLeaveLedgerEntriesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutLeaveLedgerEntriesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutLeaveLedgerEntriesInput, Prisma.UserUncheckedUpdateWithoutLeaveLedgerEntriesInput>
+}
+
+export type UserUpdateWithoutLeaveLedgerEntriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutLeaveLedgerEntriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUpsertWithoutLeaveLedgerCreatorsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutLeaveLedgerCreatorsInput, Prisma.UserUncheckedUpdateWithoutLeaveLedgerCreatorsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutLeaveLedgerCreatorsInput, Prisma.UserUncheckedCreateWithoutLeaveLedgerCreatorsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutLeaveLedgerCreatorsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutLeaveLedgerCreatorsInput, Prisma.UserUncheckedUpdateWithoutLeaveLedgerCreatorsInput>
+}
+
+export type UserUpdateWithoutLeaveLedgerCreatorsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutLeaveLedgerCreatorsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserCreateWithoutLeaveOpeningBalancesInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
+}
+
+export type UserUncheckedCreateWithoutLeaveOpeningBalancesInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutCreatedByInput
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
+}
+
+export type UserCreateOrConnectWithoutLeaveOpeningBalancesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutLeaveOpeningBalancesInput, Prisma.UserUncheckedCreateWithoutLeaveOpeningBalancesInput>
+}
+
+export type UserCreateWithoutLeaveOpeningsCreatedInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceCreateNestedManyWithoutEmployeeInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodCreateNestedManyWithoutClosedByInput
+}
+
+export type UserUncheckedCreateWithoutLeaveOpeningsCreatedInput = {
+  id?: string
+  username: string
+  email?: string | null
+  phone?: string | null
+  fullName: string
+  passwordHash: string
+  isActive?: boolean
+  accessLevel?: $Enums.UserAccessLevel
+  isSystem?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedCreateNestedOneWithoutUserInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutReviewerInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutUserInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutApprovedByInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutRequestedByInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedCreateNestedManyWithoutReviewedByInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutUserInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedCreateNestedOneWithoutUserInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutSubmittedByInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedCreateNestedManyWithoutReviewedByInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedCreateNestedManyWithoutActorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutReviewerInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedCreateNestedManyWithoutEmployeeInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedCreateNestedManyWithoutClosedByInput
+}
+
+export type UserCreateOrConnectWithoutLeaveOpeningsCreatedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutLeaveOpeningsCreatedInput, Prisma.UserUncheckedCreateWithoutLeaveOpeningsCreatedInput>
+}
+
+export type UserUpsertWithoutLeaveOpeningBalancesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutLeaveOpeningBalancesInput, Prisma.UserUncheckedUpdateWithoutLeaveOpeningBalancesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutLeaveOpeningBalancesInput, Prisma.UserUncheckedCreateWithoutLeaveOpeningBalancesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutLeaveOpeningBalancesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutLeaveOpeningBalancesInput, Prisma.UserUncheckedUpdateWithoutLeaveOpeningBalancesInput>
+}
+
+export type UserUpdateWithoutLeaveOpeningBalancesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutLeaveOpeningBalancesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningsCreated?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUpsertWithoutLeaveOpeningsCreatedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutLeaveOpeningsCreatedInput, Prisma.UserUncheckedUpdateWithoutLeaveOpeningsCreatedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutLeaveOpeningsCreatedInput, Prisma.UserUncheckedCreateWithoutLeaveOpeningsCreatedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutLeaveOpeningsCreatedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutLeaveOpeningsCreatedInput, Prisma.UserUncheckedUpdateWithoutLeaveOpeningsCreatedInput>
+}
+
+export type UserUpdateWithoutLeaveOpeningsCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUpdateManyWithoutEmployeeNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUpdateManyWithoutClosedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutLeaveOpeningsCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  accessLevel?: Prisma.EnumUserAccessLevelFieldUpdateOperationsInput | $Enums.UserAccessLevel
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leaveOpeningBalances?: Prisma.LeaveOpeningBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.UserSessionUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  candidateApplication?: Prisma.CandidateApplicationUncheckedUpdateOneWithoutUserNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
+  applicationReviews?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutReviewerNestedInput
+  uploadedCandidateDocuments?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  attendanceApprovals?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutApprovedByNestedInput
+  attendanceAdjustmentRequests?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutRequestedByNestedInput
+  attendanceAdjustmentReviews?: Prisma.AttendanceAdjustmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutUserNestedInput
+  faceIdentityProfile?: Prisma.FaceIdentityProfileUncheckedUpdateOneWithoutUserNestedInput
+  weeklyShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  submittedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutSubmittedByNestedInput
+  reviewedShiftSchedules?: Prisma.EmployeeShiftScheduleUncheckedUpdateManyWithoutReviewedByNestedInput
+  shiftScheduleRevisions?: Prisma.EmployeeShiftScheduleRevisionUncheckedUpdateManyWithoutActorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveApprovalDecisions?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutReviewerNestedInput
+  leaveLedgerEntries?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveLedgerCreators?: Prisma.LeaveLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  monthlyWorkSummaries?: Prisma.MonthlyWorkSummaryUncheckedUpdateManyWithoutEmployeeNestedInput
+  closedMonthlyPeriods?: Prisma.AttendanceMonthlyPeriodUncheckedUpdateManyWithoutClosedByNestedInput
 }
 
 
@@ -1328,21 +5617,55 @@ export type UserUncheckedUpdateWithoutEmployeeAssignmentsInput = {
  */
 
 export type UserCountOutputType = {
+  leaveOpeningBalances: number
+  leaveOpeningsCreated: number
   roles: number
   sessions: number
   auditLogs: number
   applicationReviews: number
   uploadedCandidateDocuments: number
   employeeAssignments: number
+  attendanceApprovals: number
+  attendanceAdjustmentRequests: number
+  attendanceAdjustmentReviews: number
+  attendanceChallenges: number
+  weeklyShiftSchedules: number
+  createdShiftSchedules: number
+  submittedShiftSchedules: number
+  reviewedShiftSchedules: number
+  shiftScheduleRevisions: number
+  leaveRequests: number
+  leaveApprovalDecisions: number
+  leaveLedgerEntries: number
+  leaveLedgerCreators: number
+  monthlyWorkSummaries: number
+  closedMonthlyPeriods: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  leaveOpeningBalances?: boolean | UserCountOutputTypeCountLeaveOpeningBalancesArgs
+  leaveOpeningsCreated?: boolean | UserCountOutputTypeCountLeaveOpeningsCreatedArgs
   roles?: boolean | UserCountOutputTypeCountRolesArgs
   sessions?: boolean | UserCountOutputTypeCountSessionsArgs
   auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs
   applicationReviews?: boolean | UserCountOutputTypeCountApplicationReviewsArgs
   uploadedCandidateDocuments?: boolean | UserCountOutputTypeCountUploadedCandidateDocumentsArgs
   employeeAssignments?: boolean | UserCountOutputTypeCountEmployeeAssignmentsArgs
+  attendanceApprovals?: boolean | UserCountOutputTypeCountAttendanceApprovalsArgs
+  attendanceAdjustmentRequests?: boolean | UserCountOutputTypeCountAttendanceAdjustmentRequestsArgs
+  attendanceAdjustmentReviews?: boolean | UserCountOutputTypeCountAttendanceAdjustmentReviewsArgs
+  attendanceChallenges?: boolean | UserCountOutputTypeCountAttendanceChallengesArgs
+  weeklyShiftSchedules?: boolean | UserCountOutputTypeCountWeeklyShiftSchedulesArgs
+  createdShiftSchedules?: boolean | UserCountOutputTypeCountCreatedShiftSchedulesArgs
+  submittedShiftSchedules?: boolean | UserCountOutputTypeCountSubmittedShiftSchedulesArgs
+  reviewedShiftSchedules?: boolean | UserCountOutputTypeCountReviewedShiftSchedulesArgs
+  shiftScheduleRevisions?: boolean | UserCountOutputTypeCountShiftScheduleRevisionsArgs
+  leaveRequests?: boolean | UserCountOutputTypeCountLeaveRequestsArgs
+  leaveApprovalDecisions?: boolean | UserCountOutputTypeCountLeaveApprovalDecisionsArgs
+  leaveLedgerEntries?: boolean | UserCountOutputTypeCountLeaveLedgerEntriesArgs
+  leaveLedgerCreators?: boolean | UserCountOutputTypeCountLeaveLedgerCreatorsArgs
+  monthlyWorkSummaries?: boolean | UserCountOutputTypeCountMonthlyWorkSummariesArgs
+  closedMonthlyPeriods?: boolean | UserCountOutputTypeCountClosedMonthlyPeriodsArgs
 }
 
 /**
@@ -1353,6 +5676,20 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
    * Select specific fields to fetch from the UserCountOutputType
    */
   select?: Prisma.UserCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountLeaveOpeningBalancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LeaveOpeningBalanceWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountLeaveOpeningsCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LeaveOpeningBalanceWhereInput
 }
 
 /**
@@ -1397,6 +5734,111 @@ export type UserCountOutputTypeCountEmployeeAssignmentsArgs<ExtArgs extends runt
   where?: Prisma.EmployeeAssignmentWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAttendanceApprovalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AttendanceRecordWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAttendanceAdjustmentRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AttendanceAdjustmentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAttendanceAdjustmentReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AttendanceAdjustmentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAttendanceChallengesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AttendanceChallengeWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountWeeklyShiftSchedulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeShiftScheduleWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedShiftSchedulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeShiftScheduleWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSubmittedShiftSchedulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeShiftScheduleWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReviewedShiftSchedulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeShiftScheduleWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountShiftScheduleRevisionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeShiftScheduleRevisionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountLeaveRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LeaveRequestWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountLeaveApprovalDecisionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LeaveApprovalStepWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountLeaveLedgerEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LeaveLedgerEntryWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountLeaveLedgerCreatorsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LeaveLedgerEntryWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountMonthlyWorkSummariesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MonthlyWorkSummaryWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountClosedMonthlyPeriodsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AttendanceMonthlyPeriodWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1411,13 +5853,32 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   lastLoginAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  leaveOpeningBalances?: boolean | Prisma.User$leaveOpeningBalancesArgs<ExtArgs>
+  leaveOpeningsCreated?: boolean | Prisma.User$leaveOpeningsCreatedArgs<ExtArgs>
   roles?: boolean | Prisma.User$rolesArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
   candidateApplication?: boolean | Prisma.User$candidateApplicationArgs<ExtArgs>
+  employeeProfile?: boolean | Prisma.User$employeeProfileArgs<ExtArgs>
   applicationReviews?: boolean | Prisma.User$applicationReviewsArgs<ExtArgs>
   uploadedCandidateDocuments?: boolean | Prisma.User$uploadedCandidateDocumentsArgs<ExtArgs>
   employeeAssignments?: boolean | Prisma.User$employeeAssignmentsArgs<ExtArgs>
+  attendanceApprovals?: boolean | Prisma.User$attendanceApprovalsArgs<ExtArgs>
+  attendanceAdjustmentRequests?: boolean | Prisma.User$attendanceAdjustmentRequestsArgs<ExtArgs>
+  attendanceAdjustmentReviews?: boolean | Prisma.User$attendanceAdjustmentReviewsArgs<ExtArgs>
+  attendanceChallenges?: boolean | Prisma.User$attendanceChallengesArgs<ExtArgs>
+  faceIdentityProfile?: boolean | Prisma.User$faceIdentityProfileArgs<ExtArgs>
+  weeklyShiftSchedules?: boolean | Prisma.User$weeklyShiftSchedulesArgs<ExtArgs>
+  createdShiftSchedules?: boolean | Prisma.User$createdShiftSchedulesArgs<ExtArgs>
+  submittedShiftSchedules?: boolean | Prisma.User$submittedShiftSchedulesArgs<ExtArgs>
+  reviewedShiftSchedules?: boolean | Prisma.User$reviewedShiftSchedulesArgs<ExtArgs>
+  shiftScheduleRevisions?: boolean | Prisma.User$shiftScheduleRevisionsArgs<ExtArgs>
+  leaveRequests?: boolean | Prisma.User$leaveRequestsArgs<ExtArgs>
+  leaveApprovalDecisions?: boolean | Prisma.User$leaveApprovalDecisionsArgs<ExtArgs>
+  leaveLedgerEntries?: boolean | Prisma.User$leaveLedgerEntriesArgs<ExtArgs>
+  leaveLedgerCreators?: boolean | Prisma.User$leaveLedgerCreatorsArgs<ExtArgs>
+  monthlyWorkSummaries?: boolean | Prisma.User$monthlyWorkSummariesArgs<ExtArgs>
+  closedMonthlyPeriods?: boolean | Prisma.User$closedMonthlyPeriodsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1468,13 +5929,32 @@ export type UserSelectScalar = {
 
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "username" | "email" | "phone" | "fullName" | "passwordHash" | "isActive" | "accessLevel" | "isSystem" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  leaveOpeningBalances?: boolean | Prisma.User$leaveOpeningBalancesArgs<ExtArgs>
+  leaveOpeningsCreated?: boolean | Prisma.User$leaveOpeningsCreatedArgs<ExtArgs>
   roles?: boolean | Prisma.User$rolesArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
   candidateApplication?: boolean | Prisma.User$candidateApplicationArgs<ExtArgs>
+  employeeProfile?: boolean | Prisma.User$employeeProfileArgs<ExtArgs>
   applicationReviews?: boolean | Prisma.User$applicationReviewsArgs<ExtArgs>
   uploadedCandidateDocuments?: boolean | Prisma.User$uploadedCandidateDocumentsArgs<ExtArgs>
   employeeAssignments?: boolean | Prisma.User$employeeAssignmentsArgs<ExtArgs>
+  attendanceApprovals?: boolean | Prisma.User$attendanceApprovalsArgs<ExtArgs>
+  attendanceAdjustmentRequests?: boolean | Prisma.User$attendanceAdjustmentRequestsArgs<ExtArgs>
+  attendanceAdjustmentReviews?: boolean | Prisma.User$attendanceAdjustmentReviewsArgs<ExtArgs>
+  attendanceChallenges?: boolean | Prisma.User$attendanceChallengesArgs<ExtArgs>
+  faceIdentityProfile?: boolean | Prisma.User$faceIdentityProfileArgs<ExtArgs>
+  weeklyShiftSchedules?: boolean | Prisma.User$weeklyShiftSchedulesArgs<ExtArgs>
+  createdShiftSchedules?: boolean | Prisma.User$createdShiftSchedulesArgs<ExtArgs>
+  submittedShiftSchedules?: boolean | Prisma.User$submittedShiftSchedulesArgs<ExtArgs>
+  reviewedShiftSchedules?: boolean | Prisma.User$reviewedShiftSchedulesArgs<ExtArgs>
+  shiftScheduleRevisions?: boolean | Prisma.User$shiftScheduleRevisionsArgs<ExtArgs>
+  leaveRequests?: boolean | Prisma.User$leaveRequestsArgs<ExtArgs>
+  leaveApprovalDecisions?: boolean | Prisma.User$leaveApprovalDecisionsArgs<ExtArgs>
+  leaveLedgerEntries?: boolean | Prisma.User$leaveLedgerEntriesArgs<ExtArgs>
+  leaveLedgerCreators?: boolean | Prisma.User$leaveLedgerCreatorsArgs<ExtArgs>
+  monthlyWorkSummaries?: boolean | Prisma.User$monthlyWorkSummariesArgs<ExtArgs>
+  closedMonthlyPeriods?: boolean | Prisma.User$closedMonthlyPeriodsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1483,13 +5963,32 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
+    leaveOpeningBalances: Prisma.$LeaveOpeningBalancePayload<ExtArgs>[]
+    leaveOpeningsCreated: Prisma.$LeaveOpeningBalancePayload<ExtArgs>[]
     roles: Prisma.$UserRolePayload<ExtArgs>[]
     sessions: Prisma.$UserSessionPayload<ExtArgs>[]
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
     candidateApplication: Prisma.$CandidateApplicationPayload<ExtArgs> | null
+    employeeProfile: Prisma.$EmployeeProfilePayload<ExtArgs> | null
     applicationReviews: Prisma.$ApplicationApprovalPayload<ExtArgs>[]
     uploadedCandidateDocuments: Prisma.$CandidateDocumentPayload<ExtArgs>[]
     employeeAssignments: Prisma.$EmployeeAssignmentPayload<ExtArgs>[]
+    attendanceApprovals: Prisma.$AttendanceRecordPayload<ExtArgs>[]
+    attendanceAdjustmentRequests: Prisma.$AttendanceAdjustmentPayload<ExtArgs>[]
+    attendanceAdjustmentReviews: Prisma.$AttendanceAdjustmentPayload<ExtArgs>[]
+    attendanceChallenges: Prisma.$AttendanceChallengePayload<ExtArgs>[]
+    faceIdentityProfile: Prisma.$FaceIdentityProfilePayload<ExtArgs> | null
+    weeklyShiftSchedules: Prisma.$EmployeeShiftSchedulePayload<ExtArgs>[]
+    createdShiftSchedules: Prisma.$EmployeeShiftSchedulePayload<ExtArgs>[]
+    submittedShiftSchedules: Prisma.$EmployeeShiftSchedulePayload<ExtArgs>[]
+    reviewedShiftSchedules: Prisma.$EmployeeShiftSchedulePayload<ExtArgs>[]
+    shiftScheduleRevisions: Prisma.$EmployeeShiftScheduleRevisionPayload<ExtArgs>[]
+    leaveRequests: Prisma.$LeaveRequestPayload<ExtArgs>[]
+    leaveApprovalDecisions: Prisma.$LeaveApprovalStepPayload<ExtArgs>[]
+    leaveLedgerEntries: Prisma.$LeaveLedgerEntryPayload<ExtArgs>[]
+    leaveLedgerCreators: Prisma.$LeaveLedgerEntryPayload<ExtArgs>[]
+    monthlyWorkSummaries: Prisma.$MonthlyWorkSummaryPayload<ExtArgs>[]
+    closedMonthlyPeriods: Prisma.$AttendanceMonthlyPeriodPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1898,13 +6397,32 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  leaveOpeningBalances<T extends Prisma.User$leaveOpeningBalancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$leaveOpeningBalancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveOpeningBalancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  leaveOpeningsCreated<T extends Prisma.User$leaveOpeningsCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$leaveOpeningsCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveOpeningBalancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   roles<T extends Prisma.User$rolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditLogs<T extends Prisma.User$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   candidateApplication<T extends Prisma.User$candidateApplicationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$candidateApplicationArgs<ExtArgs>>): Prisma.Prisma__CandidateApplicationClient<runtime.Types.Result.GetResult<Prisma.$CandidateApplicationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  employeeProfile<T extends Prisma.User$employeeProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$employeeProfileArgs<ExtArgs>>): Prisma.Prisma__EmployeeProfileClient<runtime.Types.Result.GetResult<Prisma.$EmployeeProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   applicationReviews<T extends Prisma.User$applicationReviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$applicationReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApplicationApprovalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   uploadedCandidateDocuments<T extends Prisma.User$uploadedCandidateDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadedCandidateDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CandidateDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   employeeAssignments<T extends Prisma.User$employeeAssignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$employeeAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  attendanceApprovals<T extends Prisma.User$attendanceApprovalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$attendanceApprovalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendanceRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  attendanceAdjustmentRequests<T extends Prisma.User$attendanceAdjustmentRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$attendanceAdjustmentRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendanceAdjustmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  attendanceAdjustmentReviews<T extends Prisma.User$attendanceAdjustmentReviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$attendanceAdjustmentReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendanceAdjustmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  attendanceChallenges<T extends Prisma.User$attendanceChallengesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$attendanceChallengesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendanceChallengePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  faceIdentityProfile<T extends Prisma.User$faceIdentityProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$faceIdentityProfileArgs<ExtArgs>>): Prisma.Prisma__FaceIdentityProfileClient<runtime.Types.Result.GetResult<Prisma.$FaceIdentityProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  weeklyShiftSchedules<T extends Prisma.User$weeklyShiftSchedulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$weeklyShiftSchedulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeShiftSchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdShiftSchedules<T extends Prisma.User$createdShiftSchedulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdShiftSchedulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeShiftSchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  submittedShiftSchedules<T extends Prisma.User$submittedShiftSchedulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$submittedShiftSchedulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeShiftSchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reviewedShiftSchedules<T extends Prisma.User$reviewedShiftSchedulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewedShiftSchedulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeShiftSchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  shiftScheduleRevisions<T extends Prisma.User$shiftScheduleRevisionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$shiftScheduleRevisionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeShiftScheduleRevisionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  leaveRequests<T extends Prisma.User$leaveRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$leaveRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  leaveApprovalDecisions<T extends Prisma.User$leaveApprovalDecisionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$leaveApprovalDecisionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveApprovalStepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  leaveLedgerEntries<T extends Prisma.User$leaveLedgerEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$leaveLedgerEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveLedgerEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  leaveLedgerCreators<T extends Prisma.User$leaveLedgerCreatorsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$leaveLedgerCreatorsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveLedgerEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  monthlyWorkSummaries<T extends Prisma.User$monthlyWorkSummariesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$monthlyWorkSummariesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MonthlyWorkSummaryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  closedMonthlyPeriods<T extends Prisma.User$closedMonthlyPeriodsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$closedMonthlyPeriodsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendanceMonthlyPeriodPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2334,6 +6852,54 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
+ * User.leaveOpeningBalances
+ */
+export type User$leaveOpeningBalancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LeaveOpeningBalance
+   */
+  select?: Prisma.LeaveOpeningBalanceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LeaveOpeningBalance
+   */
+  omit?: Prisma.LeaveOpeningBalanceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LeaveOpeningBalanceInclude<ExtArgs> | null
+  where?: Prisma.LeaveOpeningBalanceWhereInput
+  orderBy?: Prisma.LeaveOpeningBalanceOrderByWithRelationInput | Prisma.LeaveOpeningBalanceOrderByWithRelationInput[]
+  cursor?: Prisma.LeaveOpeningBalanceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LeaveOpeningBalanceScalarFieldEnum | Prisma.LeaveOpeningBalanceScalarFieldEnum[]
+}
+
+/**
+ * User.leaveOpeningsCreated
+ */
+export type User$leaveOpeningsCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LeaveOpeningBalance
+   */
+  select?: Prisma.LeaveOpeningBalanceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LeaveOpeningBalance
+   */
+  omit?: Prisma.LeaveOpeningBalanceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LeaveOpeningBalanceInclude<ExtArgs> | null
+  where?: Prisma.LeaveOpeningBalanceWhereInput
+  orderBy?: Prisma.LeaveOpeningBalanceOrderByWithRelationInput | Prisma.LeaveOpeningBalanceOrderByWithRelationInput[]
+  cursor?: Prisma.LeaveOpeningBalanceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LeaveOpeningBalanceScalarFieldEnum | Prisma.LeaveOpeningBalanceScalarFieldEnum[]
+}
+
+/**
  * User.roles
  */
 export type User$rolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2425,6 +6991,25 @@ export type User$candidateApplicationArgs<ExtArgs extends runtime.Types.Extensio
 }
 
 /**
+ * User.employeeProfile
+ */
+export type User$employeeProfileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeProfile
+   */
+  select?: Prisma.EmployeeProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeProfile
+   */
+  omit?: Prisma.EmployeeProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeProfileInclude<ExtArgs> | null
+  where?: Prisma.EmployeeProfileWhereInput
+}
+
+/**
  * User.applicationReviews
  */
 export type User$applicationReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2494,6 +7079,385 @@ export type User$employeeAssignmentsArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.EmployeeAssignmentScalarFieldEnum | Prisma.EmployeeAssignmentScalarFieldEnum[]
+}
+
+/**
+ * User.attendanceApprovals
+ */
+export type User$attendanceApprovalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AttendanceRecord
+   */
+  select?: Prisma.AttendanceRecordSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AttendanceRecord
+   */
+  omit?: Prisma.AttendanceRecordOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AttendanceRecordInclude<ExtArgs> | null
+  where?: Prisma.AttendanceRecordWhereInput
+  orderBy?: Prisma.AttendanceRecordOrderByWithRelationInput | Prisma.AttendanceRecordOrderByWithRelationInput[]
+  cursor?: Prisma.AttendanceRecordWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AttendanceRecordScalarFieldEnum | Prisma.AttendanceRecordScalarFieldEnum[]
+}
+
+/**
+ * User.attendanceAdjustmentRequests
+ */
+export type User$attendanceAdjustmentRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AttendanceAdjustment
+   */
+  select?: Prisma.AttendanceAdjustmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AttendanceAdjustment
+   */
+  omit?: Prisma.AttendanceAdjustmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AttendanceAdjustmentInclude<ExtArgs> | null
+  where?: Prisma.AttendanceAdjustmentWhereInput
+  orderBy?: Prisma.AttendanceAdjustmentOrderByWithRelationInput | Prisma.AttendanceAdjustmentOrderByWithRelationInput[]
+  cursor?: Prisma.AttendanceAdjustmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AttendanceAdjustmentScalarFieldEnum | Prisma.AttendanceAdjustmentScalarFieldEnum[]
+}
+
+/**
+ * User.attendanceAdjustmentReviews
+ */
+export type User$attendanceAdjustmentReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AttendanceAdjustment
+   */
+  select?: Prisma.AttendanceAdjustmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AttendanceAdjustment
+   */
+  omit?: Prisma.AttendanceAdjustmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AttendanceAdjustmentInclude<ExtArgs> | null
+  where?: Prisma.AttendanceAdjustmentWhereInput
+  orderBy?: Prisma.AttendanceAdjustmentOrderByWithRelationInput | Prisma.AttendanceAdjustmentOrderByWithRelationInput[]
+  cursor?: Prisma.AttendanceAdjustmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AttendanceAdjustmentScalarFieldEnum | Prisma.AttendanceAdjustmentScalarFieldEnum[]
+}
+
+/**
+ * User.attendanceChallenges
+ */
+export type User$attendanceChallengesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AttendanceChallenge
+   */
+  select?: Prisma.AttendanceChallengeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AttendanceChallenge
+   */
+  omit?: Prisma.AttendanceChallengeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AttendanceChallengeInclude<ExtArgs> | null
+  where?: Prisma.AttendanceChallengeWhereInput
+  orderBy?: Prisma.AttendanceChallengeOrderByWithRelationInput | Prisma.AttendanceChallengeOrderByWithRelationInput[]
+  cursor?: Prisma.AttendanceChallengeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AttendanceChallengeScalarFieldEnum | Prisma.AttendanceChallengeScalarFieldEnum[]
+}
+
+/**
+ * User.faceIdentityProfile
+ */
+export type User$faceIdentityProfileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FaceIdentityProfile
+   */
+  select?: Prisma.FaceIdentityProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FaceIdentityProfile
+   */
+  omit?: Prisma.FaceIdentityProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FaceIdentityProfileInclude<ExtArgs> | null
+  where?: Prisma.FaceIdentityProfileWhereInput
+}
+
+/**
+ * User.weeklyShiftSchedules
+ */
+export type User$weeklyShiftSchedulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeShiftSchedule
+   */
+  select?: Prisma.EmployeeShiftScheduleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeShiftSchedule
+   */
+  omit?: Prisma.EmployeeShiftScheduleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeShiftScheduleInclude<ExtArgs> | null
+  where?: Prisma.EmployeeShiftScheduleWhereInput
+  orderBy?: Prisma.EmployeeShiftScheduleOrderByWithRelationInput | Prisma.EmployeeShiftScheduleOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeShiftScheduleWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeShiftScheduleScalarFieldEnum | Prisma.EmployeeShiftScheduleScalarFieldEnum[]
+}
+
+/**
+ * User.createdShiftSchedules
+ */
+export type User$createdShiftSchedulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeShiftSchedule
+   */
+  select?: Prisma.EmployeeShiftScheduleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeShiftSchedule
+   */
+  omit?: Prisma.EmployeeShiftScheduleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeShiftScheduleInclude<ExtArgs> | null
+  where?: Prisma.EmployeeShiftScheduleWhereInput
+  orderBy?: Prisma.EmployeeShiftScheduleOrderByWithRelationInput | Prisma.EmployeeShiftScheduleOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeShiftScheduleWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeShiftScheduleScalarFieldEnum | Prisma.EmployeeShiftScheduleScalarFieldEnum[]
+}
+
+/**
+ * User.submittedShiftSchedules
+ */
+export type User$submittedShiftSchedulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeShiftSchedule
+   */
+  select?: Prisma.EmployeeShiftScheduleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeShiftSchedule
+   */
+  omit?: Prisma.EmployeeShiftScheduleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeShiftScheduleInclude<ExtArgs> | null
+  where?: Prisma.EmployeeShiftScheduleWhereInput
+  orderBy?: Prisma.EmployeeShiftScheduleOrderByWithRelationInput | Prisma.EmployeeShiftScheduleOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeShiftScheduleWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeShiftScheduleScalarFieldEnum | Prisma.EmployeeShiftScheduleScalarFieldEnum[]
+}
+
+/**
+ * User.reviewedShiftSchedules
+ */
+export type User$reviewedShiftSchedulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeShiftSchedule
+   */
+  select?: Prisma.EmployeeShiftScheduleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeShiftSchedule
+   */
+  omit?: Prisma.EmployeeShiftScheduleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeShiftScheduleInclude<ExtArgs> | null
+  where?: Prisma.EmployeeShiftScheduleWhereInput
+  orderBy?: Prisma.EmployeeShiftScheduleOrderByWithRelationInput | Prisma.EmployeeShiftScheduleOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeShiftScheduleWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeShiftScheduleScalarFieldEnum | Prisma.EmployeeShiftScheduleScalarFieldEnum[]
+}
+
+/**
+ * User.shiftScheduleRevisions
+ */
+export type User$shiftScheduleRevisionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeShiftScheduleRevision
+   */
+  select?: Prisma.EmployeeShiftScheduleRevisionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeShiftScheduleRevision
+   */
+  omit?: Prisma.EmployeeShiftScheduleRevisionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeShiftScheduleRevisionInclude<ExtArgs> | null
+  where?: Prisma.EmployeeShiftScheduleRevisionWhereInput
+  orderBy?: Prisma.EmployeeShiftScheduleRevisionOrderByWithRelationInput | Prisma.EmployeeShiftScheduleRevisionOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeShiftScheduleRevisionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeShiftScheduleRevisionScalarFieldEnum | Prisma.EmployeeShiftScheduleRevisionScalarFieldEnum[]
+}
+
+/**
+ * User.leaveRequests
+ */
+export type User$leaveRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LeaveRequest
+   */
+  select?: Prisma.LeaveRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LeaveRequest
+   */
+  omit?: Prisma.LeaveRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LeaveRequestInclude<ExtArgs> | null
+  where?: Prisma.LeaveRequestWhereInput
+  orderBy?: Prisma.LeaveRequestOrderByWithRelationInput | Prisma.LeaveRequestOrderByWithRelationInput[]
+  cursor?: Prisma.LeaveRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LeaveRequestScalarFieldEnum | Prisma.LeaveRequestScalarFieldEnum[]
+}
+
+/**
+ * User.leaveApprovalDecisions
+ */
+export type User$leaveApprovalDecisionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LeaveApprovalStep
+   */
+  select?: Prisma.LeaveApprovalStepSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LeaveApprovalStep
+   */
+  omit?: Prisma.LeaveApprovalStepOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LeaveApprovalStepInclude<ExtArgs> | null
+  where?: Prisma.LeaveApprovalStepWhereInput
+  orderBy?: Prisma.LeaveApprovalStepOrderByWithRelationInput | Prisma.LeaveApprovalStepOrderByWithRelationInput[]
+  cursor?: Prisma.LeaveApprovalStepWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LeaveApprovalStepScalarFieldEnum | Prisma.LeaveApprovalStepScalarFieldEnum[]
+}
+
+/**
+ * User.leaveLedgerEntries
+ */
+export type User$leaveLedgerEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LeaveLedgerEntry
+   */
+  select?: Prisma.LeaveLedgerEntrySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LeaveLedgerEntry
+   */
+  omit?: Prisma.LeaveLedgerEntryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LeaveLedgerEntryInclude<ExtArgs> | null
+  where?: Prisma.LeaveLedgerEntryWhereInput
+  orderBy?: Prisma.LeaveLedgerEntryOrderByWithRelationInput | Prisma.LeaveLedgerEntryOrderByWithRelationInput[]
+  cursor?: Prisma.LeaveLedgerEntryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LeaveLedgerEntryScalarFieldEnum | Prisma.LeaveLedgerEntryScalarFieldEnum[]
+}
+
+/**
+ * User.leaveLedgerCreators
+ */
+export type User$leaveLedgerCreatorsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LeaveLedgerEntry
+   */
+  select?: Prisma.LeaveLedgerEntrySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LeaveLedgerEntry
+   */
+  omit?: Prisma.LeaveLedgerEntryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LeaveLedgerEntryInclude<ExtArgs> | null
+  where?: Prisma.LeaveLedgerEntryWhereInput
+  orderBy?: Prisma.LeaveLedgerEntryOrderByWithRelationInput | Prisma.LeaveLedgerEntryOrderByWithRelationInput[]
+  cursor?: Prisma.LeaveLedgerEntryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LeaveLedgerEntryScalarFieldEnum | Prisma.LeaveLedgerEntryScalarFieldEnum[]
+}
+
+/**
+ * User.monthlyWorkSummaries
+ */
+export type User$monthlyWorkSummariesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MonthlyWorkSummary
+   */
+  select?: Prisma.MonthlyWorkSummarySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MonthlyWorkSummary
+   */
+  omit?: Prisma.MonthlyWorkSummaryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MonthlyWorkSummaryInclude<ExtArgs> | null
+  where?: Prisma.MonthlyWorkSummaryWhereInput
+  orderBy?: Prisma.MonthlyWorkSummaryOrderByWithRelationInput | Prisma.MonthlyWorkSummaryOrderByWithRelationInput[]
+  cursor?: Prisma.MonthlyWorkSummaryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MonthlyWorkSummaryScalarFieldEnum | Prisma.MonthlyWorkSummaryScalarFieldEnum[]
+}
+
+/**
+ * User.closedMonthlyPeriods
+ */
+export type User$closedMonthlyPeriodsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AttendanceMonthlyPeriod
+   */
+  select?: Prisma.AttendanceMonthlyPeriodSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AttendanceMonthlyPeriod
+   */
+  omit?: Prisma.AttendanceMonthlyPeriodOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AttendanceMonthlyPeriodInclude<ExtArgs> | null
+  where?: Prisma.AttendanceMonthlyPeriodWhereInput
+  orderBy?: Prisma.AttendanceMonthlyPeriodOrderByWithRelationInput | Prisma.AttendanceMonthlyPeriodOrderByWithRelationInput[]
+  cursor?: Prisma.AttendanceMonthlyPeriodWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AttendanceMonthlyPeriodScalarFieldEnum | Prisma.AttendanceMonthlyPeriodScalarFieldEnum[]
 }
 
 /**

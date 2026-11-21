@@ -9,6 +9,7 @@ import {
   DocumentsApplicationStatus,
   InitialApplicationStatus,
   UserAccessLevel,
+  EmployeeEmploymentStatus,
 } from "@/generated/prisma/client";
 
 import { prisma } from "@/libs/prisma";
@@ -29,12 +30,109 @@ class DecisionError extends Error {
   }
 }
 
+// ==========================================
+// PERSONNEL CODE GENERATOR
+// ==========================================
+
+function getJalaliYear(date: Date): string {
+  const formatter = new Intl.DateTimeFormat(
+    "en-US-u-ca-persian",
+    {
+      year: "numeric",
+    }
+  );
+
+  const year = formatter
+    .formatToParts(date)
+    .find((part) => part.type === "year")?.value;
+
+  if (!year || !/^\d{4}$/.test(year)) {
+    throw new DecisionError(
+      "محاسبه سال شمسی برای کد پرسنلی انجام نشد.",
+      500
+    );
+  }
+
+  return year;
+}
+
+async function generatePersonnelCode(
+  tx: Parameters<
+    Parameters<typeof prisma.$transaction>[0]
+  >[0],
+  now: Date
+): Promise<string> {
+  const jalaliYear = getJalaliYear(now);
+
+  const prefix = `SH-${jalaliYear}-`;
+
+  // قفل تراکنشی برای جلوگیری از تولید شماره تکراری
+  await tx.$queryRaw`
+    SELECT pg_advisory_xact_lock(
+      hashtext(${prefix})
+    )
+  `;
+
+  const latestProfile = await tx.employeeProfile.findFirst({
+    where: {
+      personnelCode: {
+        startsWith: prefix,
+      },
+    },
+    orderBy: {
+      personnelCode: "desc",
+    },
+    select: {
+      personnelCode: true,
+    },
+  });
+
+  let nextNumber = 1;
+
+  if (latestProfile?.personnelCode) {
+    const currentNumber = Number(
+      latestProfile.personnelCode.slice(prefix.length)
+    );
+
+    if (
+      !Number.isSafeInteger(currentNumber) ||
+      currentNumber < 1
+    ) {
+      throw new DecisionError(
+        "آخرین کد پرسنلی ثبت‌شده معتبر نیست.",
+        500
+      );
+    }
+
+    nextNumber = currentNumber + 1;
+  }
+
+  if (nextNumber > 9999) {
+    throw new DecisionError(
+      "ظرفیت شماره‌گذاری پرسنلی این سال تکمیل شده است.",
+      409
+    );
+  }
+
+  return `${prefix}${String(nextNumber).padStart(4, "0")}`;
+}
+
+// ==========================================
+// AUTHENTICATION & REVIEWER
+// ==========================================
+
 async function getActor() {
   const cookieStore = await cookies();
-  const token = cookieStore.get(AUTH_COOKIE_NAMES.access)?.value;
+
+  const token = cookieStore.get(
+    AUTH_COOKIE_NAMES.access
+  )?.value;
 
   if (!token) {
-    throw new DecisionError("برای ادامه وارد سامانه شوید.", 401);
+    throw new DecisionError(
+      "برای ادامه وارد سامانه شوید.",
+      401
+    );
   }
 
   const authUser = await getAuthenticatedUser(token);
@@ -70,10 +168,15 @@ async function getActor() {
   });
 
   if (!user) {
-    throw new DecisionError("کاربر فعال یافت نشد.", 403);
+    throw new DecisionError(
+      "کاربر فعال پیدا نشد.",
+      403
+    );
   }
 
-  const roleKeys = user.roles.map((item) => item.role.key);
+  const roleKeys = user.roles.map(
+    (item) => item.role.key
+  );
 
   const isHR = roleKeys.includes("hr_manager");
 
@@ -103,6 +206,10 @@ async function getActor() {
   };
 }
 
+// ==========================================
+// ERROR HANDLER
+// ==========================================
+
 function responseError(error: unknown) {
   if (error instanceof DecisionError) {
     return NextResponse.json(
@@ -125,7 +232,8 @@ function responseError(error: unknown) {
     return NextResponse.json(
       {
         success: false,
-        message: "برای این نسخه از پرونده قبلاً تصمیم ثبت شده است.",
+        message:
+          "این کد یا پرونده قبلاً ثبت شده است.",
       },
       { status: 409 }
     );
@@ -140,22 +248,31 @@ function responseError(error: unknown) {
     return NextResponse.json(
       {
         success: false,
-        message: "پرونده هم‌زمان تغییر کرده است. دوباره اطلاعات را دریافت کنید.",
+        message:
+          "پرونده هم‌زمان تغییر کرده است. دوباره اطلاعات را دریافت کنید.",
       },
       { status: 409 }
     );
   }
 
-  console.error("[RECRUITMENT_DECISION_ERROR]", error);
+  console.error(
+    "[RECRUITMENT_DECISION_ERROR]",
+    error
+  );
 
   return NextResponse.json(
     {
       success: false,
-      message: "خطای داخلی هنگام ثبت تصمیم استخدام.",
+      message:
+        "خطای داخلی هنگام ثبت تصمیم استخدام.",
     },
     { status: 500 }
   );
 }
+
+// ==========================================
+// POST - APPLICATION DECISION
+// ==========================================
 
 export async function POST(
   request: NextRequest,
@@ -167,19 +284,31 @@ export async function POST(
     const body = await request.json();
 
     const stage = body.stage as ApplicationStage;
-    const decision = body.decision as ApplicationDecision;
+
+    const decision =
+      body.decision as ApplicationDecision;
 
     const comment =
       typeof body.comment === "string"
         ? body.comment.trim().slice(0, 2000)
         : null;
 
-    if (!Object.values(ApplicationStage).includes(stage)) {
-      throw new DecisionError("مرحله بررسی معتبر نیست.");
+    if (
+      !Object.values(ApplicationStage).includes(stage)
+    ) {
+      throw new DecisionError(
+        "مرحله بررسی معتبر نیست."
+      );
     }
 
-    if (!Object.values(ApplicationDecision).includes(decision)) {
-      throw new DecisionError("تصمیم انتخاب‌شده معتبر نیست.");
+    if (
+      !Object.values(ApplicationDecision).includes(
+        decision
+      )
+    ) {
+      throw new DecisionError(
+        "تصمیم انتخاب‌شده معتبر نیست."
+      );
     }
 
     if (
@@ -193,21 +322,31 @@ export async function POST(
 
     const { id } = await context.params;
 
-    const application = await prisma.candidateApplication.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        applicationNumber: true,
-        userId: true,
-        initialStatus: true,
-        initialVersion: true,
-        documentsStatus: true,
-        documentsVersion: true,
-      },
-    });
+    if (!id?.trim()) {
+      throw new DecisionError(
+        "شناسه پرونده معتبر نیست."
+      );
+    }
+
+    const application =
+      await prisma.candidateApplication.findUnique({
+        where: { id },
+        select: {
+          id: true,
+          applicationNumber: true,
+          userId: true,
+          initialStatus: true,
+          initialVersion: true,
+          documentsStatus: true,
+          documentsVersion: true,
+        },
+      });
 
     if (!application) {
-      throw new DecisionError("پرونده استخدامی پیدا نشد.", 404);
+      throw new DecisionError(
+        "پرونده استخدامی پیدا نشد.",
+        404
+      );
     }
 
     if (application.userId === actor.id) {
@@ -219,7 +358,8 @@ export async function POST(
 
     if (
       stage === ApplicationStage.DOCUMENTS &&
-      application.initialStatus !== InitialApplicationStatus.APPROVED
+      application.initialStatus !==
+        InitialApplicationStatus.APPROVED
     ) {
       throw new DecisionError(
         "ابتدا باید مرحله اول استخدام توسط هر دو مرجع تأیید شود.",
@@ -255,17 +395,29 @@ export async function POST(
       );
     }
 
-    if (actor.reviewerType === ApplicationReviewerType.EXECUTIVE) {
-      const hrApproval = await prisma.applicationApproval.findFirst({
-        where: {
-          applicationId: application.id,
-          stage,
-          reviewerType: ApplicationReviewerType.HR,
-          decision: ApplicationDecision.APPROVED,
-          applicationVersion: currentVersion,
-        },
-        select: { id: true },
-      });
+    // ======================================
+    // EXECUTIVE MUST HAVE HR APPROVAL
+    // ======================================
+
+    if (
+      actor.reviewerType ===
+      ApplicationReviewerType.EXECUTIVE
+    ) {
+      const hrApproval =
+        await prisma.applicationApproval.findFirst({
+          where: {
+            applicationId: application.id,
+            stage,
+            reviewerType:
+              ApplicationReviewerType.HR,
+            decision:
+              ApplicationDecision.APPROVED,
+            applicationVersion: currentVersion,
+          },
+          select: {
+            id: true,
+          },
+        });
 
       if (!hrApproval) {
         throw new DecisionError(
@@ -275,11 +427,14 @@ export async function POST(
       }
     }
 
-    const now = new Date();
+    // ======================================
+    // NEXT STATUS
+    // ======================================
 
     const nextStatus =
       decision === ApplicationDecision.APPROVED
-        ? actor.reviewerType === ApplicationReviewerType.HR
+        ? actor.reviewerType ===
+          ApplicationReviewerType.HR
           ? stage === ApplicationStage.INITIAL
             ? InitialApplicationStatus.EXECUTIVE_REVIEW
             : DocumentsApplicationStatus.EXECUTIVE_REVIEW
@@ -294,11 +449,16 @@ export async function POST(
             ? InitialApplicationStatus.NEEDS_CORRECTION
             : DocumentsApplicationStatus.NEEDS_CORRECTION;
 
+    const now = new Date();
+
+    let finalPersonnelCode: string | null = null;
+
+    // ======================================
+    // TRANSACTION
+    // ======================================
+
     await prisma.$transaction(
       async (tx) => {
-        // تغییر وضعیت فقط در صورت باقی بودن وضعیت مورد انتظار
-        // انجام می‌شود تا تصمیم‌های هم‌زمان باعث خرابی گردش کار نشوند.
-
         const updateResult =
           stage === ApplicationStage.INITIAL
             ? await tx.candidateApplication.updateMany({
@@ -314,7 +474,8 @@ export async function POST(
 
                   ...(actor.reviewerType ===
                     ApplicationReviewerType.EXECUTIVE &&
-                  decision === ApplicationDecision.APPROVED
+                  decision ===
+                    ApplicationDecision.APPROVED
                     ? {
                         initialApprovedAt: now,
                         documentsStatus:
@@ -336,7 +497,8 @@ export async function POST(
 
                   ...(actor.reviewerType ===
                     ApplicationReviewerType.EXECUTIVE &&
-                  decision === ApplicationDecision.APPROVED
+                  decision ===
+                    ApplicationDecision.APPROVED
                     ? { documentsApprovedAt: now }
                     : {}),
                 },
@@ -348,6 +510,10 @@ export async function POST(
             409
           );
         }
+
+        // ==================================
+        // SAVE APPROVAL
+        // ==================================
 
         await tx.applicationApproval.create({
           data: {
@@ -362,29 +528,102 @@ export async function POST(
           },
         });
 
-        // فعال‌سازی حساب پس از تأیید نهایی مرحله اول
+        // ==================================
+        // INITIAL STAGE ACTIVATION
+        // ==================================
+
         if (
           stage === ApplicationStage.INITIAL &&
-          actor.reviewerType === ApplicationReviewerType.EXECUTIVE &&
+          actor.reviewerType ===
+            ApplicationReviewerType.EXECUTIVE &&
           decision === ApplicationDecision.APPROVED
         ) {
           await tx.user.update({
-            where: { id: application.userId },
+            where: {
+              id: application.userId,
+            },
             data: {
               isActive: true,
-              accessLevel: UserAccessLevel.CANDIDATE_PORTAL,
+              accessLevel:
+                UserAccessLevel.CANDIDATE_PORTAL,
             },
           });
         }
 
-        // دسترسی ERP تنها پس از تأیید نهایی مدارک مرحله دوم
+        // ==================================
+        // FINAL DOCUMENTS APPROVAL
+        // ==================================
+
         if (
           stage === ApplicationStage.DOCUMENTS &&
-          actor.reviewerType === ApplicationReviewerType.EXECUTIVE &&
+          actor.reviewerType ===
+            ApplicationReviewerType.EXECUTIVE &&
           decision === ApplicationDecision.APPROVED
         ) {
+          // تولید کد پرسنلی فقط در زمان نهایی‌سازی
+          const existingProfile =
+            await tx.employeeProfile.findUnique({
+              where: {
+                userId: application.userId,
+              },
+              select: {
+                id: true,
+                candidateApplicationId: true,
+                personnelCode: true,
+              },
+            });
+
+          if (
+            existingProfile &&
+            existingProfile.candidateApplicationId !==
+              application.id
+          ) {
+            throw new DecisionError(
+              "این حساب کاربری قبلاً به پرونده استخدامی دیگری متصل شده است.",
+              409
+            );
+          }
+
+          if (existingProfile?.personnelCode) {
+            finalPersonnelCode =
+              existingProfile.personnelCode;
+          } else {
+            const personnelCode =
+              await generatePersonnelCode(tx, now);
+
+            if (existingProfile) {
+              await tx.employeeProfile.update({
+                where: {
+                  id: existingProfile.id,
+                },
+                data: {
+                  personnelCode,
+                  employmentStatus:
+                    EmployeeEmploymentStatus.ACTIVE,
+                },
+              });
+            } else {
+              await tx.employeeProfile.create({
+                data: {
+                  userId: application.userId,
+                  candidateApplicationId:
+                    application.id,
+                  personnelCode,
+                  employmentStatus:
+                    EmployeeEmploymentStatus.ACTIVE,
+                  hireDate: now,
+                },
+              });
+            }
+
+            finalPersonnelCode = personnelCode;
+          }
+
+          // فعال‌سازی حساب دائمی ERP
           await tx.user.update({
-            where: { id: application.userId },
+            where: {
+              id: application.userId,
+            },
             data: {
               isActive: true,
               accessLevel: UserAccessLevel.ERP,
@@ -392,10 +631,15 @@ export async function POST(
           });
         }
 
+        // ==================================
+        // AUDIT LOG
+        // ==================================
+
         await tx.auditLog.create({
           data: {
             actorUserId: actor.id,
-            action: `CANDIDATE_${stage}_${actor.reviewerType}_${decision}`,
+            action:
+              `CANDIDATE_${stage}_${actor.reviewerType}_${decision}`,
             entityType: "CandidateApplication",
             entityId: application.id,
             ipAddress:
@@ -403,7 +647,8 @@ export async function POST(
               request.headers.get("x-forwarded-for") ||
               undefined,
             details: {
-              applicationNumber: application.applicationNumber,
+              applicationNumber:
+                application.applicationNumber,
               stage,
               reviewerType: actor.reviewerType,
               decision,
@@ -411,6 +656,7 @@ export async function POST(
               applicationVersion: currentVersion,
               previousStatus: currentStatus,
               nextStatus,
+              personnelCode: finalPersonnelCode,
             },
           },
         });
@@ -420,18 +666,27 @@ export async function POST(
       }
     );
 
+    // ======================================
+    // RESPONSE MESSAGE
+    // ======================================
+
     let message = "";
 
     if (decision === ApplicationDecision.APPROVED) {
-      if (actor.reviewerType === ApplicationReviewerType.HR) {
+      if (
+        actor.reviewerType ===
+        ApplicationReviewerType.HR
+      ) {
         message =
           "تأیید منابع انسانی ثبت شد و پرونده برای بررسی مدیرعامل یا قائم‌مقام ارسال شد.";
-      } else if (stage === ApplicationStage.INITIAL) {
+      } else if (
+        stage === ApplicationStage.INITIAL
+      ) {
         message =
-          "مرحله اول با تأیید هر دو مرجع تکمیل شد. دسترسی متقاضی به پنل ثبت مدارک فعال شد.";
+          "مرحله اول با تأیید هر دو مرجع تکمیل شد. دسترسی پنل ثبت مدارک فعال شد.";
       } else {
         message =
-          "مدارک مرحله دوم با تأیید هر دو مرجع نهایی شد. دسترسی ERP فعال شد.";
+          "مدارک مرحله دوم با تأیید هر دو مرجع نهایی شد. حساب ERP فعال و پرونده دائمی پرسنلی ایجاد شد.";
       }
     } else if (
       decision === ApplicationDecision.NEEDS_CORRECTION
@@ -446,15 +701,19 @@ export async function POST(
       success: true,
       data: {
         applicationId: application.id,
-        applicationNumber: application.applicationNumber,
+        applicationNumber:
+          application.applicationNumber,
         stage,
         reviewerType: actor.reviewerType,
         decision,
         applicationVersion: currentVersion,
         status: nextStatus,
+        personnelCode:
+          finalPersonnelCode,
         message,
       },
     });
+
   } catch (error) {
     return responseError(error);
   }

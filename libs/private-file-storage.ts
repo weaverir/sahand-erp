@@ -5,6 +5,7 @@ import {
   mkdir,
   writeFile,
   unlink,
+  readFile,
 } from "node:fs/promises";
 
 import path from "node:path";
@@ -215,6 +216,34 @@ export async function storePrivateFile(
     sizeBytes: buffer.length,
     checksum,
   };
+}
+
+/**
+ * Read a private file using its internal storage key.
+ * Never expose storageKey directly to the browser.
+ */
+export async function readPrivateFile(
+  storageKey: string
+): Promise<Buffer> {
+  const absolutePath = resolveStoragePath(storageKey);
+
+  try {
+    return await readFile(absolutePath);
+  } catch (error) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      error.code === "ENOENT"
+    ) {
+      throw new PrivateFileStorageError(
+        "فایل موردنظر در فضای ذخیره‌سازی پیدا نشد.",
+        404
+      );
+    }
+
+    throw error;
+  }
 }
 
 export async function deletePrivateFile(

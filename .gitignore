@@ -43,3 +43,33 @@ next-env.d.ts
 /app/generated/prisma
 # Private recruitment documents
 private-uploads/
+.next/
+.next-backup-*/
+# Python virtual environments
+.venv/
+venv/
+__pycache__/
+*.pyc
+# Build
+.next/
+.next-backup-*/
+node_modules/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Prisma temporary files
+generated/prisma/*.tmp*
+src/generated/prisma/*.tmp*
+
+# Archives
+*.zip
+
+# Environment
+.env
+.env.*
+!.env.example
+

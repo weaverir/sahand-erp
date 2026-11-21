@@ -103,7 +103,31 @@ export const ModelName = {
   EmployeeAssignmentPermission: 'EmployeeAssignmentPermission',
   OrganizationRelationship: 'OrganizationRelationship',
   OrganizationAssignmentHistory: 'OrganizationAssignmentHistory',
-  OrganizationAuditLog: 'OrganizationAuditLog'
+  OrganizationAuditLog: 'OrganizationAuditLog',
+  WorkShift: 'WorkShift',
+  WorkShiftDay: 'WorkShiftDay',
+  ShiftAssignment: 'ShiftAssignment',
+  HolidayCalendar: 'HolidayCalendar',
+  HolidayCalendarDay: 'HolidayCalendarDay',
+  EmployeeProfile: 'EmployeeProfile',
+  AttendanceRecord: 'AttendanceRecord',
+  AttendanceEvent: 'AttendanceEvent',
+  AttendanceVerification: 'AttendanceVerification',
+  AttendanceAdjustment: 'AttendanceAdjustment',
+  AttendanceChallenge: 'AttendanceChallenge',
+  FaceIdentityProfile: 'FaceIdentityProfile',
+  EmployeeShiftSchedule: 'EmployeeShiftSchedule',
+  EmployeeShiftScheduleSegment: 'EmployeeShiftScheduleSegment',
+  EmployeeShiftScheduleRevision: 'EmployeeShiftScheduleRevision',
+  CorrespondenceLetter: 'CorrespondenceLetter',
+  CorrespondenceHistory: 'CorrespondenceHistory',
+  CorrespondenceMonthlyQuota: 'CorrespondenceMonthlyQuota',
+  AttendanceMonthlyPeriod: 'AttendanceMonthlyPeriod',
+  MonthlyWorkSummary: 'MonthlyWorkSummary',
+  LeaveRequest: 'LeaveRequest',
+  LeaveApprovalStep: 'LeaveApprovalStep',
+  LeaveLedgerEntry: 'LeaveLedgerEntry',
+  LeaveOpeningBalance: 'LeaveOpeningBalance'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -901,6 +925,10 @@ export const OrganizationLocationScalarFieldEnum = {
   city: 'city',
   address: 'address',
   phone: 'phone',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  geofenceRadiusMeters: 'geofenceRadiusMeters',
+  geofenceEnabled: 'geofenceEnabled',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1034,6 +1062,428 @@ export const OrganizationAuditLogScalarFieldEnum = {
 } as const
 
 export type OrganizationAuditLogScalarFieldEnum = (typeof OrganizationAuditLogScalarFieldEnum)[keyof typeof OrganizationAuditLogScalarFieldEnum]
+
+
+export const WorkShiftScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  version: 'version',
+  isActive: 'isActive',
+  isDefault: 'isDefault',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WorkShiftScalarFieldEnum = (typeof WorkShiftScalarFieldEnum)[keyof typeof WorkShiftScalarFieldEnum]
+
+
+export const WorkShiftDayScalarFieldEnum = {
+  id: 'id',
+  shiftId: 'shiftId',
+  dayOfWeek: 'dayOfWeek',
+  segmentOrder: 'segmentOrder',
+  dayType: 'dayType',
+  isWorkingDay: 'isWorkingDay',
+  startMinute: 'startMinute',
+  endMinute: 'endMinute',
+  requiredMinutes: 'requiredMinutes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WorkShiftDayScalarFieldEnum = (typeof WorkShiftDayScalarFieldEnum)[keyof typeof WorkShiftDayScalarFieldEnum]
+
+
+export const ShiftAssignmentScalarFieldEnum = {
+  id: 'id',
+  shiftId: 'shiftId',
+  targetType: 'targetType',
+  organizationUnitId: 'organizationUnitId',
+  employeeAssignmentId: 'employeeAssignmentId',
+  validFrom: 'validFrom',
+  validTo: 'validTo',
+  isActive: 'isActive',
+  assignedById: 'assignedById',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ShiftAssignmentScalarFieldEnum = (typeof ShiftAssignmentScalarFieldEnum)[keyof typeof ShiftAssignmentScalarFieldEnum]
+
+
+export const HolidayCalendarScalarFieldEnum = {
+  id: 'id',
+  jalaliYear: 'jalaliYear',
+  name: 'name',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HolidayCalendarScalarFieldEnum = (typeof HolidayCalendarScalarFieldEnum)[keyof typeof HolidayCalendarScalarFieldEnum]
+
+
+export const HolidayCalendarDayScalarFieldEnum = {
+  id: 'id',
+  calendarId: 'calendarId',
+  date: 'date',
+  jalaliDate: 'jalaliDate',
+  title: 'title',
+  holidayType: 'holidayType',
+  isHoliday: 'isHoliday',
+  isWorkingDayOverride: 'isWorkingDayOverride',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HolidayCalendarDayScalarFieldEnum = (typeof HolidayCalendarDayScalarFieldEnum)[keyof typeof HolidayCalendarDayScalarFieldEnum]
+
+
+export const EmployeeProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  candidateApplicationId: 'candidateApplicationId',
+  personnelCode: 'personnelCode',
+  employmentStatus: 'employmentStatus',
+  hireDate: 'hireDate',
+  terminationDate: 'terminationDate',
+  terminationReason: 'terminationReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeProfileScalarFieldEnum = (typeof EmployeeProfileScalarFieldEnum)[keyof typeof EmployeeProfileScalarFieldEnum]
+
+
+export const AttendanceRecordScalarFieldEnum = {
+  id: 'id',
+  employeeAssignmentId: 'employeeAssignmentId',
+  shiftAssignmentId: 'shiftAssignmentId',
+  checkpointLocationId: 'checkpointLocationId',
+  workDate: 'workDate',
+  timeZone: 'timeZone',
+  scheduledStartAt: 'scheduledStartAt',
+  scheduledEndAt: 'scheduledEndAt',
+  requiredMinutes: 'requiredMinutes',
+  firstCheckInAt: 'firstCheckInAt',
+  lastCheckOutAt: 'lastCheckOutAt',
+  workedMinutes: 'workedMinutes',
+  breakMinutes: 'breakMinutes',
+  overtimeMinutes: 'overtimeMinutes',
+  lateMinutes: 'lateMinutes',
+  earlyLeaveMinutes: 'earlyLeaveMinutes',
+  status: 'status',
+  notes: 'notes',
+  approvedByUserId: 'approvedByUserId',
+  approvedAt: 'approvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AttendanceRecordScalarFieldEnum = (typeof AttendanceRecordScalarFieldEnum)[keyof typeof AttendanceRecordScalarFieldEnum]
+
+
+export const AttendanceEventScalarFieldEnum = {
+  id: 'id',
+  attendanceRecordId: 'attendanceRecordId',
+  eventType: 'eventType',
+  occurredAt: 'occurredAt',
+  receivedAt: 'receivedAt',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  accuracyMeters: 'accuracyMeters',
+  distanceFromCheckpointMeters: 'distanceFromCheckpointMeters',
+  geofencePassed: 'geofencePassed',
+  source: 'source',
+  deviceFingerprint: 'deviceFingerprint',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  photoStorageKey: 'photoStorageKey',
+  idempotencyKey: 'idempotencyKey',
+  notes: 'notes',
+  createdAt: 'createdAt'
+} as const
+
+export type AttendanceEventScalarFieldEnum = (typeof AttendanceEventScalarFieldEnum)[keyof typeof AttendanceEventScalarFieldEnum]
+
+
+export const AttendanceVerificationScalarFieldEnum = {
+  id: 'id',
+  attendanceEventId: 'attendanceEventId',
+  verificationType: 'verificationType',
+  status: 'status',
+  score: 'score',
+  provider: 'provider',
+  details: 'details',
+  verifiedAt: 'verifiedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type AttendanceVerificationScalarFieldEnum = (typeof AttendanceVerificationScalarFieldEnum)[keyof typeof AttendanceVerificationScalarFieldEnum]
+
+
+export const AttendanceAdjustmentScalarFieldEnum = {
+  id: 'id',
+  attendanceRecordId: 'attendanceRecordId',
+  attendanceEventId: 'attendanceEventId',
+  requestedByUserId: 'requestedByUserId',
+  reviewedByUserId: 'reviewedByUserId',
+  proposedEventType: 'proposedEventType',
+  proposedOccurredAt: 'proposedOccurredAt',
+  reason: 'reason',
+  status: 'status',
+  reviewerComment: 'reviewerComment',
+  reviewedAt: 'reviewedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AttendanceAdjustmentScalarFieldEnum = (typeof AttendanceAdjustmentScalarFieldEnum)[keyof typeof AttendanceAdjustmentScalarFieldEnum]
+
+
+export const AttendanceChallengeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  employeeAssignmentId: 'employeeAssignmentId',
+  action: 'action',
+  nonceHash: 'nonceHash',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  consumedAt: 'consumedAt',
+  failedAt: 'failedAt',
+  failureReason: 'failureReason',
+  ipAddress: 'ipAddress',
+  userAgentHash: 'userAgentHash',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AttendanceChallengeScalarFieldEnum = (typeof AttendanceChallengeScalarFieldEnum)[keyof typeof AttendanceChallengeScalarFieldEnum]
+
+
+export const FaceIdentityProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  referenceImageEncrypted: 'referenceImageEncrypted',
+  referenceImageIv: 'referenceImageIv',
+  referenceImageAuthTag: 'referenceImageAuthTag',
+  referenceImageMimeType: 'referenceImageMimeType',
+  encryptionKeyVersion: 'encryptionKeyVersion',
+  consentAcceptedAt: 'consentAcceptedAt',
+  consentVersion: 'consentVersion',
+  enrolledByUserId: 'enrolledByUserId',
+  isActive: 'isActive',
+  enrolledAt: 'enrolledAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FaceIdentityProfileScalarFieldEnum = (typeof FaceIdentityProfileScalarFieldEnum)[keyof typeof FaceIdentityProfileScalarFieldEnum]
+
+
+export const EmployeeShiftScheduleScalarFieldEnum = {
+  id: 'id',
+  employeeUserId: 'employeeUserId',
+  weekStartDate: 'weekStartDate',
+  version: 'version',
+  status: 'status',
+  createdByUserId: 'createdByUserId',
+  submittedByUserId: 'submittedByUserId',
+  submittedAt: 'submittedAt',
+  reviewedByUserId: 'reviewedByUserId',
+  reviewedAt: 'reviewedAt',
+  reviewComment: 'reviewComment',
+  publishedAt: 'publishedAt',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeShiftScheduleScalarFieldEnum = (typeof EmployeeShiftScheduleScalarFieldEnum)[keyof typeof EmployeeShiftScheduleScalarFieldEnum]
+
+
+export const EmployeeShiftScheduleSegmentScalarFieldEnum = {
+  id: 'id',
+  scheduleId: 'scheduleId',
+  workDate: 'workDate',
+  segmentOrder: 'segmentOrder',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  requiredMinutes: 'requiredMinutes',
+  workShiftId: 'workShiftId',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeShiftScheduleSegmentScalarFieldEnum = (typeof EmployeeShiftScheduleSegmentScalarFieldEnum)[keyof typeof EmployeeShiftScheduleSegmentScalarFieldEnum]
+
+
+export const EmployeeShiftScheduleRevisionScalarFieldEnum = {
+  id: 'id',
+  scheduleId: 'scheduleId',
+  actorUserId: 'actorUserId',
+  action: 'action',
+  beforeData: 'beforeData',
+  afterData: 'afterData',
+  comment: 'comment',
+  createdAt: 'createdAt'
+} as const
+
+export type EmployeeShiftScheduleRevisionScalarFieldEnum = (typeof EmployeeShiftScheduleRevisionScalarFieldEnum)[keyof typeof EmployeeShiftScheduleRevisionScalarFieldEnum]
+
+
+export const CorrespondenceLetterScalarFieldEnum = {
+  id: 'id',
+  subject: 'subject',
+  body: 'body',
+  priority: 'priority',
+  status: 'status',
+  senderUserId: 'senderUserId',
+  senderAssignmentId: 'senderAssignmentId',
+  currentReviewerAssignmentId: 'currentReviewerAssignmentId',
+  persianMonth: 'persianMonth',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  version: 'version'
+} as const
+
+export type CorrespondenceLetterScalarFieldEnum = (typeof CorrespondenceLetterScalarFieldEnum)[keyof typeof CorrespondenceLetterScalarFieldEnum]
+
+
+export const CorrespondenceHistoryScalarFieldEnum = {
+  id: 'id',
+  letterId: 'letterId',
+  actorUserId: 'actorUserId',
+  actorAssignmentId: 'actorAssignmentId',
+  action: 'action',
+  fromAssignmentId: 'fromAssignmentId',
+  toAssignmentId: 'toAssignmentId',
+  note: 'note',
+  createdAt: 'createdAt'
+} as const
+
+export type CorrespondenceHistoryScalarFieldEnum = (typeof CorrespondenceHistoryScalarFieldEnum)[keyof typeof CorrespondenceHistoryScalarFieldEnum]
+
+
+export const CorrespondenceMonthlyQuotaScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  persianMonth: 'persianMonth',
+  urgentUsed: 'urgentUsed'
+} as const
+
+export type CorrespondenceMonthlyQuotaScalarFieldEnum = (typeof CorrespondenceMonthlyQuotaScalarFieldEnum)[keyof typeof CorrespondenceMonthlyQuotaScalarFieldEnum]
+
+
+export const AttendanceMonthlyPeriodScalarFieldEnum = {
+  id: 'id',
+  jalaliYear: 'jalaliYear',
+  jalaliMonth: 'jalaliMonth',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  status: 'status',
+  calculatedAt: 'calculatedAt',
+  closedAt: 'closedAt',
+  closedByUserId: 'closedByUserId',
+  closeNote: 'closeNote',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AttendanceMonthlyPeriodScalarFieldEnum = (typeof AttendanceMonthlyPeriodScalarFieldEnum)[keyof typeof AttendanceMonthlyPeriodScalarFieldEnum]
+
+
+export const MonthlyWorkSummaryScalarFieldEnum = {
+  id: 'id',
+  periodId: 'periodId',
+  employeeUserId: 'employeeUserId',
+  requiredMinutes: 'requiredMinutes',
+  workedMinutes: 'workedMinutes',
+  holidayWorkMinutes: 'holidayWorkMinutes',
+  approvedLeaveMinutes: 'approvedLeaveMinutes',
+  overtimeMinutes: 'overtimeMinutes',
+  uncoveredMinutes: 'uncoveredMinutes',
+  unresolvedCount: 'unresolvedCount',
+  calculationVersion: 'calculationVersion',
+  calculatedAt: 'calculatedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MonthlyWorkSummaryScalarFieldEnum = (typeof MonthlyWorkSummaryScalarFieldEnum)[keyof typeof MonthlyWorkSummaryScalarFieldEnum]
+
+
+export const LeaveRequestScalarFieldEnum = {
+  id: 'id',
+  employeeUserId: 'employeeUserId',
+  employeeAssignmentId: 'employeeAssignmentId',
+  leaveTypeKey: 'leaveTypeKey',
+  startAt: 'startAt',
+  endAt: 'endAt',
+  requestedMinutes: 'requestedMinutes',
+  approvedMinutes: 'approvedMinutes',
+  status: 'status',
+  reason: 'reason',
+  submittedAt: 'submittedAt',
+  decidedAt: 'decidedAt',
+  cancelledAt: 'cancelledAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LeaveRequestScalarFieldEnum = (typeof LeaveRequestScalarFieldEnum)[keyof typeof LeaveRequestScalarFieldEnum]
+
+
+export const LeaveApprovalStepScalarFieldEnum = {
+  id: 'id',
+  leaveRequestId: 'leaveRequestId',
+  stepOrder: 'stepOrder',
+  requiredRole: 'requiredRole',
+  reviewerUserId: 'reviewerUserId',
+  decision: 'decision',
+  decidedAt: 'decidedAt',
+  note: 'note',
+  createdAt: 'createdAt'
+} as const
+
+export type LeaveApprovalStepScalarFieldEnum = (typeof LeaveApprovalStepScalarFieldEnum)[keyof typeof LeaveApprovalStepScalarFieldEnum]
+
+
+export const LeaveLedgerEntryScalarFieldEnum = {
+  id: 'id',
+  employeeUserId: 'employeeUserId',
+  leaveTypeKey: 'leaveTypeKey',
+  jalaliYear: 'jalaliYear',
+  jalaliMonth: 'jalaliMonth',
+  entryType: 'entryType',
+  minutes: 'minutes',
+  idempotencyKey: 'idempotencyKey',
+  leaveRequestId: 'leaveRequestId',
+  createdByUserId: 'createdByUserId',
+  note: 'note',
+  createdAt: 'createdAt'
+} as const
+
+export type LeaveLedgerEntryScalarFieldEnum = (typeof LeaveLedgerEntryScalarFieldEnum)[keyof typeof LeaveLedgerEntryScalarFieldEnum]
+
+
+export const LeaveOpeningBalanceScalarFieldEnum = {
+  id: 'id',
+  employeeUserId: 'employeeUserId',
+  leaveTypeKey: 'leaveTypeKey',
+  startJalaliYear: 'startJalaliYear',
+  startJalaliMonth: 'startJalaliMonth',
+  openingMinutes: 'openingMinutes',
+  ledgerEntryId: 'ledgerEntryId',
+  createdByUserId: 'createdByUserId',
+  createdAt: 'createdAt'
+} as const
+
+export type LeaveOpeningBalanceScalarFieldEnum = (typeof LeaveOpeningBalanceScalarFieldEnum)[keyof typeof LeaveOpeningBalanceScalarFieldEnum]
 
 
 export const SortOrder = {

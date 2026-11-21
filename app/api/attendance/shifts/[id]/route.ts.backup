@@ -1,0 +1,662 @@
+
+import { NextRequest } from "next/server";
+
+import {
+  Prisma,
+  WorkShiftDayType,
+} from "@/generated/prisma/client";
+
+import { prisma } from "@/libs/prisma";
+
+import {
+  successResponse,
+  errorResponse,
+} from "@/libs/api-response";
+
+import {
+  assertSameOriginRequest,
+  authorizeGlobalRequest,
+} from "@/modules/auth/auth.middleware";
+
+import { AuthError } from "@/modules/auth/auth.service";
+
+import {
+  PermissionDeniedError,
+} from "@/modules/permissions/access-control";
+
+// ==========================================
+// TYPES
+// ==========================================
+
+class WorkShiftError extends Error {
+  constructor(
+    message: string,
+    public statusCode = 400
+  ) {
+    super(message);
+    this.name = "WorkShiftError";
+  }
+}
+
+type WorkShiftDayInput = {
+  dayOfWeek: number;
+  segmentOrder: number;
+  dayType: WorkShiftDayType;
+  isWorkingDay: boolean;
+  startMinute: number | null;
+  endMinute: number | null;
+  requiredMinutes: number;
+};
+
+// ==========================================
+// HELPERS
+// ==========================================
+
+function isObject(
+  value: unknown
+): value is Record<string, unknown> {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    !Array.isArray(value)
+  );
+}
+
+function readString(
+  value: unknown,
+  field: string,
+  required = true
+): string | null {
+  if (
+    value === undefined ||
+    value === null ||
+    value === ""
+  ) {
+    if (required) {
+      throw new WorkShiftError(
+        `${field} الزامی است.`
+      );
+    }
+
+    return null;
+  }
+
+  if (typeof value !== "string") {
+    throw new WorkShiftError(
+      `${field} معتبر نیست.`
+    );
+  }
+
+  const result = value.trim();
+
+  if (!result && required) {
+    throw new WorkShiftError(
+      `${field} الزامی است.`
+    );
+  }
+
+  return result || null;
+}
+
+function readInteger(
+  value: unknown,
+  field: string,
+  min: number,
+  max: number
+): number {
+  if (
+    typeof value !== "number" ||
+    !Number.isInteger(value) ||
+    value < min ||
+    value > max
+  ) {
+    throw new WorkShiftError(
+      `${field} باید عدد صحیح بین ${min} و ${max} باشد.`
+    );
+  }
+
+  return value;
+}
+
+function getIpAddress(
+  request: NextRequest
+): string | null {
+  return (
+    request.headers
+      .get("x-forwarded-for")
+      ?.split(",")[0]
+      ?.trim() ||
+    request.headers.get("x-real-ip") ||
+    null
+  );
+}
+
+function parseDays(
+  value: unknown
+): WorkShiftDayInput[] {
+  if (
+    !Array.isArray(value) ||
+    value.length === 0 ||
+    value.length > 100
+  ) {
+    throw new WorkShiftError(
+      "برنامه هفتگی شیفت معتبر نیست."
+    );
+  }
+
+  const days: WorkShiftDayInput[] = [];
+
+  const uniqueSegments = new Set<string>();
+
+  for (const item of value) {
+    if (!isObject(item)) {
+      throw new WorkShiftError(
+        "اطلاعات روز کاری معتبر نیست."
+      );
+    }
+
+    const dayOfWeek = readInteger(
+      item.dayOfWeek,
+      "روز هفته",
+      0,
+      6
+    );
+
+    const segmentOrder = readInteger(
+      item.segmentOrder ?? 1,
+      "ترتیب بازه کاری",
+      1,
+      100
+    );
+
+    const dayType =
+      item.dayType ?? WorkShiftDayType.NORMAL;
+
+    if (
+      dayType !== WorkShiftDayType.NORMAL &&
+      dayType !== WorkShiftDayType.HOLIDAY
+    ) {
+      throw new WorkShiftError(
+        "نوع روز کاری معتبر نیست."
+      );
+    }
+
+    if (typeof item.isWorkingDay !== "boolean") {
+      throw new WorkShiftError(
+        "وضعیت روز کاری باید مشخص باشد."
+      );
+    }
+
+    const requiredMinutes = readInteger(
+      item.requiredMinutes ??
+        (item.isWorkingDay ? 480 : 0),
+      "دقایق کاری",
+      0,
+      1440
+    );
+
+    let startMinute: number | null = null;
+    let endMinute: number | null = null;
+
+    if (item.isWorkingDay) {
+      startMinute = readInteger(
+        item.startMinute,
+        "ساعت شروع",
+        0,
+        1439
+      );
+
+      endMinute = readInteger(
+        item.endMinute,
+        "ساعت پایان",
+        0,
+        1439
+      );
+
+      if (startMinute === endMinute) {
+        throw new WorkShiftError(
+          "ساعت شروع و پایان نمی‌توانند یکسان باشند."
+        );
+      }
+
+      if (requiredMinutes <= 0) {
+        throw new WorkShiftError(
+          "مدت کارکرد روز کاری باید بیشتر از صفر باشد."
+        );
+      }
+    } else if (
+      item.startMinute != null ||
+      item.endMinute != null
+    ) {
+      throw new WorkShiftError(
+        "روز غیرکاری نباید ساعت شروع یا پایان داشته باشد."
+      );
+    }
+
+    const uniqueKey =
+      `${dayOfWeek}-${dayType}-${segmentOrder}`;
+
+    if (uniqueSegments.has(uniqueKey)) {
+      throw new WorkShiftError(
+        "ترتیب بازه‌های یک روز نباید تکراری باشد."
+      );
+    }
+
+    uniqueSegments.add(uniqueKey);
+
+    days.push({
+      dayOfWeek,
+      segmentOrder,
+      dayType,
+      isWorkingDay: item.isWorkingDay,
+      startMinute,
+      endMinute,
+      requiredMinutes,
+    });
+  }
+
+  return days;
+}
+
+// ==========================================
+// ERROR HANDLER
+// ==========================================
+
+function handleError(error: unknown) {
+  if (error instanceof WorkShiftError) {
+    return errorResponse(
+      error.message,
+      error.statusCode
+    );
+  }
+
+  if (error instanceof AuthError) {
+    return errorResponse(
+      "احراز هویت ناموفق است.",
+      401
+    );
+  }
+
+  if (error instanceof PermissionDeniedError) {
+    return errorResponse(
+      "شما مجوز انجام این عملیات را ندارید.",
+      403
+    );
+  }
+
+  if (
+    isObject(error) &&
+    error.code === "P2002"
+  ) {
+    return errorResponse(
+      "کد شیفت یا نسخه آن قبلاً ثبت شده است.",
+      409
+    );
+  }
+
+  if (
+    isObject(error) &&
+    error.code === "P2034"
+  ) {
+    return errorResponse(
+      "اطلاعات هم‌زمان تغییر کرده است. دوباره تلاش کنید.",
+      409
+    );
+  }
+
+  console.error(
+    "[WORK_SHIFT_ERROR]",
+    error
+  );
+
+  return errorResponse(
+    "خطای داخلی در مدیریت شیفت کاری.",
+    500
+  );
+}
+
+// ==========================================
+// GET - LIST WORK SHIFTS
+// ==========================================
+
+export async function GET(
+  request: NextRequest
+) {
+  try {
+    await authorizeGlobalRequest(
+      request,
+      "attendance.shift.view"
+    );
+
+    const params =
+      request.nextUrl.searchParams;
+
+    const search =
+      params.get("search")?.trim() || "";
+
+    const activeParam =
+      params.get("isActive");
+
+    const page = Number(
+      params.get("page") || 1
+    );
+
+    const limit = Number(
+      params.get("limit") || 20
+    );
+
+    if (
+      !Number.isInteger(page) ||
+      page < 1 ||
+      !Number.isInteger(limit) ||
+      limit < 1 ||
+      limit > 100
+    ) {
+      throw new WorkShiftError(
+        "شماره صفحه یا تعداد نتایج معتبر نیست."
+      );
+    }
+
+    if (
+      activeParam !== null &&
+      activeParam !== "true" &&
+      activeParam !== "false"
+    ) {
+      throw new WorkShiftError(
+        "فیلتر وضعیت شیفت معتبر نیست."
+      );
+    }
+
+    const where: Prisma.WorkShiftWhereInput = {
+      ...(activeParam !== null
+        ? {
+            isActive: activeParam === "true",
+          }
+        : {}),
+
+      ...(search
+        ? {
+            OR: [
+              {
+                name: {
+                  contains: search,
+                  mode: "insensitive",
+                },
+              },
+              {
+                code: {
+                  contains: search,
+                  mode: "insensitive",
+                },
+              },
+            ],
+          }
+        : {}),
+    };
+
+    const [shifts, total] =
+      await prisma.$transaction([
+        prisma.workShift.findMany({
+          where,
+
+          include: {
+            days: {
+              orderBy: [
+                { dayOfWeek: "asc" },
+                { segmentOrder: "asc" },
+              ],
+            },
+
+            _count: {
+              select: {
+                assignments: true,
+              },
+            },
+          },
+
+          orderBy: [
+            { isDefault: "desc" },
+            { createdAt: "desc" },
+          ],
+
+          skip: (page - 1) * limit,
+          take: limit,
+        }),
+
+        prisma.workShift.count({
+          where,
+        }),
+      ]);
+
+    return successResponse({
+      shifts,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
+
+  } catch (error) {
+    return handleError(error);
+  }
+}
+
+// ==========================================
+// POST - CREATE WORK SHIFT
+// ==========================================
+
+export async function POST(
+  request: NextRequest
+) {
+  try {
+    assertSameOriginRequest(request);
+
+    const { user: actor } =
+      await authorizeGlobalRequest(
+        request,
+        "attendance.shift.create"
+      );
+
+    let body: unknown;
+
+    try {
+      body = await request.json();
+    } catch {
+      throw new WorkShiftError(
+        "ساختار اطلاعات ارسالی معتبر نیست."
+      );
+    }
+
+    if (!isObject(body)) {
+      throw new WorkShiftError(
+        "اطلاعات شیفت معتبر نیست."
+      );
+    }
+
+    const code = readString(
+      body.code,
+      "کد شیفت"
+    )!;
+
+    const name = readString(
+      body.name,
+      "نام شیفت"
+    )!;
+
+    const description = readString(
+      body.description,
+      "توضیحات",
+      false
+    );
+
+    if (code.length > 50) {
+      throw new WorkShiftError(
+        "کد شیفت نباید بیشتر از ۵۰ کاراکتر باشد."
+      );
+    }
+
+    if (name.length > 150) {
+      throw new WorkShiftError(
+        "نام شیفت نباید بیشتر از ۱۵۰ کاراکتر باشد."
+      );
+    }
+
+    if (
+      description &&
+      description.length > 2000
+    ) {
+      throw new WorkShiftError(
+        "توضیحات نباید بیشتر از ۲۰۰۰ کاراکتر باشد."
+      );
+    }
+
+    const normalizedCode =
+      code.toUpperCase();
+
+    const isDefault =
+      body.isDefault ?? false;
+
+    if (typeof isDefault !== "boolean") {
+      throw new WorkShiftError(
+        "وضعیت شیفت پیش‌فرض معتبر نیست."
+      );
+    }
+
+    const days = parseDays(body.days);
+
+    const result = await prisma.$transaction(
+      async (tx) => {
+
+        // آخرین نسخه شیفت
+
+        const previous =
+          await tx.workShift.findFirst({
+            where: {
+              code: normalizedCode,
+            },
+
+            orderBy: {
+              version: "desc",
+            },
+
+            select: {
+              id: true,
+              version: true,
+              isActive: true,
+            },
+          });
+
+        const version =
+          previous
+            ? previous.version + 1
+            : 1;
+
+        // غیرفعال‌سازی نسخه قبلی
+
+        if (previous?.isActive) {
+          await tx.workShift.update({
+            where: {
+              id: previous.id,
+            },
+
+            data: {
+              isActive: false,
+              isDefault: false,
+            },
+          });
+        }
+
+        // در هر لحظه فقط یک شیفت پیش‌فرض فعال
+
+        if (isDefault) {
+          await tx.workShift.updateMany({
+            where: {
+              isActive: true,
+              isDefault: true,
+            },
+
+            data: {
+              isDefault: false,
+            },
+          });
+        }
+
+        // ایجاد شیفت جدید
+
+        const shift =
+          await tx.workShift.create({
+            data: {
+              code: normalizedCode,
+              name,
+              description,
+              version,
+              isActive: true,
+              isDefault,
+
+              days: {
+                create: days,
+              },
+            },
+
+            include: {
+              days: {
+                orderBy: [
+                  { dayOfWeek: "asc" },
+                  { segmentOrder: "asc" },
+                ],
+              },
+            },
+          });
+
+        // ثبت گزارش حسابرسی
+
+        await tx.organizationAuditLog.create({
+          data: {
+            actorUserId: actor.id,
+            entityType: "WorkShift",
+            entityId: shift.id,
+            action: "WORK_SHIFT_CREATED",
+
+            afterData: {
+              id: shift.id,
+              code: shift.code,
+              name: shift.name,
+              version: shift.version,
+              isDefault: shift.isDefault,
+              days: shift.days.map((day) => ({
+                dayOfWeek: day.dayOfWeek,
+                segmentOrder: day.segmentOrder,
+                dayType: day.dayType,
+                isWorkingDay: day.isWorkingDay,
+                startMinute: day.startMinute,
+                endMinute: day.endMinute,
+                requiredMinutes: day.requiredMinutes,
+              })),
+            } satisfies Prisma.InputJsonObject,
+
+            ipAddress: getIpAddress(request),
+          },
+        });
+
+        return shift;
+      },
+      {
+        isolationLevel:
+          Prisma.TransactionIsolationLevel.Serializable,
+      }
+    );
+
+    return successResponse(
+      {
+        shift: result,
+        message: "شیفت کاری با موفقیت ایجاد شد.",
+      },
+      201
+    );
+
+  } catch (error) {
+    return handleError(error);
+  }
+}

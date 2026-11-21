@@ -1,0 +1,4505 @@
+﻿SAHAND ERP - ATTENDANCE AND LEAVE ANALYSIS
+
+========== prisma/schema.prisma ==========
+
+generator client {
+  provider = "prisma-client"
+
+  output = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+
+  url = env("DATABASE_URL")
+}
+
+// ==========================================
+// ENUMS
+// ==========================================
+enum ItemType {
+  RAW_MATERIAL
+
+  COMPONENT
+
+  FINISHED_GOOD
+
+  SEMI_FINISHED
+
+  PACKAGING
+
+  CONSUMABLE
+}
+
+enum UnitOfMeasure {
+  PIECE
+
+  METER
+
+  KILOGRAM
+
+  GRAM
+
+  LITER
+
+  BOX
+
+  ROLL
+
+  SET
+}
+
+enum StockStatus {
+  AVAILABLE
+
+  QUARANTINE
+
+  BLOCKED
+}
+
+enum BatchQualityStatus {
+  PENDING
+
+  APPROVED
+
+  REJECTED
+}
+
+enum MovementType {
+  RECEIPT
+
+  ISSUE
+
+  TRANSFER
+
+  ADJUSTMENT
+
+  PRODUCTION_CONSUMPTION
+
+  PRODUCTION_OUTPUT
+
+  SALES_SHIPMENT
+
+  RETURN
+
+  REVERSAL
+}
+
+enum DocumentStatus {
+  DRAFT
+
+  POSTED
+
+  CANCELLED
+}
+
+enum VersionStatus {
+  DRAFT
+
+  APPROVED
+
+  OBSOLETE
+}
+
+enum WorkOrderStatus {
+  DRAFT
+
+  PLANNED
+
+  RELEASED
+
+  IN_PROGRESS
+
+  PAUSED
+
+  COMPLETED
+
+  CANCELLED
+}
+
+enum ProductionRunStatus {
+  IN_PROGRESS
+
+  PAUSED
+
+  COMPLETED
+
+  CANCELLED
+}
+
+enum OperationStatus {
+  PENDING
+
+  IN_PROGRESS
+
+  PAUSED
+
+  COMPLETED
+
+  SKIPPED
+}
+
+enum QCStage {
+  INCOMING
+
+  IN_PROCESS
+
+  FINAL
+}
+
+enum QCResult {
+  PENDING
+
+  PASSED
+
+  FAILED
+
+  CONDITIONAL
+}
+
+enum QuotationStatus {
+  DRAFT
+
+  SENT
+
+  ACCEPTED
+
+  REJECTED
+
+  EXPIRED
+
+  CONVERTED
+}
+
+enum SalesOrderStatus {
+  DRAFT
+
+  CONFIRMED
+
+  IN_PRODUCTION
+
+  PARTIALLY_DELIVERED
+
+  DELIVERED
+
+  CANCELLED
+}
+
+enum DeliveryStatus {
+  DRAFT
+
+  POSTED
+
+  CANCELLED
+}
+
+// ==========================================
+// MASTER DATA
+// ==========================================
+model Item {
+  id String @id @default(cuid())
+
+  sku String @unique
+
+  name String
+
+  description String?
+
+  itemType ItemType
+
+  baseUnit UnitOfMeasure
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+  // Inventory
+  batches   Batch[]
+
+  balances StockBalance[]
+
+  movements StockMovement[]
+
+  reservations StockReservation[]
+
+  receiptLines   GoodsReceiptLine[]
+  // Production
+  productProfile ProductProfile?
+
+  bomComponents BomLine[]
+
+  materialConsumptions MaterialConsumption[]
+
+  productionOutputs ProductionOutput[]
+  // Sales
+  quotationLines    QuotationLine[]
+
+  salesOrderLines SalesOrderLine[]
+
+  deliveryLines DeliveryLine[]
+
+  @@index([name])
+  @@index([itemType])
+}
+
+// ==========================================
+// SUPPLIERS
+// ==========================================
+model Supplier {
+  id String @id @default(cuid())
+
+  code String @unique
+
+  name String
+
+  nationalId String?
+
+  phone String?
+
+  email String?
+
+  address String?
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  goodsReceipts GoodsReceipt[]
+}
+
+// ==========================================
+// WAREHOUSE
+// ==========================================
+model Warehouse {
+  id String @id @default(cuid())
+
+  code String @unique
+
+  name String
+
+  description String?
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  locations StockLocation[]
+}
+
+model StockLocation {
+  id String @id @default(cuid())
+
+  warehouseId String
+
+  code String
+
+  name String
+
+  description String?
+
+  isActive Boolean @default(true)
+
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Restrict)
+
+  balances StockBalance[]
+
+  movementsFrom StockMovement[] @relation("MovementSource")
+
+  movementsTo StockMovement[] @relation("MovementDestination")
+
+  reservations StockReservation[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([warehouseId, code])
+  @@index([warehouseId])
+}
+
+// ==========================================
+// BATCH TRACEABILITY
+// ==========================================
+model Batch {
+  id String @id @default(cuid())
+
+  itemId String
+
+  batchNumber String
+
+  supplierBatchNumber String?
+
+  manufacturingDate DateTime?
+
+  expiryDate DateTime?
+
+  qualityStatus BatchQualityStatus @default(PENDING)
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  balances StockBalance[]
+
+  movements StockMovement[]
+
+  reservations StockReservation[]
+
+  receiptLines GoodsReceiptLine[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([itemId, batchNumber])
+  @@index([batchNumber])
+  @@index([qualityStatus])
+}
+
+// ==========================================
+// INVENTORY BALANCE
+// ==========================================
+model StockBalance {
+  id String @id @default(cuid())
+
+  itemId String
+
+  locationId String
+
+  batchId String?
+
+  status StockStatus @default(AVAILABLE)
+
+  quantity Decimal @default(0) @db.Decimal(18, 4)
+
+  updatedAt DateTime @updatedAt
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  location StockLocation @relation(fields: [locationId], references: [id], onDelete: Restrict)
+
+  batch Batch? @relation(fields: [batchId], references: [id], onDelete: Restrict)
+
+  // Ã˜ÂªÃ™Ë†Ã˜Â¬Ã™â€¡: Ã›Å’ÃšÂ©Ã˜ÂªÃ˜Â§Ã›Å’Ã›Å’ batchId Ã˜ÂªÃ™â€¡Ã›Å’ Ã˜Â¯Ã˜Â± PostgreSQL Ã™â€ Ã›Å’Ã˜Â§Ã˜Â²Ã™â€¦Ã™â€ Ã˜Â¯ Ã˜Â§Ã›Å’Ã™â€ Ã˜Â¯ÃšÂ©Ã˜Â³ Ã˜Â¬Ã˜Â²Ã˜Â¦Ã›Å’ Ã˜Â§Ã˜Â³Ã˜Âª.
+  // Ã˜Â§Ã›Å’Ã™â€  Ã™â€¦Ã˜Â­Ã˜Â¯Ã™Ë†Ã˜Â¯Ã›Å’Ã˜Âª Ã˜Â¯Ã˜Â± Ã™â€¦Ã˜Â±Ã˜Â­Ã™â€žÃ™â€¡ Migration Ã˜Â¨Ã˜Â§ SQL Ã˜ÂªÃšÂ©Ã™â€¦Ã›Å’Ã™â€žÃ›Å’ Ã˜Â§Ã˜Â¹Ã™â€¦Ã˜Â§Ã™â€ž Ã˜Â®Ã™Ë†Ã˜Â§Ã™â€¡Ã˜Â¯ Ã˜Â´Ã˜Â¯.
+  @@unique([itemId, locationId, batchId, status])
+  @@index([itemId, locationId])
+  @@index([batchId])
+}
+
+// ==========================================
+// INVENTORY MOVEMENTS
+// ==========================================
+model StockMovement {
+  id String @id @default(cuid())
+
+  itemId String
+
+  batchId String?
+
+  sourceLocationId String?
+
+  destinationLocationId String?
+
+  movementType MovementType
+
+  quantity Decimal @db.Decimal(18, 4)
+
+  unitCost Decimal? @db.Decimal(18, 4)
+
+  referenceType String?
+
+  referenceId String?
+
+  description String?
+
+  status DocumentStatus @default(DRAFT)
+
+  postedAt DateTime?
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  batch Batch? @relation(fields: [batchId], references: [id], onDelete: Restrict)
+
+  sourceLocation StockLocation? @relation("MovementSource", fields: [sourceLocationId], references: [id], onDelete: Restrict)
+
+  destinationLocation StockLocation? @relation("MovementDestination", fields: [destinationLocationId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([itemId])
+  @@index([batchId])
+  @@index([movementType])
+  @@index([referenceType, referenceId])
+  @@index([postedAt])
+}
+
+// ==========================================
+// STOCK RESERVATIONS
+// ==========================================
+model StockReservation {
+  id String @id @default(cuid())
+
+  itemId String
+
+  locationId String
+
+  batchId String?
+
+  quantity Decimal @db.Decimal(18, 4)
+
+  referenceType String
+
+  referenceId String
+
+  isActive Boolean @default(true)
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  location StockLocation @relation(fields: [locationId], references: [id], onDelete: Restrict)
+
+  batch Batch? @relation(fields: [batchId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([itemId, locationId])
+  @@index([referenceType, referenceId])
+  @@index([batchId])
+}
+
+// ==========================================
+// GOODS RECEIPTS
+// ==========================================
+model GoodsReceipt {
+  id String @id @default(cuid())
+
+  receiptNumber String @unique
+
+  supplierId String
+
+  status DocumentStatus @default(DRAFT)
+
+  receiptDate DateTime @default(now())
+
+  description String?
+
+  supplier Supplier @relation(fields: [supplierId], references: [id], onDelete: Restrict)
+
+  lines GoodsReceiptLine[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+}
+
+model GoodsReceiptLine {
+  id String @id @default(cuid())
+
+  receiptId String
+
+  itemId String
+
+  batchId String?
+
+  lineNumber Int
+
+  quantity Decimal @db.Decimal(18, 4)
+
+  unitCost Decimal? @db.Decimal(18, 4)
+
+  description String?
+
+  receipt GoodsReceipt @relation(fields: [receiptId], references: [id], onDelete: Restrict)
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  batch Batch? @relation(fields: [batchId], references: [id], onDelete: Restrict)
+
+  @@unique([receiptId, lineNumber])
+  @@index([itemId])
+  @@index([batchId])
+}
+
+// ==========================================
+// PRODUCT TECHNICAL PROFILE
+// ==========================================
+model ProductProfile {
+  id String @id @default(cuid())
+
+  itemId String @unique
+
+  connectorFrom String?
+
+  connectorTo String?
+
+  cableLengthMm Int?
+
+  conductorMaterial String?
+
+  jacketMaterial String?
+
+  ratedPowerW Decimal? @db.Decimal(10, 2)
+
+  ratedCurrentA Decimal? @db.Decimal(10, 2)
+
+  supportsData Boolean @default(false)
+
+  hasChip Boolean @default(false)
+
+  chipModel String?
+
+  technicalNotes String?
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  bomVersions BomVersion[]
+
+  routingVersions RoutingVersion[]
+
+  workOrders WorkOrder[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// BILL OF MATERIALS
+// ==========================================
+model BomVersion {
+  id String @id @default(cuid())
+
+  productProfileId String
+
+  versionNumber Int
+
+  status VersionStatus @default(DRAFT)
+
+  effectiveFrom DateTime?
+
+  effectiveUntil DateTime?
+
+  notes String?
+
+  productProfile ProductProfile @relation(fields: [productProfileId], references: [id], onDelete: Restrict)
+
+  lines BomLine[]
+
+  workOrders WorkOrder[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([productProfileId, versionNumber])
+  @@index([productProfileId, status])
+}
+
+model BomLine {
+  id String @id @default(cuid())
+
+  bomVersionId String
+
+  componentItemId String
+
+  quantity Decimal @db.Decimal(18, 4)
+
+  wastePercentage Decimal @default(0) @db.Decimal(8, 4)
+
+  sequence Int
+
+  isOptional Boolean @default(false)
+
+  notes String?
+
+  bomVersion BomVersion @relation(fields: [bomVersionId], references: [id], onDelete: Restrict)
+
+  componentItem Item @relation(fields: [componentItemId], references: [id], onDelete: Restrict)
+
+  @@unique([bomVersionId, sequence])
+  @@index([componentItemId])
+}
+
+// ==========================================
+// ROUTING
+// ==========================================
+model RoutingVersion {
+  id String @id @default(cuid())
+
+  productProfileId String
+
+  versionNumber Int
+
+  status VersionStatus @default(DRAFT)
+
+  notes String?
+
+  productProfile ProductProfile @relation(fields: [productProfileId], references: [id], onDelete: Restrict)
+
+  steps RoutingStep[]
+
+  workOrders WorkOrder[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([productProfileId, versionNumber])
+  @@index([productProfileId, status])
+}
+
+model RoutingStep {
+  id String @id @default(cuid())
+
+  routingVersionId String
+
+  sequence Int
+
+  operationCode String
+
+  operationName String
+
+  workCenterCode String?
+
+  setupTimeMinutes Decimal? @db.Decimal(10, 2)
+
+  standardTimeMinutes Decimal? @db.Decimal(10, 2)
+
+  instructions String?
+
+  requiresQC Boolean @default(false)
+
+  routingVersion RoutingVersion @relation(fields: [routingVersionId], references: [id], onDelete: Restrict)
+
+  @@unique([routingVersionId, sequence])
+  @@index([operationCode])
+}
+
+// ==========================================
+// WORK ORDERS
+// ==========================================
+model WorkOrder {
+  id String @id @default(cuid())
+
+  orderNumber String @unique
+
+  productProfileId String
+
+  bomVersionId String
+
+  routingVersionId String
+
+  salesOrderLineId String?
+
+  plannedQuantity Decimal @db.Decimal(18, 4)
+
+  status WorkOrderStatus @default(DRAFT)
+
+  plannedStartAt DateTime?
+
+  plannedEndAt DateTime?
+
+  actualStartAt DateTime?
+
+  actualEndAt DateTime?
+
+  productSnapshot Json?
+
+  bomSnapshot Json?
+
+  routingSnapshot Json?
+
+  notes String?
+
+  productProfile ProductProfile @relation(fields: [productProfileId], references: [id], onDelete: Restrict)
+
+  bomVersion BomVersion @relation(fields: [bomVersionId], references: [id], onDelete: Restrict)
+
+  routingVersion RoutingVersion @relation(fields: [routingVersionId], references: [id], onDelete: Restrict)
+
+  salesOrderLine SalesOrderLine? @relation(fields: [salesOrderLineId], references: [id], onDelete: Restrict)
+
+  productionRuns ProductionRun[]
+
+  inspections QCInspection[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([productProfileId])
+  @@index([salesOrderLineId])
+}
+
+// ==========================================
+// PRODUCTION RUNS
+// ==========================================
+model ProductionRun {
+  id String @id @default(cuid())
+
+  runNumber String @unique
+
+  workOrderId String
+
+  status ProductionRunStatus @default(IN_PROGRESS)
+
+  startedAt DateTime @default(now())
+
+  finishedAt DateTime?
+
+  notes String?
+
+  workOrder WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Restrict)
+
+  operations ProductionOperation[]
+
+  outputs ProductionOutput[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([workOrderId])
+  @@index([status])
+}
+
+// ==========================================
+// PRODUCTION OPERATIONS
+// ==========================================
+model ProductionOperation {
+  id String @id @default(cuid())
+
+  productionRunId String
+
+  sequence Int
+
+  operationCode String
+
+  operationName String
+
+  workCenterCode String?
+
+  status OperationStatus @default(PENDING)
+
+  plannedQuantity Decimal? @db.Decimal(18, 4)
+
+  completedQuantity Decimal? @db.Decimal(18, 4)
+
+  rejectedQuantity Decimal? @db.Decimal(18, 4)
+
+  startedAt DateTime?
+
+  finishedAt DateTime?
+
+  operatorUserId String?
+
+  notes String?
+
+  productionRun ProductionRun @relation(fields: [productionRunId], references: [id], onDelete: Restrict)
+
+  consumptions MaterialConsumption[]
+
+  inspections QCInspection[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([productionRunId, sequence])
+  @@index([status])
+}
+
+// ==========================================
+// MATERIAL CONSUMPTION
+// ==========================================
+model MaterialConsumption {
+  id String @id @default(cuid())
+
+  productionOperationId String
+
+  itemId String
+
+  batchId String?
+
+  quantity Decimal @db.Decimal(18, 4)
+
+  unitCost Decimal? @db.Decimal(18, 4)
+
+  stockMovementId String?
+
+  notes String?
+
+  productionOperation ProductionOperation @relation(fields: [productionOperationId], references: [id], onDelete: Restrict)
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  @@index([itemId, batchId])
+  @@index([productionOperationId])
+}
+
+// ==========================================
+// PRODUCTION OUTPUT
+// ==========================================
+model ProductionOutput {
+  id String @id @default(cuid())
+
+  productionRunId String
+
+  itemId String
+
+  batchId String
+
+  quantity Decimal @db.Decimal(18, 4)
+
+  rejectedQuantity Decimal @default(0) @db.Decimal(18, 4)
+
+  stockMovementId String?
+
+  productionRun ProductionRun @relation(fields: [productionRunId], references: [id], onDelete: Restrict)
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  @@index([itemId, batchId])
+  @@index([productionRunId])
+}
+
+// ==========================================
+// QUALITY CONTROL
+// ==========================================
+model QCInspection {
+  id String @id @default(cuid())
+
+  inspectionNumber String @unique
+
+  workOrderId String
+
+  productionOperationId String?
+
+  stage QCStage
+
+  result QCResult @default(PENDING)
+
+  batchId String?
+
+  inspectedQuantity Decimal? @db.Decimal(18, 4)
+
+  passedQuantity Decimal? @db.Decimal(18, 4)
+
+  failedQuantity Decimal? @db.Decimal(18, 4)
+
+  inspectorUserId String?
+
+  inspectionDate DateTime @default(now())
+
+  defectDescription String?
+
+  correctiveAction String?
+
+  notes String?
+
+  workOrder WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Restrict)
+
+  productionOperation ProductionOperation? @relation(fields: [productionOperationId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([workOrderId, stage])
+  @@index([batchId])
+  @@index([result])
+}
+
+// ==========================================
+// CUSTOMERS
+// ==========================================
+model Customer {
+  id String @id @default(cuid())
+
+  code String @unique
+
+  name String
+
+  nationalId String?
+
+  phone String?
+
+  mobile String?
+
+  email String?
+
+  address String?
+
+  postalCode String?
+
+  description String?
+
+  paymentTermsDays Int @default(0)
+
+  isActive Boolean @default(true)
+
+  quotations Quotation[]
+
+  salesOrders SalesOrder[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+  @@index([nationalId])
+}
+
+// ==========================================
+// QUOTATIONS
+// ==========================================
+model Quotation {
+  id String @id @default(cuid())
+
+  quoteNumber String @unique
+
+  customerId String
+
+  status QuotationStatus @default(DRAFT)
+
+  issueDate DateTime @default(now())
+
+  validUntil DateTime?
+
+  currencyCode String @default("IRR")
+
+  notes String?
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Restrict)
+
+  lines QuotationLine[]
+
+  salesOrder SalesOrder?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([customerId])
+  @@index([status])
+  @@index([issueDate])
+}
+
+model QuotationLine {
+  id String @id @default(cuid())
+
+  quotationId String
+
+  itemId String
+
+  lineNumber Int
+
+  description String?
+
+  quantity Decimal @db.Decimal(18, 4)
+
+  unitPrice Decimal @db.Decimal(18, 4)
+
+  discountPercent Decimal @default(0) @db.Decimal(8, 4)
+
+  quotation Quotation @relation(fields: [quotationId], references: [id], onDelete: Restrict)
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  @@unique([quotationId, lineNumber])
+  @@index([itemId])
+}
+
+// ==========================================
+// SALES ORDERS
+// ==========================================
+model SalesOrder {
+  id String @id @default(cuid())
+
+  orderNumber String @unique
+
+  customerId String
+
+  quotationId String? @unique
+
+  status SalesOrderStatus @default(DRAFT)
+
+  orderDate DateTime @default(now())
+
+  requestedDeliveryDate DateTime?
+
+  currencyCode String @default("IRR")
+
+  shippingAddress String?
+
+  billingAddress String?
+
+  notes String?
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Restrict)
+
+  quotation Quotation? @relation(fields: [quotationId], references: [id], onDelete: Restrict)
+
+  lines SalesOrderLine[]
+
+  deliveries Delivery[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([customerId])
+  @@index([status])
+  @@index([orderDate])
+}
+
+model SalesOrderLine {
+  id String @id @default(cuid())
+
+  salesOrderId String
+
+  itemId String
+
+  lineNumber Int
+
+  description String?
+
+  quantity Decimal @db.Decimal(18, 4)
+
+  unitPrice Decimal @db.Decimal(18, 4)
+
+  discountPercent Decimal @default(0) @db.Decimal(8, 4)
+
+  salesOrder SalesOrder @relation(fields: [salesOrderId], references: [id], onDelete: Restrict)
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  workOrders WorkOrder[]
+
+  deliveryLines DeliveryLine[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([salesOrderId, lineNumber])
+  @@index([itemId])
+}
+
+// ==========================================
+// DELIVERIES
+// ==========================================
+model Delivery {
+  id String @id @default(cuid())
+
+  deliveryNumber String @unique
+
+  salesOrderId String
+
+  status DeliveryStatus @default(DRAFT)
+
+  deliveryDate DateTime @default(now())
+
+  trackingNumber String?
+
+  shippingNotes String?
+
+  notes String?
+
+  salesOrder SalesOrder @relation(fields: [salesOrderId], references: [id], onDelete: Restrict)
+
+  lines DeliveryLine[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([salesOrderId])
+  @@index([status])
+  @@index([deliveryDate])
+}
+
+model DeliveryLine {
+  id String @id @default(cuid())
+
+  deliveryId String
+
+  salesOrderLineId String
+
+  itemId String
+
+  batchId String?
+
+  sourceLocationId String?
+
+  quantity Decimal @db.Decimal(18, 4)
+
+  stockMovementId String?
+
+  notes String?
+
+  delivery Delivery @relation(fields: [deliveryId], references: [id], onDelete: Restrict)
+
+  salesOrderLine SalesOrderLine @relation(fields: [salesOrderLineId], references: [id], onDelete: Restrict)
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  @@index([deliveryId])
+  @@index([salesOrderLineId])
+  @@index([itemId, batchId])
+}
+
+enum DataScope {
+  ALL
+
+  OWN
+
+  DEPARTMENT
+
+  ASSIGNED
+}
+
+enum EmployeeEmploymentStatus {
+  ACTIVE
+
+  ON_LEAVE
+
+  TERMINATED
+
+  SUSPENDED
+}
+
+model User {
+  id String @id @default(cuid())
+
+  username String @unique
+
+  email String? @unique
+
+  phone String? @unique
+
+  fullName String
+
+  passwordHash String
+
+  isActive Boolean @default(true)
+
+  accessLevel UserAccessLevel @default(ERP)
+
+  isSystem Boolean @default(false)
+
+  lastLoginAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  roles UserRole[]
+
+  sessions UserSession[]
+
+  auditLogs            AuditLog[]
+  // Recruitment relations
+  candidateApplication CandidateApplication? @relation("CandidateApplicant")
+
+  employeeProfile EmployeeProfile?
+
+  applicationReviews ApplicationApproval[] @relation("ApplicationReviewer")
+
+  uploadedCandidateDocuments CandidateDocument[]  @relation("CandidateDocumentUploader")
+  //chart sazmani
+  employeeAssignments        EmployeeAssignment[] @relation("EmployeeAssignments")
+
+  attendanceApprovals          AttendanceRecord[]              @relation("AttendanceRecordApprover")
+  attendanceAdjustmentRequests AttendanceAdjustment[]          @relation("AttendanceAdjustmentRequester")
+  attendanceAdjustmentReviews  AttendanceAdjustment[]          @relation("AttendanceAdjustmentReviewer")
+  attendanceChallenges         AttendanceChallenge[]
+  faceIdentityProfile          FaceIdentityProfile?
+  weeklyShiftSchedules         EmployeeShiftSchedule[]         @relation("ShiftScheduleEmployee")
+  createdShiftSchedules        EmployeeShiftSchedule[]         @relation("ShiftScheduleCreator")
+  submittedShiftSchedules      EmployeeShiftSchedule[]         @relation("ShiftScheduleSubmitter")
+  reviewedShiftSchedules       EmployeeShiftSchedule[]         @relation("ShiftScheduleReviewer")
+  shiftScheduleRevisions       EmployeeShiftScheduleRevision[] @relation("ShiftScheduleRevisionActor")
+
+  @@index([fullName])
+  @@index([isActive])
+}
+
+model Role {
+  id String @id @default(cuid())
+
+  key String @unique
+
+  name String
+
+  description String?
+
+  isSystem Boolean @default(false)
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  users UserRole[]
+
+  permissions RolePermission[]
+
+  assignmentRoles EmployeeAssignmentRole[]
+
+  @@index([name])
+  @@index([isActive])
+}
+
+model Module {
+  id String @id @default(cuid())
+
+  key String @unique
+
+  name String
+
+  description String?
+
+  parentId String?
+
+  sortOrder Int @default(0)
+
+  isActive Boolean @default(true)
+
+  parent Module? @relation("ModuleTree", fields: [parentId], references: [id], onDelete: Restrict)
+
+  children Module[] @relation("ModuleTree")
+
+  permissions Permission[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([parentId])
+  @@index([sortOrder])
+}
+
+model Permission {
+  id String @id @default(cuid())
+
+  key String @unique
+
+  name String
+
+  description String?
+
+  moduleId String
+
+  module Module @relation(fields: [moduleId], references: [id], onDelete: Restrict)
+
+  resource String
+
+  action String
+
+  roles RolePermission[]
+
+  createdAt DateTime @default(now())
+
+  assignmentPermissions EmployeeAssignmentPermission[]
+
+  @@unique([moduleId, resource, action])
+  @@index([moduleId])
+}
+
+model UserRole {
+  id String @id @default(cuid())
+
+  userId String
+
+  roleId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  role Role @relation(fields: [roleId], references: [id], onDelete: Restrict)
+
+  assignedById String?
+
+  expiresAt DateTime?
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, roleId])
+  @@index([roleId])
+  @@index([userId, isActive])
+  @@index([expiresAt])
+}
+
+model RolePermission {
+  id String @id @default(cuid())
+
+  roleId String
+
+  permissionId String
+
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Restrict)
+
+  isAllowed Boolean @default(true)
+
+  scope DataScope @default(OWN)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([roleId, permissionId])
+  @@index([permissionId])
+}
+
+model UserSession {
+  id String @id @default(cuid())
+
+  userId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tokenHash String @unique
+
+  expiresAt DateTime
+
+  revokedAt DateTime?
+
+  ipAddress String?
+
+  userAgent String?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model AuditLog {
+  id String @id @default(cuid())
+
+  actorUserId String?
+
+  actor User? @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  action String
+
+  entityType String
+
+  entityId String?
+
+  details Json?
+
+  ipAddress String?
+
+  createdAt DateTime @default(now())
+
+  @@index([actorUserId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
+
+enum UserAccessLevel {
+  PENDING
+
+  CANDIDATE_PORTAL
+
+  ERP
+}
+
+enum CandidateGender {
+  MALE
+
+  FEMALE
+}
+
+enum CandidateMaritalStatus {
+  SINGLE
+
+  MARRIED
+}
+
+enum CandidateMilitaryStatus {
+  NOT_APPLICABLE
+
+  IN_PROGRESS
+
+  COMPLETED
+
+  EXEMPTED
+}
+
+enum InitialApplicationStatus {
+  DRAFT
+
+  SUBMITTED
+
+  HR_REVIEW
+
+  EXECUTIVE_REVIEW
+
+  NEEDS_CORRECTION
+
+  REJECTED
+
+  APPROVED
+}
+
+enum DocumentsApplicationStatus {
+  LOCKED
+
+  PENDING
+
+  SUBMITTED
+
+  HR_REVIEW
+
+  EXECUTIVE_REVIEW
+
+  NEEDS_CORRECTION
+
+  REJECTED
+
+  APPROVED
+}
+
+enum ApplicationStage {
+  INITIAL
+
+  DOCUMENTS
+}
+
+enum ApplicationReviewerType {
+  HR
+
+  EXECUTIVE
+}
+
+enum ApplicationDecision {
+  APPROVED
+
+  REJECTED
+
+  NEEDS_CORRECTION
+}
+
+enum CandidateDocumentType {
+  PERSONAL_PHOTO
+
+  SPOUSE_CONSENT
+
+  NATIONAL_CARD
+
+  APPLICANT_BIRTH_CERTIFICATE_PAGE
+
+  EDUCATION_CERTIFICATE
+
+  INSURANCE_HISTORY
+
+  MILITARY_SERVICE
+
+  MARRIAGE_CERTIFICATE
+
+  SPOUSE_BIRTH_CERTIFICATE_PAGE
+
+  CHILD_BIRTH_CERTIFICATE_PAGE
+
+  PARENT_CONSENT
+
+  SOCIAL_SECURITY_FORM
+}
+
+enum CandidateFamilyMemberType {
+  SPOUSE
+
+  CHILD
+}
+
+enum CandidateDocumentStatus {
+  UPLOADED
+
+  UNDER_REVIEW
+
+  APPROVED
+
+  REJECTED
+}
+
+// ==========================================
+// HUMAN RESOURCES - RECRUITMENT
+// ==========================================
+model CandidateApplication {
+  id String @id @default(cuid())
+
+  applicationNumber String @unique
+
+  userId String @unique
+
+  user      User   @relation("CandidateApplicant", fields: [userId], references: [id], onDelete: Restrict)
+  // Personal information
+  firstName String
+
+  lastName String
+
+  fatherName String
+
+  birthCertificateNumber String
+
+  nationalId String @unique
+
+  gender CandidateGender
+
+  maritalStatus CandidateMaritalStatus
+
+  nationality String
+
+  birthPlace String
+
+  dateOfBirth DateTime @db.Date
+
+  landlinePhone String?
+
+  mobilePhone String
+
+  email String?
+
+  address String
+
+  militaryStatus    CandidateMilitaryStatus?
+  // Other initial application information
+  currentlyEmployed Boolean                  @default(false)
+
+  currentEmployer String?
+
+  hasExternalCommitment Boolean @default(false)
+
+  hasInsuranceHistory Boolean @default(false)
+
+  minimumEmploymentPeriod String?
+
+  childrenCount Int @default(0)
+
+  requestedSalary Decimal? @db.Decimal(18, 2)
+
+  additionalNotes String?
+  // Stage 2 information
+  insuranceNumber String?
+
+  bankSinaIban        String?
+  // Applicant declaration
+  declarationAccepted Boolean @default(false)
+
+  declarationTextVersion String?
+
+  declarationAcceptedAt DateTime?
+
+  declarationIpAddress String?
+  // Initial application workflow
+  initialStatus        InitialApplicationStatus @default(DRAFT)
+
+  initialVersion Int @default(1)
+
+  initialSubmittedAt DateTime?
+
+  initialApprovedAt DateTime?
+  // Supporting documents workflow
+  documentsStatus   DocumentsApplicationStatus @default(LOCKED)
+
+  documentsVersion Int @default(1)
+
+  documentsSubmittedAt DateTime?
+
+  documentsApprovedAt DateTime?
+  // Related records
+  educationRecords    CandidateEducation[]
+
+  workExperiences CandidateWorkExperience[]
+
+  skills CandidateSkill[]
+
+  references CandidateReference[]
+
+  emergencyContact CandidateEmergencyContact?
+
+  sensitiveInfo CandidateSensitiveInfo?
+
+  familyMembers CandidateFamilyMember[]
+
+  documents CandidateDocument[]
+
+  approvals ApplicationApproval[]
+
+  employeeProfile EmployeeProfile?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([initialStatus, createdAt])
+  @@index([documentsStatus, createdAt])
+}
+
+model CandidateEducation {
+  id String @id @default(cuid())
+
+  applicationId String
+
+  application CandidateApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  degree String
+
+  fieldOfStudy String
+
+  institution String
+
+  city String?
+
+  startDate DateTime? @db.Date
+
+  endDate DateTime? @db.Date
+
+  isCurrentlyStudying Boolean @default(false)
+
+  grade String?
+
+  description String?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([applicationId])
+}
+
+model CandidateWorkExperience {
+  id String @id @default(cuid())
+
+  applicationId String
+
+  application CandidateApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  companyName String
+
+  startDate DateTime @db.Date
+
+  endDate DateTime? @db.Date
+
+  position String
+
+  leavingReason String?
+
+  salaryReceived Decimal? @db.Decimal(18, 2)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([applicationId])
+}
+
+model CandidateSkill {
+  id String @id @default(cuid())
+
+  applicationId String
+
+  application CandidateApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  specialty String
+
+  description String?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([applicationId])
+}
+
+model CandidateReference {
+  id String @id @default(cuid())
+
+  applicationId String
+
+  application CandidateApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  fullName String
+
+  occupation String
+
+  workplace String
+
+  acquaintanceDuration String
+
+  phone String
+
+  sortOrder Int
+
+  createdAt DateTime @default(now())
+
+  @@unique([applicationId, sortOrder])
+}
+
+model CandidateEmergencyContact {
+  id String @id @default(cuid())
+
+  applicationId String @unique
+
+  application CandidateApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  firstName String
+
+  lastName String
+
+  relationship String
+
+  phone String
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+}
+
+model CandidateSensitiveInfo {
+  id String @id @default(cuid())
+
+  applicationId String @unique
+
+  application CandidateApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  hasProlongedIllness Boolean @default(false)
+
+  illnessDescription String?
+
+  hasCriminalRecord Boolean @default(false)
+
+  convictionDescription String?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+}
+
+model CandidateFamilyMember {
+  id String @id @default(cuid())
+
+  applicationId String
+
+  application CandidateApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  memberType CandidateFamilyMemberType
+
+  firstName String
+
+  lastName String
+
+  insuranceNumber String?
+
+  sortOrder Int
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([applicationId, memberType, sortOrder])
+  @@index([applicationId])
+}
+
+model CandidateDocument {
+  id String @id @default(cuid())
+
+  applicationId String
+
+  application CandidateApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  documentType CandidateDocumentType
+
+  stage ApplicationStage
+
+  status CandidateDocumentStatus @default(UPLOADED)
+
+  pageNumber Int?
+
+  totalPages Int?
+
+  subjectIndex Int?
+
+  stageVersion Int @default(1)
+
+  fileName String
+
+  storageKey String @unique
+
+  mimeType String
+
+  sizeBytes Int
+
+  checksum String?
+
+  isCurrent Boolean @default(true)
+
+  uploadedByUserId String
+
+  uploadedBy User @relation("CandidateDocumentUploader", fields: [uploadedByUserId], references: [id], onDelete: Restrict)
+
+  uploadedAt DateTime @default(now())
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([applicationId, stage, stageVersion])
+  @@index([applicationId, documentType, isCurrent])
+  @@index([status])
+}
+
+model ApplicationApproval {
+  id String @id @default(cuid())
+
+  applicationId String
+
+  application CandidateApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+
+  stage ApplicationStage
+
+  reviewerType ApplicationReviewerType
+
+  reviewerUserId String
+
+  reviewer User @relation("ApplicationReviewer", fields: [reviewerUserId], references: [id], onDelete: Restrict)
+
+  decision ApplicationDecision
+
+  comment String?
+
+  applicationVersion Int
+
+  decidedAt DateTime @default(now())
+
+  @@unique([applicationId, stage, reviewerType, applicationVersion])
+  @@unique([applicationId, stage, reviewerUserId, applicationVersion])
+  @@index([reviewerUserId, decidedAt])
+  @@index([applicationId, stage, applicationVersion])
+}
+
+enum EmployeeAssignmentType {
+  PRIMARY
+
+  SECONDARY
+
+  TEMPORARY
+
+  PROJECT
+}
+
+enum OrganizationRelationshipType {
+  REPORTS_TO
+
+  FUNCTIONAL_REPORTS_TO
+
+  SUPERVISES
+
+  COLLABORATES_WITH
+
+  ADVISES
+
+  DELEGATES_TO
+}
+
+enum OrganizationRelationshipStatus {
+  ACTIVE
+
+  ENDED
+
+  SUSPENDED
+}
+
+enum ShiftAssignmentTarget {
+  COMPANY
+
+  UNIT
+
+  EMPLOYEE
+}
+
+enum WorkShiftDayType {
+  NORMAL
+
+  HOLIDAY
+}
+
+enum HolidayType {
+  OFFICIAL
+
+  RELIGIOUS
+
+  NATIONAL
+
+  COMPANY
+
+  OTHER
+}
+
+enum OrganizationLocationStatus {
+  ACTIVE
+
+  INACTIVE
+}
+
+enum OrganizationUnitStatus {
+  ACTIVE
+
+  INACTIVE
+}
+
+enum EmployeeAssignmentStatus {
+  ACTIVE
+
+  ENDED
+
+  SUSPENDED
+}
+
+model OrganizationLocation {
+  id String @id @default(cuid())
+
+  code String @unique
+
+  name String
+
+  locationType String
+
+  description String?
+
+  country String?
+
+  province String?
+
+  city String?
+
+  address String?
+
+  phone    String?
+  // Coordinates of the attendance checkpoint. The application enforces the geofence.
+  latitude Decimal? @db.Decimal(10, 7)
+
+  longitude Decimal? @db.Decimal(10, 7)
+
+  geofenceRadiusMeters Int @default(50)
+
+  geofenceEnabled Boolean @default(true)
+
+  status OrganizationLocationStatus @default(ACTIVE)
+
+  units OrganizationUnit[]
+
+  assignments EmployeeAssignment[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  attendanceRecords AttendanceRecord[]
+
+  @@index([status])
+  @@index([locationType])
+}
+
+model OrganizationUnit {
+  id String @id @default(cuid())
+
+  code String @unique
+
+  name String
+
+  description String?
+
+  parentId String?
+
+  locationId String?
+
+  parent OrganizationUnit? @relation("OrganizationUnitTree", fields: [parentId], references: [id], onDelete: Restrict)
+
+  children OrganizationUnit[] @relation("OrganizationUnitTree")
+
+  location OrganizationLocation? @relation(fields: [locationId], references: [id], onDelete: Restrict)
+
+  status OrganizationUnitStatus @default(ACTIVE)
+
+  sortOrder Int @default(0)
+
+  assignments EmployeeAssignment[]
+
+  shiftAssignments ShiftAssignment[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([parentId])
+  @@index([locationId])
+  @@index([status])
+}
+
+model OrganizationPosition {
+  id String @id @default(cuid())
+
+  code String @unique
+
+  title String
+
+  description String?
+
+  level Int @default(1)
+
+  isManagerial Boolean @default(false)
+
+  isActive Boolean @default(true)
+
+  assignments EmployeeAssignment[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([title])
+  @@index([isActive])
+}
+
+model EmployeeAssignment {
+  id String @id @default(cuid())
+
+  userId String
+
+  organizationUnitId String
+  // Optional official position. Use responsibilityTitle for a custom responsibility.
+  positionId         String?
+
+  responsibilityTitle String?
+
+  locationId String?
+
+  managerAssignmentId String?
+
+  user User @relation("EmployeeAssignments", fields: [userId], references: [id], onDelete: Restrict)
+
+  organizationUnit OrganizationUnit @relation(fields: [organizationUnitId], references: [id], onDelete: Restrict)
+
+  position OrganizationPosition? @relation(fields: [positionId], references: [id], onDelete: Restrict)
+
+  location OrganizationLocation? @relation(fields: [locationId], references: [id], onDelete: Restrict)
+
+  managerAssignment EmployeeAssignment? @relation("AssignmentManager", fields: [managerAssignmentId], references: [id], onDelete: Restrict)
+
+  subordinateAssignments EmployeeAssignment[] @relation("AssignmentManager")
+
+  status EmployeeAssignmentStatus @default(ACTIVE)
+
+  assignmentType EmployeeAssignmentType @default(PRIMARY)
+
+  isPrimary Boolean @default(true)
+
+  startDate DateTime
+
+  endDate DateTime?
+
+  notes String?
+
+  history OrganizationAssignmentHistory[]
+
+  roles EmployeeAssignmentRole[]
+
+  permissions EmployeeAssignmentPermission[]
+
+  shiftAssignments ShiftAssignment[]
+
+  outgoingRelationships OrganizationRelationship[] @relation("OrganizationRelationshipSource")
+
+  incomingRelationships OrganizationRelationship[] @relation("OrganizationRelationshipTarget")
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  attendanceRecords    AttendanceRecord[]
+  attendanceChallenges AttendanceChallenge[]
+
+  @@index([userId, status])
+  @@index([assignmentType, status])
+  @@index([organizationUnitId, status])
+  @@index([positionId])
+  @@index([responsibilityTitle])
+  @@index([managerAssignmentId])
+  @@index([locationId])
+}
+
+model EmployeeAssignmentRole {
+  id String @id @default(cuid())
+
+  assignmentId String
+
+  roleId String
+
+  assignedById String?
+
+  expiresAt DateTime?
+
+  isActive Boolean @default(true)
+
+  assignment EmployeeAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  role Role @relation(fields: [roleId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([assignmentId, roleId])
+  @@index([roleId, isActive])
+  @@index([assignmentId, isActive])
+  @@index([expiresAt])
+}
+
+model EmployeeAssignmentPermission {
+  id String @id @default(cuid())
+
+  assignmentId String
+
+  permissionId String
+
+  isAllowed Boolean @default(true)
+
+  scope DataScope @default(OWN)
+
+  assignedById String?
+
+  expiresAt DateTime?
+
+  isActive Boolean @default(true)
+
+  assignment EmployeeAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([assignmentId, permissionId])
+  @@index([permissionId, isActive])
+  @@index([assignmentId, isActive])
+  @@index([expiresAt])
+}
+
+model OrganizationRelationship {
+  id String @id @default(cuid())
+
+  sourceAssignmentId String
+
+  targetAssignmentId String
+
+  relationshipType OrganizationRelationshipType
+
+  status OrganizationRelationshipStatus @default(ACTIVE)
+
+  startDate DateTime @default(now())
+
+  endDate DateTime?
+
+  description String?
+
+  createdByUserId String?
+
+  sourceAssignment EmployeeAssignment @relation("OrganizationRelationshipSource", fields: [sourceAssignmentId], references: [id], onDelete: Restrict)
+
+  targetAssignment EmployeeAssignment @relation("OrganizationRelationshipTarget", fields: [targetAssignmentId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([sourceAssignmentId, targetAssignmentId, relationshipType])
+  @@index([sourceAssignmentId, status])
+  @@index([targetAssignmentId, status])
+  @@index([relationshipType, status])
+  @@index([startDate, endDate])
+}
+
+model OrganizationAssignmentHistory {
+  id String @id @default(cuid())
+
+  assignmentId String
+
+  assignment EmployeeAssignment @relation(fields: [assignmentId], references: [id], onDelete: Restrict)
+
+  action String
+
+  previousData Json?
+
+  newData Json?
+
+  changedByUserId String
+
+  changedAt DateTime @default(now())
+
+  @@index([assignmentId, changedAt])
+  @@index([changedByUserId])
+}
+
+model OrganizationAuditLog {
+  id String @id @default(cuid())
+
+  actorUserId String
+
+  entityType String
+
+  entityId String
+
+  action String
+
+  beforeData Json?
+
+  afterData Json?
+
+  ipAddress String?
+
+  createdAt DateTime @default(now())
+
+  @@index([actorUserId, createdAt])
+  @@index([entityType, entityId])
+}
+
+// ==========================================
+// WORK SHIFTS AND IRANIAN HOLIDAY CALENDAR
+// ==========================================
+model WorkShift {
+  id String @id @default(cuid())
+
+  code String
+
+  name String
+
+  description String?
+  // Create a new version instead of overwriting a shift used by historical records.
+  version     Int     @default(1)
+
+  isActive Boolean @default(true)
+
+  isDefault Boolean @default(false)
+
+  days WorkShiftDay[]
+
+  assignments      ShiftAssignment[]
+  scheduleSegments EmployeeShiftScheduleSegment[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([code, version])
+  @@index([isActive])
+  @@index([isDefault, isActive])
+}
+
+model WorkShiftDay {
+  id String @id @default(cuid())
+
+  shiftId String
+
+  shift     WorkShift @relation(fields: [shiftId], references: [id], onDelete: Cascade)
+  // Saturday = 0 ... Friday = 6. Multiple segments per day are supported.
+  dayOfWeek Int
+
+  segmentOrder Int @default(1)
+
+  dayType WorkShiftDayType @default(NORMAL)
+
+  isWorkingDay Boolean @default(true)
+  // Minutes after midnight in the shift's local timezone.
+  // endMinute may be less than startMinute for an overnight shift.
+  startMinute  Int?
+
+  endMinute       Int?
+  // Net paid minutes; the default 480 represents the agreed 7:00-15:00 shift.
+  requiredMinutes Int  @default(480)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([shiftId, dayOfWeek, dayType, segmentOrder])
+  @@index([shiftId, dayOfWeek, dayType])
+}
+
+model ShiftAssignment {
+  id String @id @default(cuid())
+
+  shiftId String
+
+  shift WorkShift @relation(fields: [shiftId], references: [id], onDelete: Restrict)
+
+  targetType ShiftAssignmentTarget
+
+  organizationUnitId String?
+
+  organizationUnit OrganizationUnit? @relation(fields: [organizationUnitId], references: [id], onDelete: Restrict)
+
+  employeeAssignmentId String?
+
+  employeeAssignment EmployeeAssignment? @relation(fields: [employeeAssignmentId], references: [id], onDelete: Restrict)
+
+  validFrom DateTime @db.Date
+
+  validTo DateTime? @db.Date
+
+  isActive Boolean @default(true)
+
+  assignedById String?
+
+  notes String?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  attendanceRecords AttendanceRecord[]
+
+  @@index([shiftId, isActive])
+  @@index([organizationUnitId, isActive])
+  @@index([employeeAssignmentId, isActive])
+  @@index([targetType, isActive])
+  @@index([validFrom, validTo])
+}
+
+model HolidayCalendar {
+  id String @id @default(cuid())
+
+  jalaliYear Int @unique
+
+  name String
+
+  isActive Boolean @default(true)
+
+  days HolidayCalendarDay[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+}
+
+model HolidayCalendarDay {
+  id String @id @default(cuid())
+
+  calendarId String
+
+  calendar HolidayCalendar @relation(fields: [calendarId], references: [id], onDelete: Cascade)
+  // Gregorian date is used for reliable database filtering; Jalali date is retained for display.
+  date     DateTime        @db.Date
+
+  jalaliDate String
+
+  title String
+
+  holidayType HolidayType
+
+  isHoliday            Boolean  @default(true)
+  // null: follow weekly shift; true: working day; false: non-working day.
+  isWorkingDayOverride Boolean?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([calendarId, date])
+  @@index([date])
+  @@index([jalaliDate])
+}
+
+model EmployeeProfile {
+  id String @id @default(cuid())
+
+  userId String @unique
+
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  candidateApplicationId String @unique
+
+  candidateApplication CandidateApplication @relation(fields: [candidateApplicationId], references: [id], onDelete: Restrict)
+
+  personnelCode String? @unique
+
+  employmentStatus EmployeeEmploymentStatus @default(ACTIVE)
+
+  hireDate DateTime @default(now()) @db.Date
+
+  terminationDate DateTime? @db.Date
+
+  terminationReason String?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([employmentStatus, hireDate])
+}
+
+enum AttendanceRecordStatus {
+  OPEN
+  COMPLETED
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum AttendanceEventType {
+  CHECK_IN
+  CHECK_OUT
+  BREAK_START
+  BREAK_END
+  AUTO_CHECK_OUT
+}
+
+enum AttendanceVerificationType {
+  GPS
+  FACE
+  DEVICE
+  LIVENESS
+}
+
+enum AttendanceVerificationStatus {
+  PENDING
+  PASSED
+  FAILED
+  REVIEW_REQUIRED
+}
+
+enum AttendanceAdjustmentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum AttendanceChallengeAction {
+  CHECK_IN
+  CHECK_OUT
+}
+
+enum AttendanceChallengeStatus {
+  OPEN
+  CONSUMED
+  FAILED
+  EXPIRED
+}
+
+// ==========================================
+// ATTENDANCE RECORDS AND VERIFICATION
+// ==========================================
+
+model AttendanceRecord {
+  id String @id @default(cuid())
+
+  employeeAssignmentId String
+  employeeAssignment   EmployeeAssignment @relation(fields: [employeeAssignmentId], references: [id], onDelete: Restrict)
+
+  shiftAssignmentId String?
+  shiftAssignment   ShiftAssignment? @relation(fields: [shiftAssignmentId], references: [id], onDelete: Restrict)
+
+  checkpointLocationId String?
+  checkpointLocation   OrganizationLocation? @relation(fields: [checkpointLocationId], references: [id], onDelete: Restrict)
+
+  // Local business date. The application should use the location timezone when creating this value.
+  workDate DateTime @db.Date
+  timeZone String   @default("Asia/Tehran")
+
+  // Schedule snapshots preserve the original schedule if a shift is later changed.
+  scheduledStartAt DateTime?
+  scheduledEndAt   DateTime?
+  requiredMinutes  Int       @default(480)
+
+  firstCheckInAt DateTime?
+  lastCheckOutAt DateTime?
+
+  workedMinutes     Int @default(0)
+  breakMinutes      Int @default(0)
+  overtimeMinutes   Int @default(0)
+  lateMinutes       Int @default(0)
+  earlyLeaveMinutes Int @default(0)
+
+  status AttendanceRecordStatus @default(OPEN)
+  notes  String?
+
+  approvedByUserId String?
+  approvedBy       User?     @relation("AttendanceRecordApprover", fields: [approvedByUserId], references: [id], onDelete: Restrict)
+  approvedAt       DateTime?
+
+  events      AttendanceEvent[]
+  adjustments AttendanceAdjustment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([employeeAssignmentId, workDate])
+  @@index([employeeAssignmentId, workDate])
+  @@index([workDate, status])
+  @@index([shiftAssignmentId])
+  @@index([checkpointLocationId])
+  @@index([approvedByUserId])
+}
+
+model AttendanceEvent {
+  id String @id @default(cuid())
+
+  attendanceRecordId String
+  attendanceRecord   AttendanceRecord @relation(fields: [attendanceRecordId], references: [id], onDelete: Cascade)
+
+  eventType  AttendanceEventType
+  occurredAt DateTime
+  receivedAt DateTime            @default(now())
+
+  // GPS coordinates and device evidence supplied by the attendance client.
+  latitude                     Decimal? @db.Decimal(10, 7)
+  longitude                    Decimal? @db.Decimal(10, 7)
+  accuracyMeters               Decimal? @db.Decimal(10, 2)
+  distanceFromCheckpointMeters Decimal? @db.Decimal(10, 2)
+  geofencePassed               Boolean?
+
+  source            String  @default("MOBILE")
+  deviceFingerprint String?
+  ipAddress         String?
+  userAgent         String?
+  photoStorageKey   String?
+  idempotencyKey    String? @unique
+  notes             String?
+
+  verifications AttendanceVerification[]
+  adjustments   AttendanceAdjustment[]
+
+  createdAt DateTime @default(now())
+
+  @@index([attendanceRecordId, occurredAt])
+  @@index([eventType, occurredAt])
+  @@index([geofencePassed])
+}
+
+model AttendanceVerification {
+  id String @id @default(cuid())
+
+  attendanceEventId String
+  attendanceEvent   AttendanceEvent @relation(fields: [attendanceEventId], references: [id], onDelete: Cascade)
+
+  verificationType AttendanceVerificationType
+  status           AttendanceVerificationStatus @default(PENDING)
+
+  score      Decimal?  @db.Decimal(7, 4)
+  provider   String?
+  details    Json?
+  verifiedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([attendanceEventId, verificationType])
+  @@index([status, createdAt])
+}
+
+model AttendanceAdjustment {
+  id String @id @default(cuid())
+
+  attendanceRecordId String
+  attendanceRecord   AttendanceRecord @relation(fields: [attendanceRecordId], references: [id], onDelete: Restrict)
+
+  attendanceEventId String?
+  attendanceEvent   AttendanceEvent? @relation(fields: [attendanceEventId], references: [id], onDelete: SetNull)
+
+  requestedByUserId String
+  requestedBy       User   @relation("AttendanceAdjustmentRequester", fields: [requestedByUserId], references: [id], onDelete: Restrict)
+
+  reviewedByUserId String?
+  reviewedBy       User?   @relation("AttendanceAdjustmentReviewer", fields: [reviewedByUserId], references: [id], onDelete: Restrict)
+
+  proposedEventType  AttendanceEventType?
+  proposedOccurredAt DateTime?
+  reason             String
+
+  status          AttendanceAdjustmentStatus @default(PENDING)
+  reviewerComment String?
+  reviewedAt      DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([attendanceRecordId, status])
+  @@index([attendanceEventId])
+  @@index([requestedByUserId, createdAt])
+  @@index([reviewedByUserId, reviewedAt])
+}
+
+model AttendanceChallenge {
+  id                   String                    @id @default(cuid())
+  userId               String
+  user                 User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeAssignmentId String
+  employeeAssignment   EmployeeAssignment        @relation(fields: [employeeAssignmentId], references: [id], onDelete: Restrict)
+  action               AttendanceChallengeAction
+  nonceHash            String                    @unique
+  status               AttendanceChallengeStatus @default(OPEN)
+  expiresAt            DateTime
+  consumedAt           DateTime?
+  failedAt             DateTime?
+  failureReason        String?
+  ipAddress            String?
+  userAgentHash        String?
+  createdAt            DateTime                  @default(now())
+  updatedAt            DateTime                  @updatedAt
+
+  @@index([userId, status, expiresAt])
+  @@index([employeeAssignmentId, createdAt])
+}
+
+model FaceIdentityProfile {
+  id                      String    @id @default(cuid())
+  userId                  String    @unique
+  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // AES-256-GCM encrypted reference image. Live frames are never stored by the ERP.
+  referenceImageEncrypted Bytes
+  referenceImageIv        Bytes
+  referenceImageAuthTag   Bytes
+  referenceImageMimeType  String
+  encryptionKeyVersion    String    @default("v1")
+  consentAcceptedAt       DateTime?
+  consentVersion          String?
+  enrolledByUserId        String?
+  isActive                Boolean   @default(true)
+  enrolledAt              DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+
+  @@index([isActive, enrolledAt])
+}
+
+// ==========================================
+// WEEKLY EMPLOYEE SHIFT PLANNING
+// A schedule is per person (User), not per organizational assignment.
+// DateTime values are instants; display in Asia/Tehran.
+// ==========================================
+enum EmployeeShiftScheduleStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  SUPERSEDED
+}
+
+model EmployeeShiftSchedule {
+  id                String                          @id @default(cuid())
+  employeeUserId    String
+  employee          User                            @relation("ShiftScheduleEmployee", fields: [employeeUserId], references: [id], onDelete: Restrict)
+  // Week start is Saturday, represented as a Gregorian calendar date.
+  weekStartDate     DateTime                        @db.Date
+  version           Int                             @default(1)
+  status            EmployeeShiftScheduleStatus     @default(DRAFT)
+  createdByUserId   String
+  createdBy         User                            @relation("ShiftScheduleCreator", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  submittedByUserId String?
+  submittedBy       User?                           @relation("ShiftScheduleSubmitter", fields: [submittedByUserId], references: [id], onDelete: Restrict)
+  submittedAt       DateTime?
+  reviewedByUserId  String?
+  reviewedBy        User?                           @relation("ShiftScheduleReviewer", fields: [reviewedByUserId], references: [id], onDelete: Restrict)
+  reviewedAt        DateTime?
+  reviewComment     String?
+  publishedAt       DateTime?
+  notes             String?
+  segments          EmployeeShiftScheduleSegment[]
+  revisions         EmployeeShiftScheduleRevision[]
+  createdAt         DateTime                        @default(now())
+  updatedAt         DateTime                        @updatedAt
+
+  @@unique([employeeUserId, weekStartDate, version])
+  @@index([employeeUserId, weekStartDate, status])
+  @@index([status, weekStartDate])
+  @@index([createdByUserId, createdAt])
+}
+
+model EmployeeShiftScheduleSegment {
+  id              String                @id @default(cuid())
+  scheduleId      String
+  schedule        EmployeeShiftSchedule @relation(fields: [scheduleId], references: [id], onDelete: Restrict)
+  workDate        DateTime              @db.Date
+  segmentOrder    Int
+  // Both timestamps include the real calendar day; overnight shifts are supported.
+  startsAt        DateTime
+  endsAt          DateTime
+  requiredMinutes Int
+  // Optional template used as a starting point, never as the sole source of truth.
+  workShiftId     String?
+  workShift       WorkShift?            @relation(fields: [workShiftId], references: [id], onDelete: Restrict)
+  notes           String?
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+
+  @@unique([scheduleId, workDate, segmentOrder])
+  @@index([workDate, startsAt])
+  @@index([workShiftId])
+}
+
+model EmployeeShiftScheduleRevision {
+  id          String                @id @default(cuid())
+  scheduleId  String
+  schedule    EmployeeShiftSchedule @relation(fields: [scheduleId], references: [id], onDelete: Restrict)
+  actorUserId String
+  actor       User                  @relation("ShiftScheduleRevisionActor", fields: [actorUserId], references: [id], onDelete: Restrict)
+  action      String
+  beforeData  Json?
+  afterData   Json?
+  comment     String?
+  createdAt   DateTime              @default(now())
+
+  @@index([scheduleId, createdAt])
+  @@index([actorUserId, createdAt])
+}
+
+// Correspondence is retained even when an employee leaves the company.
+enum CorrespondencePriority {
+  NORMAL
+  URGENT
+}
+
+enum CorrespondenceStatus {
+  PENDING
+  REJECTED
+  CLOSED
+}
+
+enum CorrespondenceAction {
+  SENT
+  FORWARDED
+  REJECTED
+  CLOSED
+}
+
+model CorrespondenceLetter {
+  id String @id @default(cuid())
+  subject String
+  body String @db.Text
+  priority CorrespondencePriority @default(NORMAL)
+  status CorrespondenceStatus @default(PENDING)
+  senderUserId String
+  senderAssignmentId String
+  currentReviewerAssignmentId String?
+  persianMonth String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  version Int @default(0)
+  actions CorrespondenceHistory[]
+  @@index([senderUserId, persianMonth, priority])
+  @@index([currentReviewerAssignmentId, status])
+  @@index([createdAt])
+}
+
+model CorrespondenceHistory {
+  id String @id @default(cuid())
+  letterId String
+  letter CorrespondenceLetter @relation(fields: [letterId], references: [id], onDelete: Restrict)
+  actorUserId String
+  actorAssignmentId String
+  action CorrespondenceAction
+  fromAssignmentId String?
+  toAssignmentId String?
+  note String? @db.Text
+  createdAt DateTime @default(now())
+  @@index([letterId, createdAt])
+  @@index([actorUserId, createdAt])
+}
+
+// Locks serialize urgent-quota checks for each user and Persian month.
+model CorrespondenceMonthlyQuota {
+  id String @id @default(cuid())
+  userId String
+  persianMonth String
+  urgentUsed Int @default(0)
+  @@unique([userId, persianMonth])
+}
+
+
+========== modules/attendance/attendance-calculator.ts ==========
+
+
+export type AttendancePunchType =
+  | "CHECK_IN"
+  | "CHECK_OUT"
+  | "BREAK_START"
+  | "BREAK_END"
+  | "AUTO_CHECK_OUT";
+
+export interface AttendancePunch {
+  type: AttendancePunchType;
+  occurredAt: Date | string;
+}
+
+export interface AttendanceCalculationInput {
+  punches: AttendancePunch[];
+  requiredMinutes: number;
+  scheduledStartAt?: Date | string | null;
+  scheduledEndAt?: Date | string | null;
+}
+
+export interface AttendanceCalculationResult {
+  firstCheckInAt: Date | null;
+  lastCheckOutAt: Date | null;
+  workedMinutes: number;
+  breakMinutes: number;
+  requiredMinutes: number;
+  deficitMinutes: number;
+  overtimeMinutes: number;
+  lateMinutes: number;
+  earlyLeaveMinutes: number;
+  isComplete: boolean;
+  requiresReview: boolean;
+  warnings: string[];
+}
+
+function toDate(value: Date | string): Date {
+  const date = value instanceof Date
+    ? new Date(value.getTime())
+    : new Date(value);
+
+  if (!Number.isFinite(date.getTime())) {
+    throw new Error("ØªØ§Ø±ÛŒØ® ÛŒØ§ Ø³Ø§Ø¹Øª ØªØ±Ø¯Ø¯ Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª.");
+  }
+
+  return date;
+}
+
+function minutesBetween(start: Date, end: Date): number {
+  return Math.max(
+    0,
+    Math.floor((end.getTime() - start.getTime()) / 60000)
+  );
+}
+
+export function calculateAttendance(
+  input: AttendanceCalculationInput
+): AttendanceCalculationResult {
+  if (
+    !Number.isInteger(input.requiredMinutes) ||
+    input.requiredMinutes < 0 ||
+    input.requiredMinutes > 1440
+  ) {
+    throw new Error("Ø¯Ù‚Ø§ÛŒÙ‚ Ù…ÙˆØ¸ÙÛŒ Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª.");
+  }
+
+  const scheduledStart = input.scheduledStartAt
+    ? toDate(input.scheduledStartAt)
+    : null;
+
+  const scheduledEnd = input.scheduledEndAt
+    ? toDate(input.scheduledEndAt)
+    : null;
+
+  if (
+    scheduledStart &&
+    scheduledEnd &&
+    scheduledEnd <= scheduledStart
+  ) {
+    throw new Error("Ù¾Ø§ÛŒØ§Ù† Ø´ÛŒÙØª Ø¨Ø§ÛŒØ¯ Ø¨Ø¹Ø¯ Ø§Ø² Ø´Ø±ÙˆØ¹ Ø¢Ù† Ø¨Ø§Ø´Ø¯.");
+  }
+
+  const punches = input.punches
+    .map((punch, index) => ({
+      type: punch.type,
+      occurredAt: toDate(punch.occurredAt),
+      index,
+    }))
+    .sort(
+      (a, b) =>
+        a.occurredAt.getTime() - b.occurredAt.getTime() ||
+        a.index - b.index
+    );
+
+  const warnings: string[] = [];
+
+  let firstCheckInAt: Date | null = null;
+  let lastCheckOutAt: Date | null = null;
+
+  let workStart: Date | null = null;
+  let breakStart: Date | null = null;
+
+  let workedMilliseconds = 0;
+  let breakMilliseconds = 0;
+
+  let requiresReview = false;
+
+  for (const punch of punches) {
+    const time = punch.occurredAt;
+
+    switch (punch.type) {
+      case "CHECK_IN": {
+        if (workStart !== null) {
+          warnings.push("ÙˆØ±ÙˆØ¯ ØªÚ©Ø±Ø§Ø±ÛŒ Ø¨Ø¯ÙˆÙ† Ø®Ø±ÙˆØ¬ Ù‚Ø¨Ù„ÛŒ.");
+          requiresReview = true;
+          break;
+        }
+
+        firstCheckInAt ??= time;
+        workStart = time;
+        breakStart = null;
+        break;
+      }
+
+      case "BREAK_START": {
+        if (workStart === null || breakStart !== null) {
+          warnings.push("Ø´Ø±ÙˆØ¹ Ø§Ø³ØªØ±Ø§Ø­Øª Ø¯Ø± ÙˆØ¶Ø¹ÛŒØª Ù†Ø§Ù…Ø¹ØªØ¨Ø±.");
+          requiresReview = true;
+          break;
+        }
+
+        workedMilliseconds +=
+          time.getTime() - workStart.getTime();
+
+        workStart = null;
+        breakStart = time;
+        break;
+      }
+
+      case "BREAK_END": {
+        if (breakStart === null) {
+          warnings.push("Ù¾Ø§ÛŒØ§Ù† Ø§Ø³ØªØ±Ø§Ø­Øª Ø¨Ø¯ÙˆÙ† Ø´Ø±ÙˆØ¹ Ù…Ø¹ØªØ¨Ø±.");
+          requiresReview = true;
+          break;
+        }
+
+        breakMilliseconds +=
+          time.getTime() - breakStart.getTime();
+
+        breakStart = null;
+        workStart = time;
+        break;
+      }
+
+      case "CHECK_OUT":
+      case "AUTO_CHECK_OUT": {
+        if (breakStart !== null) {
+          warnings.push(
+            "Ø®Ø±ÙˆØ¬ Ù‡Ù†Ú¯Ø§Ù… Ø§Ø³ØªØ±Ø§Ø­ØªØ› Ø²Ù…Ø§Ù† Ø§Ø³ØªØ±Ø§Ø­Øª Ø¨Ø³ØªÙ‡ Ø´Ø¯."
+          );
+
+          breakMilliseconds +=
+            time.getTime() - breakStart.getTime();
+
+          breakStart = null;
+          lastCheckOutAt = time;
+          requiresReview = true;
+          break;
+        }
+
+        if (workStart === null) {
+          warnings.push("Ø®Ø±ÙˆØ¬ Ø¨Ø¯ÙˆÙ† ÙˆØ±ÙˆØ¯ Ù…Ø¹ØªØ¨Ø±.");
+          requiresReview = true;
+          break;
+        }
+
+        workedMilliseconds +=
+          time.getTime() - workStart.getTime();
+
+        workStart = null;
+        lastCheckOutAt = time;
+
+        if (punch.type === "AUTO_CHECK_OUT") {
+          warnings.push("Ø®Ø±ÙˆØ¬ Ø®ÙˆØ¯Ú©Ø§Ø± Ù†ÛŒØ§Ø²Ù…Ù†Ø¯ Ø¨Ø±Ø±Ø³ÛŒ Ø§Ø³Øª.");
+          requiresReview = true;
+        }
+
+        break;
+      }
+
+      default: {
+        warnings.push("Ù†ÙˆØ¹ Ø±ÙˆÛŒØ¯Ø§Ø¯ Ù†Ø§Ø´Ù†Ø§Ø®ØªÙ‡ Ø§Ø³Øª.");
+        requiresReview = true;
+      }
+    }
+  }
+
+  const isComplete =
+    workStart === null &&
+    breakStart === null &&
+    firstCheckInAt !== null &&
+    lastCheckOutAt !== null;
+
+  if (workStart !== null) {
+    warnings.push("ÙˆØ±ÙˆØ¯ Ø¨Ø§Ø² Ø¨Ø¯ÙˆÙ† Ø®Ø±ÙˆØ¬ Ù†Ù‡Ø§ÛŒÛŒ.");
+    requiresReview = true;
+  }
+
+  if (breakStart !== null) {
+    warnings.push("Ø§Ø³ØªØ±Ø§Ø­Øª Ø¨Ø§Ø² Ø¨Ø¯ÙˆÙ† Ù¾Ø§ÛŒØ§Ù†.");
+    requiresReview = true;
+  }
+
+  const workedMinutes = Math.floor(
+    workedMilliseconds / 60000
+  );
+
+  const breakMinutes = Math.floor(
+    breakMilliseconds / 60000
+  );
+
+  const requiredMinutes = input.requiredMinutes;
+
+  const deficitMinutes = Math.max(
+    requiredMinutes - workedMinutes,
+    0
+  );
+
+  const overtimeMinutes = isComplete
+    ? Math.max(workedMinutes - requiredMinutes, 0)
+    : 0;
+
+  const lateMinutes =
+    scheduledStart && firstCheckInAt
+      ? minutesBetween(scheduledStart, firstCheckInAt)
+      : 0;
+
+  const earlyLeaveMinutes =
+    scheduledEnd && lastCheckOutAt
+      ? minutesBetween(lastCheckOutAt, scheduledEnd)
+      : 0;
+
+  return {
+    firstCheckInAt,
+    lastCheckOutAt,
+    workedMinutes,
+    breakMinutes,
+    requiredMinutes,
+    deficitMinutes,
+    overtimeMinutes,
+    lateMinutes,
+    earlyLeaveMinutes,
+    isComplete,
+    requiresReview: requiresReview || !isComplete,
+    warnings,
+  };
+}
+
+
+========== modules/attendance/approved-schedule.ts ==========
+
+
+import "server-only";
+
+import {
+  EmployeeShiftScheduleStatus,
+} from "@/generated/prisma/client";
+
+import { prisma } from "@/libs/prisma";
+
+const TIME_ZONE = "Asia/Tehran";
+
+export interface ApprovedWorkSegment {
+  id: string;
+  workDate: Date;
+  startsAt: Date;
+  endsAt: Date;
+  requiredMinutes: number;
+  segmentOrder: number;
+  workShiftId: string | null;
+}
+
+export interface ApprovedWorkSchedule {
+  source: "APPROVED_WEEKLY_SCHEDULE" | "NOT_FOUND";
+  employeeUserId: string;
+  workDate: Date;
+  weekStartDate: Date;
+  scheduleId: string | null;
+  scheduleVersion: number | null;
+  requiredMinutes: number | null;
+  scheduledStartAt: Date | null;
+  scheduledEndAt: Date | null;
+  segments: ApprovedWorkSegment[];
+}
+
+function validateDate(date: Date): Date {
+  if (
+    !(date instanceof Date) ||
+    !Number.isFinite(date.getTime())
+  ) {
+    throw new Error("ØªØ§Ø±ÛŒØ® Ú©Ø§Ø±ÛŒ Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª.");
+  }
+
+  return date;
+}
+
+function normalizeDate(date: Date): Date {
+  validateDate(date);
+
+  return new Date(
+    Date.UTC(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate()
+    )
+  );
+}
+
+function getWeekStart(date: Date): Date {
+  const result = normalizeDate(date);
+
+  const daysSinceSaturday =
+    (result.getUTCDay() + 1) % 7;
+
+  result.setUTCDate(
+    result.getUTCDate() - daysSinceSaturday
+  );
+
+  return result;
+}
+
+function getTehranDate(date: Date): Date {
+  validateDate(date);
+
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: TIME_ZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+
+  const read = (type: string) => {
+    const value = parts.find(
+      (part) => part.type === type
+    )?.value;
+
+    if (!value) {
+      throw new Error(
+        "ØªØ¨Ø¯ÛŒÙ„ ØªØ§Ø±ÛŒØ® Ø¨Ù‡ Ù…Ù†Ø·Ù‚Ù‡ Ø²Ù…Ø§Ù†ÛŒ ØªÙ‡Ø±Ø§Ù† Ù†Ø§Ù…ÙˆÙÙ‚ Ø¨ÙˆØ¯."
+      );
+    }
+
+    return Number(value);
+  };
+
+  return new Date(
+    Date.UTC(
+      read("year"),
+      read("month") - 1,
+      read("day")
+    )
+  );
+}
+
+function emptyResult(
+  employeeUserId: string,
+  workDate: Date
+): ApprovedWorkSchedule {
+  return {
+    source: "NOT_FOUND",
+    employeeUserId,
+    workDate,
+    weekStartDate: getWeekStart(workDate),
+    scheduleId: null,
+    scheduleVersion: null,
+    requiredMinutes: null,
+    scheduledStartAt: null,
+    scheduledEndAt: null,
+    segments: [],
+  };
+}
+
+/**
+ * Find the approved weekly schedule for one employee
+ * and one Tehran business date.
+ *
+ * An approved week with no segments on this date
+ * represents a day with zero scheduled minutes.
+ *
+ * A missing approved week is different from a day off.
+ * Callers must not silently treat missing schedules
+ * as zero required minutes.
+ */
+export async function getApprovedWorkSchedule(
+  employeeUserId: string,
+  date: Date
+): Promise<ApprovedWorkSchedule> {
+  if (
+    typeof employeeUserId !== "string" ||
+    !employeeUserId.trim()
+  ) {
+    throw new Error("Ø´Ù†Ø§Ø³Ù‡ Ú©Ø§Ø±Ù…Ù†Ø¯ Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª.");
+  }
+
+  const workDate = normalizeDate(date);
+  const weekStartDate = getWeekStart(workDate);
+
+  const schedule =
+    await prisma.employeeShiftSchedule.findFirst({
+      where: {
+        employeeUserId,
+        weekStartDate,
+        status: EmployeeShiftScheduleStatus.APPROVED,
+      },
+      orderBy: [
+        { version: "desc" },
+        { createdAt: "desc" },
+      ],
+      select: {
+        id: true,
+        version: true,
+        segments: {
+          where: { workDate },
+          orderBy: [
+            { startsAt: "asc" },
+            { segmentOrder: "asc" },
+          ],
+          select: {
+            id: true,
+            workDate: true,
+            startsAt: true,
+            endsAt: true,
+            requiredMinutes: true,
+            segmentOrder: true,
+            workShiftId: true,
+          },
+        },
+      },
+    });
+
+  if (!schedule) {
+    return emptyResult(
+      employeeUserId,
+      workDate
+    );
+  }
+
+  const segments: ApprovedWorkSegment[] =
+    schedule.segments.map((segment) => ({
+      id: segment.id,
+      workDate: segment.workDate,
+      startsAt: segment.startsAt,
+      endsAt: segment.endsAt,
+      requiredMinutes: segment.requiredMinutes,
+      segmentOrder: segment.segmentOrder,
+      workShiftId: segment.workShiftId,
+    }));
+
+  const requiredMinutes = segments.reduce(
+    (total, segment) =>
+      total + segment.requiredMinutes,
+    0
+  );
+
+  const scheduledStartAt =
+    segments.length > 0
+      ? segments[0].startsAt
+      : null;
+
+  const scheduledEndAt =
+    segments.length > 0
+      ? segments.reduce(
+          (latest, segment) =>
+            segment.endsAt > latest
+              ? segment.endsAt
+              : latest,
+          segments[0].endsAt
+        )
+      : null;
+
+  return {
+    source: "APPROVED_WEEKLY_SCHEDULE",
+    employeeUserId,
+    workDate,
+    weekStartDate,
+    scheduleId: schedule.id,
+    scheduleVersion: schedule.version,
+    requiredMinutes,
+    scheduledStartAt,
+    scheduledEndAt,
+    segments,
+  };
+}
+
+/**
+ * Find a scheduled segment containing the given instant.
+ *
+ * Useful when resolving overnight attendance:
+ * a 00:30 checkout may belong to the previous
+ * business day's 15:00-23:00 shift.
+ *
+ * This function does not automatically assign
+ * a punch to a record; that requires checking
+ * the employee's currently open attendance record.
+ */
+export async function findScheduledSegmentAt(
+  employeeUserId: string,
+  instant: Date
+): Promise<{
+  schedule: ApprovedWorkSchedule;
+  segment: ApprovedWorkSegment;
+} | null> {
+  validateDate(instant);
+
+  const currentWorkDate = getTehranDate(instant);
+
+  const previousWorkDate =
+    new Date(currentWorkDate);
+
+  previousWorkDate.setUTCDate(
+    previousWorkDate.getUTCDate() - 1
+  );
+
+  const dates = [
+    previousWorkDate,
+    currentWorkDate,
+  ];
+
+  for (const date of dates) {
+    const schedule =
+      await getApprovedWorkSchedule(
+        employeeUserId,
+        date
+      );
+
+    const matchingSegment =
+      schedule.segments.find(
+        (segment) =>
+          instant >= segment.startsAt &&
+          instant <= segment.endsAt
+      );
+
+    if (matchingSegment) {
+      return {
+        schedule,
+        segment: matchingSegment,
+      };
+    }
+  }
+
+  return null;
+}
+
+
+========== modules/attendance/attendance-review-policy.ts ==========
+
+/** Pure HR attendance review rules. No database or framework dependencies. */
+export type AttendanceReviewStatus =
+  | "OPEN" | "COMPLETED" | "PENDING_REVIEW" | "APPROVED" | "REJECTED";
+export type AdjustmentReviewStatus = "PENDING" | "APPROVED" | "REJECTED" | "CANCELLED";
+
+export interface AttendanceReviewRecord {
+  id: string;
+  status: AttendanceReviewStatus;
+  approvedAt: Date | null;
+  approvedByUserId: string | null;
+  requiredMinutes: number;
+  workedMinutes: number;
+  overtimeMinutes: number;
+  lateMinutes: number;
+  earlyLeaveMinutes: number;
+  firstCheckInAt: Date | null;
+  lastCheckOutAt: Date | null;
+  requiresReview: boolean;
+  adjustments: readonly { status: AdjustmentReviewStatus }[];
+}
+
+export type AttendanceReviewDecision =
+  | { allowed: true; nextStatus: "APPROVED" | "PENDING_REVIEW" | "REJECTED"; approvedOvertimeMinutes: number; deficitMinutes: number }
+  | { allowed: false; code: string; message: string };
+
+function deny(code: string, message: string): AttendanceReviewDecision {
+  return { allowed: false, code, message };
+}
+function validMinutes(n: number): boolean {
+  return Number.isSafeInteger(n) && n >= 0 && n <= 1440;
+}
+
+/**
+ * Pure policy only: caller MUST enforce HR authorization, ownership/scope, audit logging,
+ * and atomic database writes. APPROVED records must never be overwritten.
+ *
+ * approvedOvertimeMinutes is a proposed output, NOT persisted by this module.
+ * Existing AttendanceRecord has overtimeMinutes but no distinct approved-overtime field.
+ */
+export function decideAttendanceReview(input: {
+  record: AttendanceReviewRecord;
+  action: "APPROVE" | "SEND_TO_REVIEW" | "REJECT";
+  approvedOvertimeMinutes?: number;
+  reason?: string;
+}): AttendanceReviewDecision {
+  const { record, action } = input;
+  if (record.status === "APPROVED" || record.approvedAt !== null || record.approvedByUserId !== null) {
+    return deny("ALREADY_APPROVED", "Ø±Ú©ÙˆØ±Ø¯ Ù‚Ø¨Ù„Ø§Ù‹ ØªØ£ÛŒÛŒØ¯ Ø´Ø¯Ù‡ Ùˆ Ù‚ÙÙ„ Ø§Ø³Øª.");
+  }
+  if (![record.requiredMinutes, record.workedMinutes, record.overtimeMinutes,
+    record.lateMinutes, record.earlyLeaveMinutes].every(validMinutes)) {
+    return deny("INVALID_MINUTES", "Ù…Ù‚Ø§Ø¯ÛŒØ± Ø²Ù…Ø§Ù†ÛŒ Ø±Ú©ÙˆØ±Ø¯ Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª.");
+  }
+  if (record.adjustments.some((a) => a.status === "PENDING")) {
+    return deny("PENDING_ADJUSTMENT", "Ø§Ø¨ØªØ¯Ø§ Ø¨Ø§ÛŒØ¯ Ø¯Ø±Ø®ÙˆØ§Ø³Øªâ€ŒÙ‡Ø§ÛŒ Ø§ØµÙ„Ø§Ø­ ØªØ±Ø¯Ø¯ ØªØ¹ÛŒÛŒÙ† ØªÚ©Ù„ÛŒÙ Ø´ÙˆÙ†Ø¯.");
+  }
+  const deficitMinutes = Math.max(0, record.requiredMinutes - record.workedMinutes);
+  if (action === "SEND_TO_REVIEW") {
+    if (record.status === "REJECTED") return deny("INVALID_STATE", "Ø±Ú©ÙˆØ±Ø¯ Ø±Ø¯Ø´Ø¯Ù‡ Ø¨Ø§ÛŒØ¯ Ø§Ø² Ù…Ø³ÛŒØ± Ø§ØµÙ„Ø§Ø­ Ù…Ø¬Ø§Ø² Ø¨Ø§Ø²Ú¯Ø´Ø§ÛŒÛŒ Ø´ÙˆØ¯.");
+    return { allowed: true, nextStatus: "PENDING_REVIEW", approvedOvertimeMinutes: 0, deficitMinutes };
+  }
+  if (action === "REJECT") {
+    if (record.status === "REJECTED") return deny("INVALID_STATE", "Ø±Ú©ÙˆØ±Ø¯ Ù‚Ø¨Ù„Ø§Ù‹ Ø±Ø¯ Ø´Ø¯Ù‡ Ø§Ø³Øª.");
+    if (!input.reason?.trim() || input.reason.trim().length < 5) {
+      return deny("REASON_REQUIRED", "Ø¨Ø±Ø§ÛŒ Ø±Ø¯ Ø±Ú©ÙˆØ±Ø¯ØŒ ØªÙˆØ¶ÛŒØ­ Ø­Ø¯Ø§Ù‚Ù„ Ù¾Ù†Ø¬â€ŒØ­Ø±ÙÛŒ Ù„Ø§Ø²Ù… Ø§Ø³Øª.");
+    }
+    return { allowed: true, nextStatus: "REJECTED", approvedOvertimeMinutes: 0, deficitMinutes };
+  }
+  if (record.status !== "COMPLETED" && record.status !== "PENDING_REVIEW") {
+    return deny("NOT_READY", "Ø±Ú©ÙˆØ±Ø¯ Ø¨Ø±Ø§ÛŒ ØªØ£ÛŒÛŒØ¯ Ù†Ù‡Ø§ÛŒÛŒ Ø¢Ù…Ø§Ø¯Ù‡ Ù†ÛŒØ³Øª.");
+  }
+  if (!record.firstCheckInAt || !record.lastCheckOutAt ||
+      record.lastCheckOutAt.getTime() <= record.firstCheckInAt.getTime()) {
+    return deny("INCOMPLETE_ATTENDANCE", "ÙˆØ±ÙˆØ¯ Ùˆ Ø®Ø±ÙˆØ¬ Ú©Ø§Ù…Ù„ Ùˆ Ù…Ø¹ØªØ¨Ø± Ø«Ø¨Øª Ù†Ø´Ø¯Ù‡ Ø§Ø³Øª.");
+  }
+  if (record.requiresReview) {
+    return deny("REQUIRES_REVIEW", "Ø§Ø¨Ù‡Ø§Ù…â€ŒÙ‡Ø§ÛŒ Ù…Ø­Ø§Ø³Ø¨Ø§ØªÛŒ Ø¨Ø§ÛŒØ¯ Ù‚Ø¨Ù„ Ø§Ø² ØªØ£ÛŒÛŒØ¯ Ø±ÙØ¹ Ø´ÙˆÙ†Ø¯.");
+  }
+  const approvedOvertimeMinutes = input.approvedOvertimeMinutes ?? 0;
+  if (!validMinutes(approvedOvertimeMinutes) || approvedOvertimeMinutes > record.overtimeMinutes) {
+    return deny("INVALID_OVERTIME", "Ø§Ø¶Ø§ÙÙ‡â€ŒÚ©Ø§Ø±ÛŒ ØªØ£ÛŒÛŒØ¯ÛŒ Ø¨Ø§ÛŒØ¯ Ø¨ÛŒÙ† ØµÙØ± Ùˆ Ø§Ø¶Ø§ÙÙ‡â€ŒÚ©Ø§Ø±ÛŒ Ù¾ÛŒØ´Ù†Ù‡Ø§Ø¯ÛŒ Ø¨Ø§Ø´Ø¯.");
+  }
+  return { allowed: true, nextStatus: "APPROVED", approvedOvertimeMinutes, deficitMinutes };
+}
+
+
+========== modules/attendance/attendance-hr-authorization.ts ==========
+
+/**
+ * Sahand ERP â€” pure authorization rules for HR attendance corrections.
+ * This is a second gate AFTER server-side authentication and permission checks.
+ * Do not derive these inputs from client-provided role names or scopes.
+ */
+export type HrAttendanceAction = "REQUEST_CORRECTION" | "REVIEW_CORRECTION" | "APPROVE_RECORD";
+
+export interface HrAttendanceAuthorizationInput {
+  action: HrAttendanceAction;
+  permissionAllowed: boolean;
+  permissionScopes: readonly string[];
+  isSystemAdmin: boolean;
+  /** Role keys obtained from the user's active, server-verified assignments. */
+  activeAssignmentRoleKeys: readonly string[];
+  /** True only when the server has independently verified the record's scope. */
+  recordWithinAuthorizedScope: boolean;
+}
+
+export type HrAttendanceAuthorizationResult =
+  | { allowed: true; reason: "ALLOWED" }
+  | { allowed: false; reason: "PERMISSION_DENIED" | "SYSTEM_ADMIN_NOT_BUSINESS_APPROVER" | "HR_ROLE_REQUIRED" | "SCOPE_DENIED" };
+
+export function authorizeHrAttendanceAction(input: HrAttendanceAuthorizationInput): HrAttendanceAuthorizationResult {
+  if (input.isSystemAdmin) {
+    return { allowed: false, reason: "SYSTEM_ADMIN_NOT_BUSINESS_APPROVER" };
+  }
+  if (!input.permissionAllowed) {
+    return { allowed: false, reason: "PERMISSION_DENIED" };
+  }
+  if (!input.activeAssignmentRoleKeys.includes("hr_manager")) {
+    return { allowed: false, reason: "HR_ROLE_REQUIRED" };
+  }
+  if (!input.recordWithinAuthorizedScope || !input.permissionScopes.includes("ALL")) {
+    return { allowed: false, reason: "SCOPE_DENIED" };
+  }
+  return { allowed: true, reason: "ALLOWED" };
+}
+
+
+========== app/api/attendance/me/records/route.ts ==========
+
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/libs/prisma";
+import { authenticateRequest } from "@/modules/auth/auth.middleware";
+
+/** Employee-only attendance history. No assignment IDs accepted from the client. */
+export async function GET(request: NextRequest) {
+  try {
+    const actor = await authenticateRequest(request);
+    const rawPage = request.nextUrl.searchParams.get("page") ?? "1";
+    if (!/^[1-9]\d{0,3}$/.test(rawPage)) {
+      return NextResponse.json({ error: "Ø´Ù…Ø§Ø±Ù‡ ØµÙØ­Ù‡ Ù†Ø§Ù…Ø¹ØªØ¨Ø± Ø§Ø³Øª." }, { status: 400 });
+    }
+    const page = Number(rawPage);
+    const where = { employeeAssignment: { userId: actor.id } };
+    const [total, records] = await prisma.$transaction([
+      prisma.attendanceRecord.count({ where }),
+      prisma.attendanceRecord.findMany({
+        where,
+        orderBy: [{ workDate: "desc" }, { createdAt: "desc" }],
+        skip: (page - 1) * 20,
+        take: 20,
+        select: {
+          id: true, workDate: true, timeZone: true, status: true,
+          scheduledStartAt: true, scheduledEndAt: true, requiredMinutes: true,
+          firstCheckInAt: true, lastCheckOutAt: true, workedMinutes: true,
+          breakMinutes: true, overtimeMinutes: true, lateMinutes: true,
+          earlyLeaveMinutes: true, approvedAt: true,
+          events: {
+            orderBy: [{ occurredAt: "asc" }, { id: "asc" }],
+            select: { id: true, eventType: true, occurredAt: true, source: true },
+          },
+          adjustments: {
+            orderBy: { createdAt: "desc" },
+            select: {
+              id: true, attendanceEventId: true, proposedEventType: true,
+              proposedOccurredAt: true, reason: true, status: true,
+              requestedByUserId: true, reviewerComment: true,
+              reviewedAt: true, createdAt: true,
+            },
+          },
+        },
+      }),
+    ]);
+    return NextResponse.json({ records, page, pageSize: 20, total, totalPages: Math.ceil(total / 20) },
+      { headers: { "Cache-Control": "no-store" } });
+  } catch (error) {
+    console.error("attendance/me/records GET", error);
+    return NextResponse.json({ error: "Ø¯Ø±ÛŒØ§ÙØª Ø³ÙˆØ§Ø¨Ù‚ Ø­Ø¶ÙˆØ± Ùˆ ØºÛŒØ§Ø¨ Ø§Ù…Ú©Ø§Ù†â€ŒÙ¾Ø°ÛŒØ± Ù†Ø´Ø¯." }, { status: 401 });
+  }
+}
+
+
+========== app/api/attendance/weekly-schedules/[id]/review/route.ts ==========
+
+
+import { NextRequest } from "next/server";
+
+import {
+  EmployeeShiftScheduleStatus as Status,
+  Prisma,
+} from "@/generated/prisma/client";
+
+import { prisma } from "@/libs/prisma";
+
+import {
+  successResponse,
+  errorResponse,
+} from "@/libs/api-response";
+
+import {
+  assertSameOriginRequest,
+  authenticateRequest,
+} from "@/modules/auth/auth.middleware";
+
+type Context = {
+  params: Promise<{ id: string }>;
+};
+
+type ReviewAction = "APPROVE" | "REJECT";
+
+class ReviewError extends Error {
+  constructor(
+    message: string,
+    public statusCode = 400
+  ) {
+    super(message);
+    this.name = "ReviewError";
+  }
+}
+
+function isObject(
+  value: unknown
+): value is Record<string, unknown> {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    !Array.isArray(value)
+  );
+}
+
+function handleError(error: unknown) {
+  if (error instanceof ReviewError) {
+    return errorResponse(
+      error.message,
+      error.statusCode
+    );
+  }
+
+  if (
+    error instanceof Error &&
+    "statusCode" in error &&
+    typeof error.statusCode === "number"
+  ) {
+    return errorResponse(
+      error.message,
+      error.statusCode
+    );
+  }
+
+  if (
+    error instanceof Prisma.PrismaClientKnownRequestError &&
+    error.code === "P2034"
+  ) {
+    return errorResponse(
+      "ØªØ¯Ø§Ø®Ù„ Ø¯Ø± Ø«Ø¨Øª ØªØµÙ…ÛŒÙ… Ø±Ø® Ø¯Ø§Ø¯. Ø¯ÙˆØ¨Ø§Ø±Ù‡ ØªÙ„Ø§Ø´ Ú©Ù†ÛŒØ¯.",
+      409
+    );
+  }
+
+  console.error("[WEEKLY_SCHEDULE_REVIEW]", error);
+
+  return errorResponse(
+    "Ø®Ø·Ø§ Ø¯Ø± Ø¨Ø±Ø±Ø³ÛŒ Ø¨Ø±Ù†Ø§Ù…Ù‡ Ù‡ÙØªÚ¯ÛŒ.",
+    500
+  );
+}
+
+/**
+ * Ø¨Ø±Ø±Ø³ÛŒ Ù†Ù‚Ø´ ÙˆØ§Ù‚Ø¹ÛŒ Ù…Ø¯ÛŒØ± Ù…Ù†Ø§Ø¨Ø¹ Ø§Ù†Ø³Ø§Ù†ÛŒ.
+ *
+ * Ù†Ù‚Ø´ Ø¹Ù…ÙˆÙ…ÛŒ ÛŒØ§ Ù†Ù‚Ø´ Ù…Ø±Ø¨ÙˆØ· Ø¨Ù‡ ÛŒÚ© Ù…Ø³Ø¦ÙˆÙ„ÛŒØª Ø³Ø§Ø²Ù…Ø§Ù†ÛŒ
+ * Ø¨Ø§ÛŒØ¯ ÙØ¹Ø§Ù„ Ùˆ Ù…Ù†Ù‚Ø¶ÛŒâ€ŒÙ†Ø´Ø¯Ù‡ Ø¨Ø§Ø´Ø¯.
+ *
+ * system_admin Ø¨Ù‡â€ŒØªÙ†Ù‡Ø§ÛŒÛŒ Ø§Ø¬Ø§Ø²Ù‡ ØªØ£ÛŒÛŒØ¯ Ù†Ø¯Ø§Ø±Ø¯.
+ */
+async function assertHrManager(
+  userId: string
+): Promise<void> {
+  const now = new Date();
+
+  const user = await prisma.user.findFirst({
+    where: {
+      id: userId,
+      isActive: true,
+      accessLevel: "ERP",
+    },
+    select: {
+      roles: {
+        where: {
+          isActive: true,
+          OR: [
+            { expiresAt: null },
+            { expiresAt: { gt: now } },
+          ],
+          role: {
+            key: "hr_manager",
+            isActive: true,
+          },
+        },
+        select: {
+          id: true,
+        },
+        take: 1,
+      },
+      employeeAssignments: {
+        where: {
+          status: "ACTIVE",
+          startDate: { lte: now },
+          OR: [
+            { endDate: null },
+            { endDate: { gt: now } },
+          ],
+        },
+        select: {
+          roles: {
+            where: {
+              isActive: true,
+              OR: [
+                { expiresAt: null },
+                { expiresAt: { gt: now } },
+              ],
+              role: {
+                key: "hr_manager",
+                isActive: true,
+              },
+            },
+            select: {
+              id: true,
+            },
+            take: 1,
+          },
+        },
+      },
+    },
+  });
+
+  const hasGlobalRole =
+    (user?.roles.length ?? 0) > 0;
+
+  const hasAssignmentRole =
+    user?.employeeAssignments.some(
+      (assignment) => assignment.roles.length > 0
+    ) ?? false;
+
+  if (!hasGlobalRole && !hasAssignmentRole) {
+    throw new ReviewError(
+      "ÙÙ‚Ø· Ù…Ø¯ÛŒØ± Ù…Ù†Ø§Ø¨Ø¹ Ø§Ù†Ø³Ø§Ù†ÛŒ Ù…Ø¬Ø§Ø² Ø¨Ù‡ ØªØ£ÛŒÛŒØ¯ ÛŒØ§ Ø±Ø¯ Ø¨Ø±Ù†Ø§Ù…Ù‡ Ù‡ÙØªÚ¯ÛŒ Ø§Ø³Øª.",
+      403
+    );
+  }
+}
+
+/**
+ * POST /api/attendance/weekly-schedules/:id/review
+ *
+ * {
+ *   "action": "APPROVE" | "REJECT",
+ *   "comment": "..."
+ * }
+ */
+export async function POST(
+  request: NextRequest,
+  context: Context
+) {
+  try {
+    assertSameOriginRequest(request);
+
+    const actor = await authenticateRequest(request);
+
+    await assertHrManager(actor.id);
+
+    const { id } = await context.params;
+
+    if (!id || id.length > 100) {
+      throw new ReviewError(
+        "Ø´Ù†Ø§Ø³Ù‡ Ø¨Ø±Ù†Ø§Ù…Ù‡ Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª."
+      );
+    }
+
+    let body: unknown;
+
+    try {
+      body = await request.json();
+    } catch {
+      throw new ReviewError(
+        "Ø³Ø§Ø®ØªØ§Ø± JSON Ø¯Ø±Ø®ÙˆØ§Ø³Øª Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª."
+      );
+    }
+
+    if (!isObject(body)) {
+      throw new ReviewError(
+        "Ø§Ø·Ù„Ø§Ø¹Ø§Øª Ø¨Ø±Ø±Ø³ÛŒ Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª."
+      );
+    }
+
+    const action = body.action;
+
+    if (action !== "APPROVE" && action !== "REJECT") {
+      throw new ReviewError(
+        "Ø¹Ù…Ù„ÛŒØ§Øª Ø¨Ø§ÛŒØ¯ APPROVE ÛŒØ§ REJECT Ø¨Ø§Ø´Ø¯."
+      );
+    }
+
+    const reviewAction: ReviewAction = action;
+
+    const rawComment = body.comment;
+
+    if (
+      rawComment !== undefined &&
+      rawComment !== null &&
+      typeof rawComment !== "string"
+    ) {
+      throw new ReviewError(
+        "ØªÙˆØ¶ÛŒØ­Ø§Øª Ø¨Ø±Ø±Ø³ÛŒ Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª."
+      );
+    }
+
+    const comment =
+      typeof rawComment === "string"
+        ? rawComment.trim()
+        : "";
+
+    if (comment.length > 2000) {
+      throw new ReviewError(
+        "ØªÙˆØ¶ÛŒØ­Ø§Øª Ù†Ø¨Ø§ÛŒØ¯ Ø¨ÛŒØ´ØªØ± Ø§Ø² Û²Û°Û°Û° Ú©Ø§Ø±Ø§Ú©ØªØ± Ø¨Ø§Ø´Ø¯."
+      );
+    }
+
+    if (
+      reviewAction === "REJECT" &&
+      comment.length === 0
+    ) {
+      throw new ReviewError(
+        "Ø¨Ø±Ø§ÛŒ Ø±Ø¯ Ø¨Ø±Ù†Ø§Ù…Ù‡ØŒ Ø«Ø¨Øª Ø¯Ù„ÛŒÙ„ Ø§Ù„Ø²Ø§Ù…ÛŒ Ø§Ø³Øª."
+      );
+    }
+
+    const result = await prisma.$transaction(
+      async (tx) => {
+        // Read employee ID before taking the per-employee lock.
+        const reference =
+          await tx.employeeShiftSchedule.findUnique({
+            where: { id },
+            select: {
+              employeeUserId: true,
+            },
+          });
+
+        if (!reference) {
+          throw new ReviewError(
+            "Ø¨Ø±Ù†Ø§Ù…Ù‡ Ù‡ÙØªÚ¯ÛŒ ÛŒØ§ÙØª Ù†Ø´Ø¯.",
+            404
+          );
+        }
+
+        // Serialize decisions for all schedules of this employee.
+        const lockedUsers = await tx.$queryRaw<
+          Array<{ id: string }>
+        >`
+          SELECT id
+          FROM "User"
+          WHERE id = ${reference.employeeUserId}
+          FOR UPDATE
+        `;
+
+        if (lockedUsers.length === 0) {
+          throw new ReviewError(
+            "Ú©Ø§Ø±Ù…Ù†Ø¯ Ù…Ø±Ø¨ÙˆØ· Ø¨Ù‡ Ø¨Ø±Ù†Ø§Ù…Ù‡ ÛŒØ§ÙØª Ù†Ø´Ø¯.",
+            404
+          );
+        }
+
+        const current =
+          await tx.employeeShiftSchedule.findUnique({
+            where: { id },
+            include: {
+              segments: {
+                orderBy: [
+                  { workDate: "asc" },
+                  { segmentOrder: "asc" },
+                ],
+              },
+            },
+          });
+
+        if (!current) {
+          throw new ReviewError(
+            "Ø¨Ø±Ù†Ø§Ù…Ù‡ Ù‡ÙØªÚ¯ÛŒ ÛŒØ§ÙØª Ù†Ø´Ø¯.",
+            404
+          );
+        }
+
+        if (current.status !== Status.SUBMITTED) {
+          throw new ReviewError(
+            "ÙÙ‚Ø· Ø¨Ø±Ù†Ø§Ù…Ù‡ Ø§Ø±Ø³Ø§Ù„â€ŒØ´Ø¯Ù‡ Ùˆ Ø¯Ø± Ø§Ù†ØªØ¸Ø§Ø± Ø¨Ø±Ø±Ø³ÛŒ Ù‚Ø§Ø¨Ù„ ØªØ£ÛŒÛŒØ¯ ÛŒØ§ Ø±Ø¯ Ø§Ø³Øª.",
+            409
+          );
+        }
+
+        const latest =
+          await tx.employeeShiftSchedule.findFirst({
+            where: {
+              employeeUserId: current.employeeUserId,
+              weekStartDate: current.weekStartDate,
+            },
+            orderBy: {
+              version: "desc",
+            },
+            select: {
+              id: true,
+            },
+          });
+
+        if (latest?.id !== current.id) {
+          throw new ReviewError(
+            "Ø§ÛŒÙ† Ø¨Ø±Ù†Ø§Ù…Ù‡ Ø¢Ø®Ø±ÛŒÙ† Ù†Ø³Ø®Ù‡ Ù†ÛŒØ³Øª.",
+            409
+          );
+        }
+
+        if (
+          reviewAction === "APPROVE" &&
+          current.segments.length === 0
+        ) {
+          throw new ReviewError(
+            "Ø¨Ø±Ù†Ø§Ù…Ù‡ Ø¨Ø¯ÙˆÙ† Ø¨Ø§Ø²Ù‡ Ú©Ø§Ø±ÛŒ Ù‚Ø§Ø¨Ù„ ØªØ£ÛŒÛŒØ¯ Ù†ÛŒØ³Øª."
+          );
+        }
+
+        const reviewedAt = new Date();
+
+        // Supersede previous approved versions atomically.
+        const previousApproved =
+          reviewAction === "APPROVE"
+            ? await tx.employeeShiftSchedule.findMany({
+                where: {
+                  employeeUserId: current.employeeUserId,
+                  weekStartDate: current.weekStartDate,
+                  status: Status.APPROVED,
+                  id: { not: current.id },
+                },
+                select: {
+                  id: true,
+                  version: true,
+                  status: true,
+                },
+              })
+            : [];
+
+        if (reviewAction === "APPROVE") {
+          for (const previous of previousApproved) {
+            await tx.employeeShiftSchedule.update({
+              where: { id: previous.id },
+              data: {
+                status: Status.SUPERSEDED,
+              },
+            });
+
+            await tx.employeeShiftScheduleRevision.create({
+              data: {
+                scheduleId: previous.id,
+                actorUserId: actor.id,
+                action: "SUPERSEDED",
+                beforeData: {
+                  status: previous.status,
+                  version: previous.version,
+                },
+                afterData: {
+                  status: Status.SUPERSEDED,
+                  supersededByScheduleId: current.id,
+                },
+                comment:
+                  "Ù†Ø³Ø®Ù‡ Ø¬Ø¯ÛŒØ¯ Ø¨Ø±Ù†Ø§Ù…Ù‡ Ù‡ÙØªÚ¯ÛŒ ØªØ£ÛŒÛŒØ¯ Ø´Ø¯.",
+              },
+            });
+          }
+        }
+
+        const nextStatus =
+          reviewAction === "APPROVE"
+            ? Status.APPROVED
+            : Status.REJECTED;
+
+        const updated =
+          await tx.employeeShiftSchedule.update({
+            where: { id: current.id },
+            data: {
+              status: nextStatus,
+              reviewedByUserId: actor.id,
+              reviewedAt,
+              reviewComment: comment || null,
+              publishedAt:
+                reviewAction === "APPROVE"
+                  ? reviewedAt
+                  : null,
+            },
+            include: {
+              segments: {
+                orderBy: [
+                  { workDate: "asc" },
+                  { segmentOrder: "asc" },
+                ],
+              },
+            },
+          });
+
+        await tx.employeeShiftScheduleRevision.create({
+          data: {
+            scheduleId: updated.id,
+            actorUserId: actor.id,
+            action:
+              reviewAction === "APPROVE"
+                ? "APPROVED"
+                : "REJECTED",
+            beforeData: {
+              status: current.status,
+              reviewedByUserId: current.reviewedByUserId,
+              reviewedAt:
+                current.reviewedAt?.toISOString() ?? null,
+              publishedAt:
+                current.publishedAt?.toISOString() ?? null,
+            },
+            afterData: {
+              status: updated.status,
+              reviewedByUserId: actor.id,
+              reviewedAt: reviewedAt.toISOString(),
+              publishedAt:
+                updated.publishedAt?.toISOString() ?? null,
+              previousApprovedVersions:
+                previousApproved.map((item) => item.version),
+            },
+            comment: comment || null,
+          },
+        });
+
+        return updated;
+      },
+      {
+        isolationLevel:
+          Prisma.TransactionIsolationLevel.Serializable,
+        maxWait: 5000,
+        timeout: 10000,
+      }
+    );
+
+    return successResponse({
+      schedule: result,
+      message:
+        reviewAction === "APPROVE"
+          ? "Ø¨Ø±Ù†Ø§Ù…Ù‡ Ù‡ÙØªÚ¯ÛŒ ØªØ£ÛŒÛŒØ¯ Ùˆ Ù…Ù†ØªØ´Ø± Ø´Ø¯."
+          : "Ø¨Ø±Ù†Ø§Ù…Ù‡ Ù‡ÙØªÚ¯ÛŒ Ø±Ø¯ Ø´Ø¯.",
+    });
+  } catch (error) {
+    return handleError(error);
+  }
+}
+
+
+========== app/api/attendance/shifts/route.ts ==========
+
+
+import { NextRequest } from "next/server";
+
+import {
+  WorkShiftDayType,
+} from "@/generated/prisma/client";
+
+import { prisma } from "@/libs/prisma";
+
+import {
+  successResponse,
+  errorResponse,
+} from "@/libs/api-response";
+
+import {
+  assertSameOriginRequest,
+  authorizeGlobalRequest,
+  RequestOriginError,
+} from "@/modules/auth/auth.middleware";
+
+import { AuthError } from "@/modules/auth/auth.service";
+
+import {
+  PermissionDeniedError,
+} from "@/modules/permissions/access-control";
+
+// ==========================================
+// TYPES
+// ==========================================
+
+class ShiftError extends Error {
+  constructor(
+    message: string,
+    public statusCode = 400
+  ) {
+    super(message);
+    this.name = "ShiftError";
+  }
+}
+
+type ShiftDayInput = {
+  dayOfWeek: number;
+  segmentOrder: number;
+  dayType: WorkShiftDayType;
+  isWorkingDay: boolean;
+  startMinute: number | null;
+  endMinute: number | null;
+  requiredMinutes: number;
+};
+
+// ==========================================
+// HELPERS
+// ==========================================
+
+function isObject(
+  value: unknown
+): value is Record<string, unknown> {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    !Array.isArray(value)
+  );
+}
+
+function readText(
+  value: unknown,
+  field: string,
+  maxLength: number
+): string {
+  if (typeof value !== "string") {
+    throw new ShiftError(`${field} Ø§Ù„Ø²Ø§Ù…ÛŒ Ø§Ø³Øª.`);
+  }
+
+  const result = value.trim();
+
+  if (!result || result.length > maxLength) {
+    throw new ShiftError(`${field} Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª.`);
+  }
+
+  return result;
+}
+
+function readInteger(
+  value: unknown,
+  field: string,
+  min: number,
+  max: number,
+  fallback?: number
+): number {
+  if (value === undefined && fallback !== undefined) {
+    return fallback;
+  }
+
+  if (
+    typeof value !== "number" ||
+    !Number.isInteger(value) ||
+    value < min ||
+    value > max
+  ) {
+    throw new ShiftError(`${field} Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª.`);
+  }
+
+  return value;
+}
+
+function parseDays(value: unknown): ShiftDayInput[] {
+  if (!Array.isArray(value) || value.length === 0) {
+    throw new ShiftError(
+      "Ø­Ø¯Ø§Ù‚Ù„ ÛŒÚ© Ø±ÙˆØ² Ú©Ø§Ø±ÛŒ ÛŒØ§ ØªØ¹Ø·ÛŒÙ„ Ø¨Ø§ÛŒØ¯ ØªØ¹Ø±ÛŒÙ Ø´ÙˆØ¯."
+    );
+  }
+
+  const allowedTypes = Object.values(
+    WorkShiftDayType
+  ) as string[];
+
+  const days = value.map((item, index) => {
+    if (!isObject(item)) {
+      throw new ShiftError("Ø³Ø§Ø®ØªØ§Ø± Ø±ÙˆØ² Ø´ÛŒÙØª Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª.");
+    }
+
+    const dayOfWeek = readInteger(
+      item.dayOfWeek,
+      "Ø±ÙˆØ² Ù‡ÙØªÙ‡",
+      0,
+      6
+    );
+
+    const segmentOrder = readInteger(
+      item.segmentOrder,
+      "ØªØ±ØªÛŒØ¨ Ø¨Ø§Ø²Ù‡",
+      1,
+      100,
+      1
+    );
+
+    const dayType =
+      item.dayType === undefined
+        ? WorkShiftDayType.NORMAL
+        : item.dayType;
+
+    if (
+      typeof dayType !== "string" ||
+      !allowedTypes.includes(dayType)
+    ) {
+      throw new ShiftError("Ù†ÙˆØ¹ Ø±ÙˆØ² Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª.");
+    }
+
+    const isWorkingDay =
+      item.isWorkingDay === undefined
+        ? true
+        : item.isWorkingDay;
+
+    if (typeof isWorkingDay !== "boolean") {
+      throw new ShiftError("ÙˆØ¶Ø¹ÛŒØª Ø±ÙˆØ² Ú©Ø§Ø±ÛŒ Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª.");
+    }
+
+    const startMinute =
+      item.startMinute === null ||
+      item.startMinute === undefined
+        ? null
+        : readInteger(
+            item.startMinute,
+            "Ø³Ø§Ø¹Øª Ø´Ø±ÙˆØ¹",
+            0,
+            1439
+          );
+
+    const endMinute =
+      item.endMinute === null ||
+      item.endMinute === undefined
+        ? null
+        : readInteger(
+            item.endMinute,
+            "Ø³Ø§Ø¹Øª Ù¾Ø§ÛŒØ§Ù†",
+            0,
+            1439
+          );
+
+    if (
+      isWorkingDay &&
+      (startMinute === null || endMinute === null)
+    ) {
+      throw new ShiftError(
+        "Ø¨Ø±Ø§ÛŒ Ø±ÙˆØ² Ú©Ø§Ø±ÛŒ Ø³Ø§Ø¹Øª Ø´Ø±ÙˆØ¹ Ùˆ Ù¾Ø§ÛŒØ§Ù† Ø§Ù„Ø²Ø§Ù…ÛŒ Ø§Ø³Øª."
+      );
+    }
+
+    const requiredMinutes = readInteger(
+      item.requiredMinutes,
+      "Ø³Ø§Ø¹Øª Ù…ÙˆØ¸ÙÛŒ",
+      0,
+      1440,
+      isWorkingDay ? 480 : 0
+    );
+
+    if (!isWorkingDay && requiredMinutes !== 0) {
+      throw new ShiftError(
+        "Ø±ÙˆØ² ØºÛŒØ±Ú©Ø§Ø±ÛŒ Ù†Ø¨Ø§ÛŒØ¯ Ø³Ø§Ø¹Øª Ù…ÙˆØ¸ÙÛŒ Ø¯Ø§Ø´ØªÙ‡ Ø¨Ø§Ø´Ø¯."
+      );
+    }
+
+    return {
+      dayOfWeek,
+      segmentOrder,
+      dayType: dayType as WorkShiftDayType,
+      isWorkingDay,
+      startMinute,
+      endMinute,
+      requiredMinutes,
+    };
+  });
+
+  const uniqueSegments = new Set(
+    days.map(
+      (day) =>
+        `${day.dayOfWeek}-${day.dayType}-${day.segmentOrder}`
+    )
+  );
+
+  if (uniqueSegments.size !== days.length) {
+    throw new ShiftError(
+      "ØªØ±ØªÛŒØ¨ Ø¨Ø§Ø²Ù‡â€ŒÙ‡Ø§ÛŒ ÛŒÚ© Ø±ÙˆØ² Ù†Ø¨Ø§ÛŒØ¯ ØªÚ©Ø±Ø§Ø±ÛŒ Ø¨Ø§Ø´Ø¯."
+    );
+  }
+
+  return days;
+}
+
+function getErrorResponse(error: unknown) {
+  if (
+    error instanceof ShiftError ||
+    error instanceof RequestOriginError ||
+    error instanceof AuthError ||
+    error instanceof PermissionDeniedError
+  ) {
+    return errorResponse(
+      error.message,
+      error.statusCode
+    );
+  }
+
+  if (
+    isObject(error) &&
+    error.code === "P2002"
+  ) {
+    return errorResponse(
+      "Ú©Ø¯ Ø§ÛŒÙ† Ø´ÛŒÙØª Ù‚Ø¨Ù„Ø§Ù‹ Ø«Ø¨Øª Ø´Ø¯Ù‡ Ø§Ø³Øª.",
+      409
+    );
+  }
+
+  console.error("[WORK_SHIFT_ERROR]", error);
+
+  return errorResponse(
+    "Ø®Ø·Ø§ Ø¯Ø± Ù¾Ø±Ø¯Ø§Ø²Ø´ Ø§Ø·Ù„Ø§Ø¹Ø§Øª Ø´ÛŒÙØª.",
+    500
+  );
+}
+
+// ==========================================
+// GET - LIST SHIFTS
+// ==========================================
+
+export async function GET(request: NextRequest) {
+  try {
+    await authorizeGlobalRequest(
+      request,
+      "attendance.shift.view"
+    );
+
+    const shifts = await prisma.workShift.findMany({
+      include: {
+        days: {
+          orderBy: [
+            { dayOfWeek: "asc" },
+            { dayType: "asc" },
+            { segmentOrder: "asc" },
+          ],
+        },
+
+        _count: {
+          select: {
+            assignments: true,
+          },
+        },
+      },
+
+      orderBy: [
+        { isDefault: "desc" },
+        { createdAt: "desc" },
+      ],
+    });
+
+    return successResponse({
+      shifts,
+      count: shifts.length,
+    });
+
+  } catch (error) {
+    return getErrorResponse(error);
+  }
+}
+
+// ==========================================
+// POST - CREATE SHIFT
+// ==========================================
+
+export async function POST(request: NextRequest) {
+  try {
+    assertSameOriginRequest(request);
+
+    const { user: actor } =
+      await authorizeGlobalRequest(
+        request,
+        "attendance.shift.create"
+      );
+
+    let body: unknown;
+
+    try {
+      body = await request.json();
+    } catch {
+      throw new ShiftError(
+        "Ø³Ø§Ø®ØªØ§Ø± Ø¯Ø±Ø®ÙˆØ§Ø³Øª Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª."
+      );
+    }
+
+    if (!isObject(body)) {
+      throw new ShiftError(
+        "Ø§Ø·Ù„Ø§Ø¹Ø§Øª Ø´ÛŒÙØª Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª."
+      );
+    }
+
+    const code = readText(
+      body.code,
+      "Ú©Ø¯ Ø´ÛŒÙØª",
+      50
+    );
+
+    const name = readText(
+      body.name,
+      "Ù†Ø§Ù… Ø´ÛŒÙØª",
+      120
+    );
+
+    const description =
+      body.description === undefined ||
+      body.description === null ||
+      body.description === ""
+        ? null
+        : readText(
+            body.description,
+            "ØªÙˆØ¶ÛŒØ­Ø§Øª",
+            2000
+          );
+
+    const isDefault =
+      body.isDefault === undefined
+        ? false
+        : body.isDefault;
+
+    if (typeof isDefault !== "boolean") {
+      throw new ShiftError(
+        "ÙˆØ¶Ø¹ÛŒØª Ø´ÛŒÙØª Ù¾ÛŒØ´â€ŒÙØ±Ø¶ Ù…Ø¹ØªØ¨Ø± Ù†ÛŒØ³Øª."
+      );
+    }
+
+    const days = parseDays(body.days);
+
+    const created = await prisma.$transaction(
+      async (tx) => {
+        // ÙÙ‚Ø· ÛŒÚ© Ø´ÛŒÙØª Ù¾ÛŒØ´â€ŒÙØ±Ø¶ ÙØ¹Ø§Ù„ Ø¨Ø§Ø´Ø¯.
+        if (isDefault) {
+          await tx.workShift.updateMany({
+            where: {
+              isDefault: true,
+            },
+            data: {
+              isDefault: false,
+            },
+          });
+        }
+
+        const shift = await tx.workShift.create({
+          data: {
+            code,
+            name,
+            description,
+            isDefault,
+            isActive: true,
+            version: 1,
+
+            days: {
+              create: days,
+            },
+          },
+
+          include: {
+            days: {
+              orderBy: [
+                { dayOfWeek: "asc" },
+                { dayType: "asc" },
+                { segmentOrder: "asc" },
+              ],
+            },
+          },
+        });
+
+        await tx.organizationAuditLog.create({
+          data: {
+            actorUserId: actor.id,
+            entityType: "WorkShift",
+            entityId: shift.id,
+            action: "WORK_SHIFT_CREATED",
+            ipAddress:
+              request.headers
+                .get("x-forwarded-for")
+                ?.split(",")[0]
+                ?.trim() ??
+              request.headers.get("x-real-ip"),
+            afterData: {
+              code,
+              name,
+              version: shift.version,
+              isDefault,
+              daysCount: days.length,
+            },
+          },
+        });
+
+        return shift;
+      }
+    );
+
+    return successResponse(
+      {
+        shift: created,
+        message: "Ø´ÛŒÙØª Ú©Ø§Ø±ÛŒ Ø¨Ø§ Ù…ÙˆÙÙ‚ÛŒØª Ø«Ø¨Øª Ø´Ø¯.",
+      },
+      201
+    );
+
+  } catch (error) {
+    return getErrorResponse(error);
+  }
+}
+

@@ -1,0 +1,177 @@
+﻿========== FILE: C:\Users\Ehsan\Desktop\sahand\modules\attendance\attendance-utils.ts ==========
+import "server-only";
+import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
+
+export function createChallengeNonce() {
+  return randomBytes(32).toString("base64url");
+}
+export function sha256(value: string) {
+  return createHash("sha256").update(value).digest("hex");
+}
+export function safeHexEqual(a: string, b: string) {
+  if (!/^[a-f0-9]{64}$/i.test(a) || !/^[a-f0-9]{64}$/i.test(b)) return false;
+  const left = Buffer.from(a, "hex");
+  const right = Buffer.from(b, "hex");
+  return left.length === right.length && timingSafeEqual(left, right);
+}
+export function getRequestIp(request: Request) {
+  return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+    || request.headers.get("x-real-ip") || null;
+}
+export function getWorkDate(now: Date) {
+  const timeZone = process.env.ATTENDANCE_TIME_ZONE || "Asia/Tehran";
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone, year: "numeric", month: "2-digit", day: "2-digit",
+  }).formatToParts(now);
+  const value = (type: string) => parts.find(p => p.type === type)?.value;
+  const year = Number(value("year")), month = Number(value("month")), day = Number(value("day"));
+  if (!year || !month || !day) throw new Error("Unable to calculate attendance date.");
+  return new Date(Date.UTC(year, month - 1, day));
+}
+export function getSaturdayBasedDayOfWeek(workDate: Date) {
+  return (workDate.getUTCDay() + 1) % 7;
+}
+export function calculateDistanceMeters(lat1: number, lon1: number, lat2: number, lon2: number) {
+  const r = 6371000, rad = (v: number) => v * Math.PI / 180;
+  const dLat = rad(lat2 - lat1), dLon = rad(lon2 - lon1);
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(rad(lat1)) * Math.cos(rad(lat2)) * Math.sin(dLon / 2) ** 2;
+  return r * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+export function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+export function getApiError(error: unknown) {
+  const statusCode = typeof error === "object" && error !== null && "statusCode" in error &&
+    typeof (error as {statusCode?: unknown}).statusCode === "number"
+      ? (error as {statusCode: number}).statusCode : 500;
+  const message = error instanceof Error && statusCode < 500
+    ? error.message
+    : error instanceof Error && statusCode === 503
+      ? error.message
+      : "خطا در پردازش درخواست حضور و غیاب.";
+  return { statusCode, message };
+}
+
+========== FILE: C:\Users\Ehsan\Desktop\sahand\app\api\attendance\face-profile\route.ts ==========
+import { NextRequest } from "next/server";
+import { prisma } from "@/libs/prisma";
+import { encryptReferenceImage } from "@/libs/attendance/biometric-crypto";
+import { errorResponse, successResponse } from "@/libs/api-response";
+import { assertSameOriginRequest, authorizeGlobalRequest, RequestOriginError } from "@/modules/auth/auth.middleware";
+import { AuthError } from "@/modules/auth/auth.service";
+import { PermissionDeniedError } from "@/modules/permissions/access-control";
+import { isPlainObject } from "@/modules/attendance/attendance-utils";
+
+class FaceProfileError extends Error {
+  constructor(message: string, public statusCode = 400) { super(message); }
+}
+function decodeImage(value: unknown, mimeValue: unknown) {
+  if (typeof value !== "string" || typeof mimeValue !== "string") {
+    throw new FaceProfileError("تصویر مرجع و نوع فایل الزامی است.");
+  }
+  const match = value.match(/^data:(image\/(?:jpeg|png));base64,(.+)$/i);
+  const mimeType = (match?.[1] ?? mimeValue).toLowerCase();
+  const encoded = match?.[2] ?? value;
+  if (mimeType !== "image/jpeg" && mimeType !== "image/png") {
+    throw new FaceProfileError("فرمت تصویر فقط می‌تواند JPEG یا PNG باشد.");
+  }
+  if (encoded.length === 0 || encoded.length > 7_000_000 ||
+      !/^[A-Za-z0-9+/]+={0,2}$/.test(encoded) || encoded.length % 4 !== 0) {
+    throw new FaceProfileError("اطلاعات تصویر معتبر نیست یا حجم آن بیش از حد مجاز است.");
+  }
+  const bytes = Buffer.from(encoded, "base64");
+  if (!bytes.length || bytes.length > 5 * 1024 * 1024) {
+    throw new FaceProfileError("حجم تصویر باید حداکثر ۵ مگابایت باشد.");
+  }
+  const jpeg = bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+  const png = bytes.length >= 8 && bytes.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10]));
+  if ((mimeType === "image/jpeg" && !jpeg) || (mimeType === "image/png" && !png)) {
+    throw new FaceProfileError("محتوای فایل با فرمت اعلام‌شده مطابقت ندارد.");
+  }
+  return { bytes, mimeType };
+}
+function handleError(error: unknown) {
+  if (error instanceof FaceProfileError || error instanceof RequestOriginError ||
+      error instanceof AuthError || error instanceof PermissionDeniedError) {
+    return errorResponse(error.message, error.statusCode);
+  }
+  console.error("[ATTENDANCE_FACE_PROFILE]", error);
+  return errorResponse("خطا در ثبت تصویر مرجع پرسنل.", 500);
+}
+
+/** HR records one consented reference image. Live attendance frames are not sent to this route. */
+export async function POST(request: NextRequest) {
+  try {
+    assertSameOriginRequest(request);
+    const { user: actor } = await authorizeGlobalRequest(request, "hr.personnel.update");
+    const body: unknown = await request.json().catch(() => null);
+    if (!isPlainObject(body)) throw new FaceProfileError("اطلاعات درخواست معتبر نیست.");
+
+    const userId = typeof body.userId === "string" ? body.userId.trim() : "";
+    const consentAccepted = body.consentAccepted === true;
+    const consentVersion = typeof body.consentVersion === "string" ? body.consentVersion.trim() : "";
+    if (!userId) throw new FaceProfileError("شناسه پرسنل الزامی است.");
+    if (!consentAccepted || !consentVersion || consentVersion.length > 50) {
+      throw new FaceProfileError("ثبت تصویر مرجع مستلزم ثبت رضایت آگاهانه مستند پرسنل است.");
+    }
+
+    const employee = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, isActive: true, employeeProfile: { select: { id: true } } },
+    });
+    if (!employee || !employee.isActive || !employee.employeeProfile) {
+      throw new FaceProfileError("حساب فعال و پرونده پرسنلی معتبر پیدا نشد.", 404);
+    }
+
+    const { bytes, mimeType } = decodeImage(body.referenceImageBase64, body.referenceImageMimeType);
+    const encrypted = encryptReferenceImage(bytes);
+    const now = new Date();
+
+    const profile = await prisma.$transaction(async tx => {
+      const saved = await tx.faceIdentityProfile.upsert({
+        where: { userId },
+        create: {
+          userId,
+          referenceImageEncrypted: encrypted.encrypted,
+          referenceImageIv: encrypted.iv,
+          referenceImageAuthTag: encrypted.authTag,
+          referenceImageMimeType: mimeType,
+          encryptionKeyVersion: encrypted.keyVersion,
+          consentAcceptedAt: now,
+          consentVersion,
+          enrolledByUserId: actor.id,
+          isActive: true,
+        },
+        update: {
+          referenceImageEncrypted: encrypted.encrypted,
+          referenceImageIv: encrypted.iv,
+          referenceImageAuthTag: encrypted.authTag,
+          referenceImageMimeType: mimeType,
+          encryptionKeyVersion: encrypted.keyVersion,
+          consentAcceptedAt: now,
+          consentVersion,
+          enrolledByUserId: actor.id,
+          isActive: true,
+          enrolledAt: now,
+        },
+        select: { id: true, userId: true, isActive: true, enrolledAt: true },
+      });
+      await tx.organizationAuditLog.create({
+        data: {
+          actorUserId: actor.id,
+          entityType: "FaceIdentityProfile",
+          entityId: saved.id,
+          action: "FACE_REFERENCE_ENROLLED",
+          afterData: { userId, mimeType, consentVersion },
+        },
+      });
+      return saved;
+    });
+
+    const response = successResponse({ profile, message: "تصویر مرجع رمزنگاری‌شده ثبت شد." }, 201);
+    response.headers.set("Cache-Control", "no-store, private");
+    return response;
+  } catch (error) { return handleError(error); }
+}
+

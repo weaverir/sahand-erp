@@ -13,17 +13,19 @@ import {
 } from "@/generated/prisma/client";
 
 import { prisma } from "@/libs/prisma";
+
 import {
   successResponse,
   errorResponse,
 } from "@/libs/api-response";
 
-import { AUTH_COOKIE_NAMES } from "@/modules/auth/auth.constants";
-import { getAuthenticatedUser } from "@/modules/auth/auth.service";
+import { getAuthenticatedCandidate } from "@/modules/auth/auth.service";
+
 import {
   assertSameOriginRequest,
   RequestOriginError,
 } from "@/modules/auth/auth.middleware";
+
 import { authExceptionResponse } from "@/modules/auth/api-error-response";
 
 import {
@@ -31,7 +33,6 @@ import {
   deletePrivateFile,
 } from "@/libs/private-file-storage";
 
-export const runtime = "nodejs";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const MAX_TOTAL_SIZE = 40 * 1024 * 1024;
@@ -44,6 +45,7 @@ const ALLOWED_MIME_TYPES = [
   "image/webp",
 ] as const;
 
+// PARENT_CONSENT عمداً در این فهرست وجود ندارد.
 const ALLOWED_DOCUMENT_TYPES = new Set<string>([
   "NATIONAL_CARD",
   "APPLICANT_BIRTH_CERTIFICATE_PAGE",
@@ -54,7 +56,7 @@ const ALLOWED_DOCUMENT_TYPES = new Set<string>([
   "SPOUSE_BIRTH_CERTIFICATE_PAGE",
   "CHILD_BIRTH_CERTIFICATE_PAGE",
   "SPOUSE_CONSENT",
-  "PARENT_CONSENT",
+  "SOCIAL_SECURITY_FORM",
 ]);
 
 type DocumentInput = {
@@ -81,6 +83,7 @@ class DocumentError extends Error {
     public statusCode = 400
   ) {
     super(message);
+    this.name = "DocumentError";
   }
 }
 
@@ -94,9 +97,15 @@ function isObject(
   );
 }
 
+// ==========================================
+// PARSE PAYLOAD
+// ==========================================
+
 function parsePayload(value: unknown): Payload {
   if (!isObject(value)) {
-    throw new DocumentError("ساختار اطلاعات ارسالی معتبر نیست.");
+    throw new DocumentError(
+      "ساختار اطلاعات ارسالی معتبر نیست."
+    );
   }
 
   if (
@@ -104,54 +113,75 @@ function parsePayload(value: unknown): Payload {
     typeof value.documents === "undefined" ||
     !Array.isArray(value.documents)
   ) {
-    throw new DocumentError("اطلاعات بانکی یا مدارک ارسال نشده است.");
+    throw new DocumentError(
+      "اطلاعات بانکی یا مدارک ارسال نشده است."
+    );
   }
 
-  const documents: DocumentInput[] = value.documents.map((item) => {
-    if (
-      !isObject(item) ||
-      typeof item.key !== "string" ||
-      !/^[a-zA-Z0-9_-]{1,60}$/.test(item.key) ||
-      typeof item.documentType !== "string" ||
-      !ALLOWED_DOCUMENT_TYPES.has(item.documentType)
-    ) {
-      throw new DocumentError("مشخصات یکی از مدارک معتبر نیست.");
-    }
-
-    for (const field of [
-      "pageNumber",
-      "totalPages",
-      "subjectIndex",
-    ] as const) {
-      const fieldValue = item[field];
-
+  const documents: DocumentInput[] =
+    value.documents.map((item) => {
       if (
-        fieldValue !== undefined &&
-        fieldValue !== null &&
-        (!Number.isInteger(fieldValue) || Number(fieldValue) < 1)
+        !isObject(item) ||
+        typeof item.key !== "string" ||
+        !/^[a-zA-Z0-9_-]{1,60}$/.test(item.key) ||
+        typeof item.documentType !== "string" ||
+        !ALLOWED_DOCUMENT_TYPES.has(item.documentType)
       ) {
-        throw new DocumentError("شماره صفحه یا عضو خانواده معتبر نیست.");
+        throw new DocumentError(
+          "مشخصات یکی از مدارک معتبر نیست. رضایت‌نامه والدین جزو مدارک مجاز نیست."
+        );
       }
-    }
 
-    return {
-      key: item.key,
-      documentType: item.documentType as CandidateDocumentType,
-      pageNumber: (item.pageNumber as number | null) ?? null,
-      totalPages: (item.totalPages as number | null) ?? null,
-      subjectIndex: (item.subjectIndex as number | null) ?? null,
-    };
-  });
+      for (const field of [
+        "pageNumber",
+        "totalPages",
+        "subjectIndex",
+      ] as const) {
+        const fieldValue = item[field];
+
+        if (
+          fieldValue !== undefined &&
+          fieldValue !== null &&
+          (
+            !Number.isInteger(fieldValue) ||
+            Number(fieldValue) < 1
+          )
+        ) {
+          throw new DocumentError(
+            "شماره صفحه یا عضو خانواده معتبر نیست."
+          );
+        }
+      }
+
+      return {
+        key: item.key,
+        documentType:
+          item.documentType as CandidateDocumentType,
+        pageNumber:
+          (item.pageNumber as number | null) ?? null,
+        totalPages:
+          (item.totalPages as number | null) ?? null,
+        subjectIndex:
+          (item.subjectIndex as number | null) ?? null,
+      };
+    });
 
   if (
     documents.length === 0 ||
     documents.length > MAX_DOCUMENT_COUNT
   ) {
-    throw new DocumentError("تعداد مدارک ارسالی معتبر نیست.");
+    throw new DocumentError(
+      "تعداد مدارک ارسالی معتبر نیست."
+    );
   }
 
-  if (new Set(documents.map((item) => item.key)).size !== documents.length) {
-    throw new DocumentError("شناسه فایل‌های ارسالی تکراری است.");
+  if (
+    new Set(documents.map((item) => item.key)).size !==
+    documents.length
+  ) {
+    throw new DocumentError(
+      "شناسه فایل‌های ارسالی تکراری است."
+    );
   }
 
   return {
@@ -164,15 +194,26 @@ function parsePayload(value: unknown): Payload {
   };
 }
 
+// ==========================================
+// AUTHENTICATED CANDIDATE
+// ==========================================
+
 async function getCandidate() {
   const cookieStore = await cookies();
-  const token = cookieStore.get(AUTH_COOKIE_NAMES.access)?.value;
+
+  const token = cookieStore.get(
+    "sahand_candidate_access"
+  )?.value;
 
   if (!token) {
-    throw new DocumentError("ابتدا وارد حساب کاربری شوید.", 401);
+    throw new DocumentError(
+      "ابتدا وارد حساب کاربری شوید.",
+      401
+    );
   }
 
-  const authUser = await getAuthenticatedUser(token);
+  const authUser =
+    await getAuthenticatedCandidate(token);
 
   const user = await prisma.user.findFirst({
     where: {
@@ -193,24 +234,31 @@ async function getCandidate() {
     );
   }
 
-  const application = await prisma.candidateApplication.findUnique({
-    where: { userId: user.id },
-    include: {
-      familyMembers: {
-        select: {
-          memberType: true,
-          sortOrder: true,
+  const application =
+    await prisma.candidateApplication.findUnique({
+      where: {
+        userId: user.id,
+      },
+      include: {
+        familyMembers: {
+          select: {
+            memberType: true,
+            sortOrder: true,
+          },
         },
       },
-    },
-  });
+    });
 
   if (!application) {
-    throw new DocumentError("پرونده استخدامی پیدا نشد.", 404);
+    throw new DocumentError(
+      "پرونده استخدامی پیدا نشد.",
+      404
+    );
   }
 
   if (
-    application.initialStatus !== InitialApplicationStatus.APPROVED
+    application.initialStatus !==
+    InitialApplicationStatus.APPROVED
   ) {
     throw new DocumentError(
       "مرحله اول استخدام هنوز تأیید نهایی نشده است.",
@@ -218,8 +266,15 @@ async function getCandidate() {
     );
   }
 
-  return { user, application };
+  return {
+    user,
+    application,
+  };
 }
+
+// ==========================================
+// REQUIRED DOCUMENT VALIDATION
+// ==========================================
 
 function validateRequiredDocuments(
   application: {
@@ -227,15 +282,22 @@ function validateRequiredDocuments(
     maritalStatus: string;
     hasInsuranceHistory: boolean;
     childrenCount: number;
-    familyMembers: { memberType: string }[];
+    familyMembers: {
+      memberType: string;
+    }[];
   },
   documents: DocumentInput[],
   files: Map<string, File>
 ) {
   const count = (type: string) =>
-    documents.filter((item) => item.documentType === type).length;
+    documents.filter(
+      (item) => item.documentType === type
+    ).length;
 
-  const requireOne = (type: string, label: string) => {
+  const requireOne = (
+    type: string,
+    label: string
+  ) => {
     if (count(type) !== 1) {
       throw new DocumentError(
         `بارگذاری ${label} الزامی است و باید یک فایل باشد.`
@@ -243,22 +305,36 @@ function validateRequiredDocuments(
     }
   };
 
+  // مدارک عمومی
   requireOne("NATIONAL_CARD", "کارت ملی");
-  requireOne("EDUCATION_CERTIFICATE", "مدرک تحصیلی");
 
+  requireOne(
+    "EDUCATION_CERTIFICATE",
+    "مدرک تحصیلی"
+  );
+
+  requireOne(
+    "SOCIAL_SECURITY_FORM",
+    "فرم تکمیل‌شده تأمین اجتماعی"
+  );
+
+  // تمام صفحات شناسنامه متقاضی
   const birthPages = documents.filter(
     (item) =>
-      item.documentType === "APPLICANT_BIRTH_CERTIFICATE_PAGE"
+      item.documentType ===
+      "APPLICANT_BIRTH_CERTIFICATE_PAGE"
   );
 
   if (birthPages.length === 0) {
-    throw new DocumentError("تمام صفحات شناسنامه متقاضی الزامی است.");
+    throw new DocumentError(
+      "تمام صفحات شناسنامه متقاضی الزامی است."
+    );
   }
 
-  // یک PDF می‌تواند تمام صفحات شناسنامه را در خود داشته باشد.
   const birthPdf =
     birthPages.length === 1 &&
-    files.get(birthPages[0].key)?.type === "application/pdf" &&
+    files.get(birthPages[0].key)?.type ===
+      "application/pdf" &&
     birthPages[0].pageNumber == null &&
     birthPages[0].totalPages == null;
 
@@ -269,8 +345,12 @@ function validateRequiredDocuments(
       !total ||
       total > 20 ||
       birthPages.length !== total ||
-      birthPages.some((item) => item.totalPages !== total) ||
-      new Set(birthPages.map((item) => item.pageNumber)).size !== total
+      birthPages.some(
+        (item) => item.totalPages !== total
+      ) ||
+      new Set(
+        birthPages.map((item) => item.pageNumber)
+      ).size !== total
     ) {
       throw new DocumentError(
         "تمام صفحات شناسنامه باید به ترتیب و بدون نقص بارگذاری شوند."
@@ -278,33 +358,74 @@ function validateRequiredDocuments(
     }
 
     for (let page = 1; page <= total; page++) {
-      if (!birthPages.some((item) => item.pageNumber === page)) {
-        throw new DocumentError(`صفحه ${page} شناسنامه بارگذاری نشده است.`);
+      if (
+        !birthPages.some(
+          (item) => item.pageNumber === page
+        )
+      ) {
+        throw new DocumentError(
+          `صفحه ${page} شناسنامه بارگذاری نشده است.`
+        );
       }
     }
   }
 
+  // سابقه بیمه
   if (application.hasInsuranceHistory) {
-    requireOne("INSURANCE_HISTORY", "سوابق بیمه");
+    requireOne(
+      "INSURANCE_HISTORY",
+      "سوابق بیمه"
+    );
   }
 
+  // نظام وظیفه برای آقایان
   if (application.gender === "MALE") {
-    requireOne("MILITARY_SERVICE", "مدرک نظام وظیفه");
+    requireOne(
+      "MILITARY_SERVICE",
+      "مدرک نظام وظیفه"
+    );
   }
+
+  // ========================================
+  // MARITAL DOCUMENTS
+  // ========================================
 
   if (application.maritalStatus === "MARRIED") {
-    requireOne("MARRIAGE_CERTIFICATE", "سند ازدواج");
+    requireOne(
+      "MARRIAGE_CERTIFICATE",
+      "سند ازدواج"
+    );
+
     requireOne(
       "SPOUSE_BIRTH_CERTIFICATE_PAGE",
       "صفحه اول شناسنامه همسر"
     );
-
-    if (application.gender === "FEMALE") {
-      requireOne("SPOUSE_CONSENT", "رضایت‌نامه همسر");
-    }
-  } else {
-    requireOne("PARENT_CONSENT", "رضایت‌نامه والدین");
   }
+
+  // رضایت‌نامه همسر فقط برای خانم متأهل
+  const spouseConsentCount =
+    count("SPOUSE_CONSENT");
+
+  if (
+    application.gender === "FEMALE" &&
+    application.maritalStatus === "MARRIED"
+  ) {
+    requireOne(
+      "SPOUSE_CONSENT",
+      "رضایت‌نامه کتبی همسر"
+    );
+  } else if (spouseConsentCount !== 0) {
+    throw new DocumentError(
+      "رضایت‌نامه همسر فقط برای خانم متأهل قابل بارگذاری است."
+    );
+  }
+
+  // رضایت‌نامه والدین در ALLOWED_DOCUMENT_TYPES
+  // وجود ندارد و در parsePayload رد می‌شود.
+
+  // ========================================
+  // CHILD DOCUMENTS
+  // ========================================
 
   const childrenCount = Math.max(
     application.childrenCount,
@@ -314,27 +435,41 @@ function validateRequiredDocuments(
   );
 
   const childDocuments = documents.filter(
-    (item) => item.documentType === "CHILD_BIRTH_CERTIFICATE_PAGE"
+    (item) =>
+      item.documentType ===
+      "CHILD_BIRTH_CERTIFICATE_PAGE"
   );
 
-  if (childDocuments.length !== childrenCount) {
+  if (
+    childDocuments.length !== childrenCount
+  ) {
     throw new DocumentError(
       `صفحه اول شناسنامه ${childrenCount} فرزند باید بارگذاری شود.`
     );
   }
 
-  const childIndexes = childDocuments.map((item) => item.subjectIndex);
+  const childIndexes = childDocuments.map(
+    (item) => item.subjectIndex
+  );
 
   if (
     new Set(childIndexes).size !== childrenCount ||
-    Array.from({ length: childrenCount }, (_, index) => index + 1)
-      .some((index) => !childIndexes.includes(index))
+    Array.from(
+      { length: childrenCount },
+      (_, index) => index + 1
+    ).some(
+      (index) => !childIndexes.includes(index)
+    )
   ) {
     throw new DocumentError(
       "مدارک شناسنامه فرزندان باید برای هر فرزند جداگانه مشخص شوند."
     );
   }
 }
+
+// ==========================================
+// FILE HELPERS
+// ==========================================
 
 function cleanFileName(name: string) {
   return name
@@ -344,7 +479,9 @@ function cleanFileName(name: string) {
 }
 
 function validateIban(value: string) {
-  const iban = value.replace(/\s/g, "").toUpperCase();
+  const iban = value
+    .replace(/\s/g, "")
+    .toUpperCase();
 
   if (!/^IR[0-9]{24}$/.test(iban)) {
     throw new DocumentError(
@@ -355,52 +492,67 @@ function validateIban(value: string) {
   return iban;
 }
 
+// ==========================================
+// GET - DOCUMENTS AND APPLICATION INFO
+// ==========================================
+
 export async function GET() {
   try {
     const { application } = await getCandidate();
 
-    const documents = await prisma.candidateDocument.findMany({
-      where: {
-        applicationId: application.id,
-        stage: ApplicationStage.DOCUMENTS,
-        isCurrent: true,
-      },
-      orderBy: [
-        { documentType: "asc" },
-        { pageNumber: "asc" },
-      ],
-      select: {
-        id: true,
-        documentType: true,
-        status: true,
-        pageNumber: true,
-        totalPages: true,
-        subjectIndex: true,
-        fileName: true,
-        sizeBytes: true,
-        uploadedAt: true,
-      },
-    });
+    const documents =
+      await prisma.candidateDocument.findMany({
+        where: {
+          applicationId: application.id,
+          stage: ApplicationStage.DOCUMENTS,
+          isCurrent: true,
+        },
+        orderBy: [
+          { documentType: "asc" },
+          { pageNumber: "asc" },
+        ],
+        select: {
+          id: true,
+          documentType: true,
+          status: true,
+          pageNumber: true,
+          totalPages: true,
+          subjectIndex: true,
+          fileName: true,
+          sizeBytes: true,
+          uploadedAt: true,
+        },
+      });
 
     return successResponse({
       application: {
-        applicationNumber: application.applicationNumber,
+        applicationNumber:
+          application.applicationNumber,
         firstName: application.firstName,
         lastName: application.lastName,
         gender: application.gender,
         maritalStatus: application.maritalStatus,
-        hasInsuranceHistory: application.hasInsuranceHistory,
-        insuranceNumber: application.insuranceNumber,
-        bankSinaIban: application.bankSinaIban,
-        childrenCount: application.childrenCount,
-        documentsStatus: application.documentsStatus,
-        documentsVersion: application.documentsVersion,
+        hasInsuranceHistory:
+          application.hasInsuranceHistory,
+        insuranceNumber:
+          application.insuranceNumber,
+        bankSinaIban:
+          application.bankSinaIban,
+        childrenCount:
+          application.childrenCount,
+        documentsStatus:
+          application.documentsStatus,
+        documentsVersion:
+          application.documentsVersion,
       },
       documents,
     });
   } catch (error) {
     if (error instanceof DocumentError) {
-      return errorResponse(error.message, error.statusCode);
+      return errorResponse(
+        error.message,
+        error.statusCode
+      );
     }
 
     return authExceptionResponse(
@@ -410,17 +562,26 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
+// ==========================================
+// POST - UPLOAD DOCUMENTS
+// ==========================================
+
+export async function POST(
+  request: NextRequest
+) {
   const storedFiles: StoredFile[] = [];
 
   try {
     assertSameOriginRequest(request);
 
-    const { user, application } = await getCandidate();
+    const { user, application } =
+      await getCandidate();
 
     if (
-      application.documentsStatus !== DocumentsApplicationStatus.PENDING &&
-      application.documentsStatus !== DocumentsApplicationStatus.NEEDS_CORRECTION
+      application.documentsStatus !==
+        DocumentsApplicationStatus.PENDING &&
+      application.documentsStatus !==
+        DocumentsApplicationStatus.NEEDS_CORRECTION
     ) {
       throw new DocumentError(
         "در حال حاضر امکان ارسال یا ویرایش مدارک وجود ندارد.",
@@ -429,10 +590,16 @@ export async function POST(request: NextRequest) {
     }
 
     const formData = await request.formData();
+
     const payloadRaw = formData.get("payload");
 
-    if (typeof payloadRaw !== "string" || payloadRaw.length > 100_000) {
-      throw new DocumentError("اطلاعات فرم معتبر نیست.");
+    if (
+      typeof payloadRaw !== "string" ||
+      payloadRaw.length > 100_000
+    ) {
+      throw new DocumentError(
+        "اطلاعات فرم معتبر نیست."
+      );
     }
 
     let parsed: unknown;
@@ -440,29 +607,47 @@ export async function POST(request: NextRequest) {
     try {
       parsed = JSON.parse(payloadRaw);
     } catch {
-      throw new DocumentError("ساختار اطلاعات فرم معتبر نیست.");
+      throw new DocumentError(
+        "ساختار اطلاعات فرم معتبر نیست."
+      );
     }
 
     const payload = parsePayload(parsed);
 
-    const bankSinaIban = validateIban(payload.bankSinaIban);
+    const bankSinaIban =
+      validateIban(payload.bankSinaIban);
 
-    const insuranceNumber = payload.insuranceNumber?.trim() || "";
+    const insuranceNumber =
+      payload.insuranceNumber?.trim() || "";
 
     if (
       application.hasInsuranceHistory &&
-      !/^[a-zA-Z0-9-]{3,30}$/.test(insuranceNumber)
+      !/^[a-zA-Z0-9-]{3,30}$/.test(
+        insuranceNumber
+      )
     ) {
-      throw new DocumentError("شماره بیمه معتبر نیست.");
+      throw new DocumentError(
+        "شماره بیمه معتبر نیست."
+      );
     }
 
+    // ======================================
+    // READ UPLOADED FILES
+    // ======================================
+
     const files = new Map<string, File>();
+
     let totalSize = 0;
 
     for (const item of payload.documents) {
-      const entries = formData.getAll(`file_${item.key}`);
+      const entries = formData.getAll(
+        `file_${item.key}`
+      );
 
-      if (entries.length !== 1 || !(entries[0] instanceof File)) {
+      if (
+        entries.length !== 1 ||
+        !(entries[0] instanceof File)
+      ) {
         throw new DocumentError(
           `فایل ${item.key} ارسال نشده یا تکراری است.`
         );
@@ -470,7 +655,10 @@ export async function POST(request: NextRequest) {
 
       const file = entries[0];
 
-      if (file.size <= 0 || file.size > MAX_FILE_SIZE) {
+      if (
+        file.size <= 0 ||
+        file.size > MAX_FILE_SIZE
+      ) {
         throw new DocumentError(
           `حجم فایل ${file.name} خالی یا بیشتر از ۱۰ مگابایت است.`
         );
@@ -478,7 +666,8 @@ export async function POST(request: NextRequest) {
 
       if (
         !ALLOWED_MIME_TYPES.includes(
-          file.type as (typeof ALLOWED_MIME_TYPES)[number]
+          file.type as
+            (typeof ALLOWED_MIME_TYPES)[number]
         )
       ) {
         throw new DocumentError(
@@ -487,47 +676,82 @@ export async function POST(request: NextRequest) {
       }
 
       totalSize += file.size;
+
       files.set(item.key, file);
     }
 
     if (totalSize > MAX_TOTAL_SIZE) {
-      throw new DocumentError("حجم کل مدارک نباید بیشتر از ۴۰ مگابایت باشد.");
+      throw new DocumentError(
+        "حجم کل مدارک نباید بیشتر از ۴۰ مگابایت باشد."
+      );
     }
 
+    // اعتبارسنجی مدارک بر اساس اطلاعات مرحله اول
     validateRequiredDocuments(
       application,
       payload.documents,
       files
     );
 
+    // ======================================
+    // DOCUMENT VERSION
+    // ======================================
+
     const nextVersion =
       application.documentsVersion +
-      (application.documentsStatus ===
-      DocumentsApplicationStatus.NEEDS_CORRECTION
-        ? 1
-        : 0);
+      (
+        application.documentsStatus ===
+        DocumentsApplicationStatus.NEEDS_CORRECTION
+          ? 1
+          : 0
+      );
+
+    // ======================================
+    // PRIVATE FILE STORAGE
+    // ======================================
+
+    const storedByKey = new Map<
+      string,
+      {
+        storageKey: string;
+        checksum: string;
+      }
+    >();
 
     for (const item of payload.documents) {
       const file = files.get(item.key)!;
 
-      const stored = await storePrivateFile(file, {
-        directory: `recruitment/${application.id}/documents/v${nextVersion}`,
-        maxBytes: MAX_FILE_SIZE,
-        allowedMimeTypes: [...ALLOWED_MIME_TYPES],
-      });
+      const stored = await storePrivateFile(
+        file,
+        {
+          directory:
+            `recruitment/${application.id}/documents/v${nextVersion}`,
+          maxBytes: MAX_FILE_SIZE,
+          allowedMimeTypes: [
+            ...ALLOWED_MIME_TYPES,
+          ],
+        }
+      );
 
       storedFiles.push(stored);
 
       const checksum = createHash("sha256")
-        .update(Buffer.from(await file.arrayBuffer()))
+        .update(
+          Buffer.from(await file.arrayBuffer())
+        )
         .digest("hex");
 
-      item.key = item.key;
-      (item as DocumentInput & { storedFile?: StoredFile }).storedFile = stored;
-      (item as DocumentInput & { checksum?: string }).checksum = checksum;
+      storedByKey.set(item.key, {
+        storageKey: stored.storageKey,
+        checksum,
+      });
     }
 
     const now = new Date();
+
+    // ======================================
+    // DATABASE TRANSACTION
+    // ======================================
 
     await prisma.$transaction(async (tx) => {
       if (
@@ -540,14 +764,16 @@ export async function POST(request: NextRequest) {
             stage: ApplicationStage.DOCUMENTS,
             isCurrent: true,
           },
-          data: { isCurrent: false },
+          data: {
+            isCurrent: false,
+          },
         });
       }
 
       for (const item of payload.documents) {
         const file = files.get(item.key)!;
-        const stored = (item as DocumentInput & { storedFile: StoredFile }).storedFile;
-        const checksum = (item as DocumentInput & { checksum: string }).checksum;
+
+        const stored = storedByKey.get(item.key)!;
 
         await tx.candidateDocument.create({
           data: {
@@ -563,7 +789,7 @@ export async function POST(request: NextRequest) {
             storageKey: stored.storageKey,
             mimeType: file.type,
             sizeBytes: file.size,
-            checksum,
+            checksum: stored.checksum,
             isCurrent: true,
             uploadedByUserId: user.id,
           },
@@ -571,14 +797,18 @@ export async function POST(request: NextRequest) {
       }
 
       await tx.candidateApplication.update({
-        where: { id: application.id },
+        where: {
+          id: application.id,
+        },
         data: {
           bankSinaIban,
-          insuranceNumber: application.hasInsuranceHistory
-            ? insuranceNumber
-            : null,
+          insuranceNumber:
+            application.hasInsuranceHistory
+              ? insuranceNumber
+              : null,
           documentsVersion: nextVersion,
-          documentsStatus: DocumentsApplicationStatus.SUBMITTED,
+          documentsStatus:
+            DocumentsApplicationStatus.SUBMITTED,
           documentsSubmittedAt: now,
         },
       });
@@ -590,32 +820,46 @@ export async function POST(request: NextRequest) {
           entityType: "CandidateApplication",
           entityId: application.id,
           ipAddress:
-            request.headers.get("x-real-ip") || undefined,
+            request.headers.get("x-real-ip") ||
+            undefined,
           details: {
-            applicationNumber: application.applicationNumber,
+            applicationNumber:
+              application.applicationNumber,
             documentsVersion: nextVersion,
-            documentCount: payload.documents.length,
+            documentCount:
+              payload.documents.length,
           },
         },
       });
     });
 
     return successResponse({
-      message: "مدارک مرحله دوم با موفقیت ارسال شد.",
-      documentsStatus: DocumentsApplicationStatus.SUBMITTED,
+      message:
+        "مدارک مرحله دوم با موفقیت ارسال شد.",
+      documentsStatus:
+        DocumentsApplicationStatus.SUBMITTED,
       documentsVersion: nextVersion,
     });
+
   } catch (error) {
     await Promise.allSettled(
-      storedFiles.map((file) => deletePrivateFile(file.storageKey))
+      storedFiles.map((file) =>
+        deletePrivateFile(file.storageKey)
+      )
     );
 
     if (error instanceof DocumentError) {
-      return errorResponse(error.message, error.statusCode);
+      return errorResponse(
+        error.message,
+        error.statusCode
+      );
     }
 
     if (error instanceof RequestOriginError) {
-      return errorResponse(error.message, error.statusCode);
+      return errorResponse(
+        error.message,
+        error.statusCode
+      );
     }
 
     return authExceptionResponse(

@@ -1,0 +1,182 @@
+﻿
+========== FILE: .\modules\attendance\attendance-offline-queue.ts ==========
+
+/** Pure, platform-independent offline attendance queue policy. No biometric data. */
+export type OfflinePunchKind = "CHECK_IN" | "CHECK_OUT";
+export type OfflinePunchStatus = "PENDING" | "SYNCED" | "REVIEW_REQUIRED";
+export interface OfflinePunch {
+  id: string;
+  deviceId: string;
+  employeeId: string;
+  kind: OfflinePunchKind;
+  occurredAtDevice: string;
+  capturedMonotonicMs: number;
+  clockOffsetMs: number | null;
+  createdAtDevice: string;
+  status: OfflinePunchStatus;
+  attempts: number;
+  serverReceiptId: string | null;
+  reviewReason: string | null;
+}
+export interface NewOfflinePunch {
+  id: string;
+  deviceId: string;
+  employeeId: string;
+  kind: OfflinePunchKind;
+  occurredAtDevice: string;
+  capturedMonotonicMs: number;
+  clockOffsetMs?: number | null;
+}
+export type SyncResponse =
+  | { outcome: "ACCEPTED" | "ALREADY_EXISTS"; receiptId: string }
+  | { outcome: "REVIEW_REQUIRED"; reason: string }
+  | { outcome: "RETRY" };
+
+function validDate(value: string): boolean {
+  return typeof value === "string" && Number.isFinite(Date.parse(value)) && /(?:Z|[+-]\d\d:\d\d)$/.test(value);
+}
+function validId(value: string): boolean { return typeof value === "string" && value.trim().length > 0 && value.length <= 128; }
+export function createOfflinePunch(input: NewOfflinePunch): OfflinePunch {
+  if (![input.id, input.deviceId, input.employeeId].every(validId)) throw new Error("INVALID_IDENTIFIER");
+  if (input.kind !== "CHECK_IN" && input.kind !== "CHECK_OUT") throw new Error("INVALID_KIND");
+  if (!validDate(input.occurredAtDevice)) throw new Error("INVALID_TIME");
+  if (!Number.isFinite(input.capturedMonotonicMs) || input.capturedMonotonicMs < 0) throw new Error("INVALID_MONOTONIC_TIME");
+  if (input.clockOffsetMs != null && !Number.isFinite(input.clockOffsetMs)) throw new Error("INVALID_CLOCK_OFFSET");
+  return {
+    ...input,
+    clockOffsetMs: input.clockOffsetMs ?? null,
+    createdAtDevice: input.occurredAtDevice,
+    status: "PENDING", attempts: 0, serverReceiptId: null, reviewReason: null,
+  };
+}
+export function enqueueOfflinePunch(queue: readonly OfflinePunch[], punch: OfflinePunch): OfflinePunch[] {
+  if (queue.some(p => p.id === punch.id)) throw new Error("DUPLICATE_PUNCH_ID");
+  return [...queue, punch];
+}
+/** Deterministic order; never group by calendar day, because shifts can cross midnight. */
+export function pendingForSync(queue: readonly OfflinePunch[]): OfflinePunch[] {
+  return queue.filter(p => p.status === "PENDING").sort((a,b) =>
+    Date.parse(a.occurredAtDevice) - Date.parse(b.occurredAtDevice) ||
+    a.capturedMonotonicMs - b.capturedMonotonicMs || a.id.localeCompare(b.id)
+  );
+}
+export function applySyncResponse(queue: readonly OfflinePunch[], id: string, response: SyncResponse): OfflinePunch[] {
+  if (!queue.some(p => p.id === id)) throw new Error("PUNCH_NOT_FOUND");
+  return queue.map(p => {
+    if (p.id !== id || p.status !== "PENDING") return p;
+    const attempts = p.attempts + 1;
+    if (response.outcome === "RETRY") return { ...p, attempts };
+    if (response.outcome === "REVIEW_REQUIRED") return { ...p, attempts, status: "REVIEW_REQUIRED", reviewReason: response.reason };
+    if (!validId(response.receiptId)) throw new Error("INVALID_RECEIPT");
+    return { ...p, attempts, status: "SYNCED", serverReceiptId: response.receiptId };
+  });
+}
+export function countPending(queue: readonly OfflinePunch[]): number {
+  return queue.filter(p => p.status === "PENDING").length;
+}
+
+========== FILE: .\tests\attendance-offline-queue.test.ts ==========
+
+import test from "node:test";
+import assert from "node:assert/strict";
+import { createOfflinePunch, enqueueOfflinePunch, pendingForSync, applySyncResponse, countPending } from "../modules/attendance/attendance-offline-queue";
+const make = (id: string, kind: "CHECK_IN"|"CHECK_OUT", time: string) => createOfflinePunch({ id, deviceId: "tablet-1", employeeId: "employee-1", kind, occurredAtDevice: time, capturedMonotonicMs: 1 });
+test("creates pending punch without biometric payload", () => { const p = make("a", "CHECK_IN", "2026-11-18T23:00:00+03:30"); assert.equal(p.status, "PENDING"); assert.equal("faceImage" in p, false); });
+test("rejects duplicate ids", () => { const p=make("a", "CHECK_IN", "2026-11-18T23:00:00+03:30"); assert.throws(() => enqueueOfflinePunch([p],p), /DUPLICATE/); });
+test("orders overnight checkin before next-day checkout", () => { const a=make("a", "CHECK_IN", "2026-11-18T23:00:00+03:30"), b=make("b", "CHECK_OUT", "2026-11-19T07:00:00+03:30"); assert.deepEqual(pendingForSync([b,a]).map(p=>p.id), ["a","b"]); });
+test("accepted punch becomes synced", () => { const p=make("a", "CHECK_IN", "2026-11-18T23:00:00+03:30"); const q=applySyncResponse([p],"a",{outcome:"ACCEPTED",receiptId:"r1"}); assert.equal(q[0].status,"SYNCED"); assert.equal(countPending(q),0); });
+test("idempotent duplicate server acknowledgement becomes synced", () => { const p=make("a", "CHECK_IN", "2026-11-18T23:00:00+03:30"); assert.equal(applySyncResponse([p],"a",{outcome:"ALREADY_EXISTS",receiptId:"r1"})[0].status,"SYNCED"); });
+test("transient network failure retains punch", () => { const p=make("a", "CHECK_IN", "2026-11-18T23:00:00+03:30"); const q=applySyncResponse([p],"a",{outcome:"RETRY"}); assert.equal(q[0].status,"PENDING"); assert.equal(q[0].attempts,1); });
+test("uncertain punch requires review", () => { const p=make("a", "CHECK_IN", "2026-11-18T23:00:00+03:30"); const q=applySyncResponse([p],"a",{outcome:"REVIEW_REQUIRED",reason:"CLOCK_DRIFT"}); assert.equal(q[0].status,"REVIEW_REQUIRED"); });
+test("acknowledged punches cannot be reverted by late retry", () => { const p=make("a", "CHECK_IN", "2026-11-18T23:00:00+03:30"); const q=applySyncResponse([p],"a",{outcome:"ACCEPTED",receiptId:"r1"}); assert.deepEqual(applySyncResponse(q,"a",{outcome:"RETRY"}),q); });
+test("rejects malformed timestamps", () => { assert.throws(() => make("a", "CHECK_IN", "yesterday"),/INVALID_TIME/); });
+test("does not mutate original queue", () => { const p=make("a", "CHECK_IN", "2026-11-18T23:00:00+03:30"); const original=[p]; applySyncResponse(original,"a",{outcome:"RETRY"}); assert.equal(original[0].attempts,0); });
+
+
+========== FILE: .\package.json ==========
+
+{
+  "name": "sahand",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "hr:test:create": "tsx scripts/create-hr-test.ts",
+    "ceo:test:create": "tsx scripts/create-ceo-test.ts",
+    "dev": "next dev",
+    "admin:create": "tsx scripts/create-admin.ts",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "db:seed": "prisma db seed"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@aws-amplify/ui-react": "^6.15.7",
+    "@aws-amplify/ui-react-liveness": "^3.7.0",
+    "@aws-sdk/client-rekognition": "^3.1170.0",
+    "@aws-sdk/client-sts": "^3.1170.0",
+    "@prisma/client": "^6.19.3",
+    "@tanstack/react-query": "^5.107.1",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^18.0.10",
+    "jose": "^6.2.17",
+    "lucide-react": "^1.72.0",
+    "motion": "^14.14.0",
+    "next": "16.4.6",
+    "prisma": "^6.19.3",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "sonner": "^2.0.8",
+    "zustand": "^5.1.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/turbopack": "4.3.3",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.6",
+    "tailwindcss": "4.3.3",
+    "tsx": "^4.23.15",
+    "typescript": "^5"
+  }
+}
+
+========== FILE: .\tsconfig.json ==========
+
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": ["node_modules"]
+}

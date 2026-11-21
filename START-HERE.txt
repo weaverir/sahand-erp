@@ -1,0 +1,16 @@
+PS C:\Users\Ehsan\Desktop\sahand> node --env-file=.env --import tsx scripts/seed-development-employees.ts --confirm-development-seed
+۱۰ کارمند ساختگی کامل در دیتابیس توسعه ایجاد شدند. اطلاعات ورود (فقط همین بار نمایش داده می‌شود):
+┌─────────┬────────────────┬───────────────────┬─────────────────────────┬────────────────────────────────┐
+│ (index) │ username       │ name              │ role                    │ password                       │
+├─────────┼────────────────┼───────────────────┼─────────────────────────┼────────────────────────────────┤
+│ 0       │ 'dev.staff.01' │ 'آرمان نیک‌فر'     │ 'hr_manager'            │ 'sXrOriD5vBVJF11iIsZrSfDfaA1!' │
+│ 1       │ 'dev.staff.02' │ 'مهسا رستگار'     │ 'production_manager'    │ 'AqynEVNQfkf2qHxdP-yagwRJaA1!' │
+│ 2       │ 'dev.staff.03' │ 'امیرحسین بهرامی' │ 'production_supervisor' │ 'zfVwWQNTcQthpUVPw0b5D2d2aA1!' │
+│ 3       │ 'dev.staff.04' │ 'نیلوفر شریفی'    │ 'production_operator'   │ '1LM13DT1B4fbON2KRMt2MugCaA1!' │
+│ 4       │ 'dev.staff.05' │ 'کیان مرادی'      │ 'production_operator'   │ 'uSK6IxCcNL0O_XTtFRHj4wOIaA1!' │
+│ 5       │ 'dev.staff.06' │ 'الهام توکلی'     │ 'warehouse_staff'       │ 'BK0WGCv_KSrTKxXAUr6WvBo-aA1!' │
+│ 6       │ 'dev.staff.07' │ 'پارسا کاظمی'     │ 'accountant'            │ 'oZdR8BQWNUYVrQYjEI7-KavRaA1!' │
+│ 7       │ 'dev.staff.08' │ 'سارا احمدی'      │ 'sales_staff'           │ '3l5HL3SLUDAHdS13DJgbY6oraA1!' │
+│ 8       │ 'dev.staff.09' │ 'سامان زمانی'     │ 'quality_inspector'     │ 'QpJD7DMq9UOiJ-3a6ppLXwtAaA1!' │
+│ 9       │ 'dev.staff.10' │ 'ترانه فراهانی'   │ 'employee'              │ '2CUDQNyCPMVhCuwcJcQrEY41aA1!' │
+└─────────┴────────────────┴───────────────────┴─────────────────────────┴────────────────────────────────┘

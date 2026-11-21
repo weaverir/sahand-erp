@@ -1,0 +1,4098 @@
+﻿==========================================
+FILE: modules\attendance\attendance-utils.ts
+==========================================
+import "server-only";
+import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
+
+export function createChallengeNonce() {
+  return randomBytes(32).toString("base64url");
+}
+export function sha256(value: string) {
+  return createHash("sha256").update(value).digest("hex");
+}
+export function safeHexEqual(a: string, b: string) {
+  if (!/^[a-f0-9]{64}$/i.test(a) || !/^[a-f0-9]{64}$/i.test(b)) return false;
+  const left = Buffer.from(a, "hex");
+  const right = Buffer.from(b, "hex");
+  return left.length === right.length && timingSafeEqual(left, right);
+}
+export function getRequestIp(request: Request) {
+  return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+    || request.headers.get("x-real-ip") || null;
+}
+export function getWorkDate(now: Date) {
+  const timeZone = process.env.ATTENDANCE_TIME_ZONE || "Asia/Tehran";
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone, year: "numeric", month: "2-digit", day: "2-digit",
+  }).formatToParts(now);
+  const value = (type: string) => parts.find(p => p.type === type)?.value;
+  const year = Number(value("year")), month = Number(value("month")), day = Number(value("day"));
+  if (!year || !month || !day) throw new Error("Unable to calculate attendance date.");
+  return new Date(Date.UTC(year, month - 1, day));
+}
+export function getSaturdayBasedDayOfWeek(workDate: Date) {
+  return (workDate.getUTCDay() + 1) % 7;
+}
+export function calculateDistanceMeters(lat1: number, lon1: number, lat2: number, lon2: number) {
+  const r = 6371000, rad = (v: number) => v * Math.PI / 180;
+  const dLat = rad(lat2 - lat1), dLon = rad(lon2 - lon1);
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(rad(lat1)) * Math.cos(rad(lat2)) * Math.sin(dLon / 2) ** 2;
+  return r * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+export function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+export function getApiError(error: unknown) {
+  const statusCode = typeof error === "object" && error !== null && "statusCode" in error &&
+    typeof (error as {statusCode?: unknown}).statusCode === "number"
+      ? (error as {statusCode: number}).statusCode : 500;
+  const message = error instanceof Error && statusCode < 500
+    ? error.message
+    : error instanceof Error && statusCode === 503
+      ? error.message
+      : "خطا در پردازش درخواست حضور و غیاب.";
+  return { statusCode, message };
+}
+
+
+==========================================
+FILE: app\api\attendance\shifts\route.ts
+==========================================
+
+import { NextRequest } from "next/server";
+
+import {
+  WorkShiftDayType,
+} from "@/generated/prisma/client";
+
+import { prisma } from "@/libs/prisma";
+
+import {
+  successResponse,
+  errorResponse,
+} from "@/libs/api-response";
+
+import {
+  assertSameOriginRequest,
+  authorizeGlobalRequest,
+  RequestOriginError,
+} from "@/modules/auth/auth.middleware";
+
+import { AuthError } from "@/modules/auth/auth.service";
+
+import {
+  PermissionDeniedError,
+} from "@/modules/permissions/access-control";
+
+// ==========================================
+// TYPES
+// ==========================================
+
+class ShiftError extends Error {
+  constructor(
+    message: string,
+    public statusCode = 400
+  ) {
+    super(message);
+    this.name = "ShiftError";
+  }
+}
+
+type ShiftDayInput = {
+  dayOfWeek: number;
+  segmentOrder: number;
+  dayType: WorkShiftDayType;
+  isWorkingDay: boolean;
+  startMinute: number | null;
+  endMinute: number | null;
+  requiredMinutes: number;
+};
+
+// ==========================================
+// HELPERS
+// ==========================================
+
+function isObject(
+  value: unknown
+): value is Record<string, unknown> {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    !Array.isArray(value)
+  );
+}
+
+function readText(
+  value: unknown,
+  field: string,
+  maxLength: number
+): string {
+  if (typeof value !== "string") {
+    throw new ShiftError(`${field} الزامی است.`);
+  }
+
+  const result = value.trim();
+
+  if (!result || result.length > maxLength) {
+    throw new ShiftError(`${field} معتبر نیست.`);
+  }
+
+  return result;
+}
+
+function readInteger(
+  value: unknown,
+  field: string,
+  min: number,
+  max: number,
+  fallback?: number
+): number {
+  if (value === undefined && fallback !== undefined) {
+    return fallback;
+  }
+
+  if (
+    typeof value !== "number" ||
+    !Number.isInteger(value) ||
+    value < min ||
+    value > max
+  ) {
+    throw new ShiftError(`${field} معتبر نیست.`);
+  }
+
+  return value;
+}
+
+function parseDays(value: unknown): ShiftDayInput[] {
+  if (!Array.isArray(value) || value.length === 0) {
+    throw new ShiftError(
+      "حداقل یک روز کاری یا تعطیل باید تعریف شود."
+    );
+  }
+
+  const allowedTypes = Object.values(
+    WorkShiftDayType
+  ) as string[];
+
+  const days = value.map((item, index) => {
+    if (!isObject(item)) {
+      throw new ShiftError("ساختار روز شیفت معتبر نیست.");
+    }
+
+    const dayOfWeek = readInteger(
+      item.dayOfWeek,
+      "روز هفته",
+      0,
+      6
+    );
+
+    const segmentOrder = readInteger(
+      item.segmentOrder,
+      "ترتیب بازه",
+      1,
+      100,
+      1
+    );
+
+    const dayType =
+      item.dayType === undefined
+        ? WorkShiftDayType.NORMAL
+        : item.dayType;
+
+    if (
+      typeof dayType !== "string" ||
+      !allowedTypes.includes(dayType)
+    ) {
+      throw new ShiftError("نوع روز معتبر نیست.");
+    }
+
+    const isWorkingDay =
+      item.isWorkingDay === undefined
+        ? true
+        : item.isWorkingDay;
+
+    if (typeof isWorkingDay !== "boolean") {
+      throw new ShiftError("وضعیت روز کاری معتبر نیست.");
+    }
+
+    const startMinute =
+      item.startMinute === null ||
+      item.startMinute === undefined
+        ? null
+        : readInteger(
+            item.startMinute,
+            "ساعت شروع",
+            0,
+            1439
+          );
+
+    const endMinute =
+      item.endMinute === null ||
+      item.endMinute === undefined
+        ? null
+        : readInteger(
+            item.endMinute,
+            "ساعت پایان",
+            0,
+            1439
+          );
+
+    if (
+      isWorkingDay &&
+      (startMinute === null || endMinute === null)
+    ) {
+      throw new ShiftError(
+        "برای روز کاری ساعت شروع و پایان الزامی است."
+      );
+    }
+
+    const requiredMinutes = readInteger(
+      item.requiredMinutes,
+      "ساعت موظفی",
+      0,
+      1440,
+      isWorkingDay ? 480 : 0
+    );
+
+    if (!isWorkingDay && requiredMinutes !== 0) {
+      throw new ShiftError(
+        "روز غیرکاری نباید ساعت موظفی داشته باشد."
+      );
+    }
+
+    return {
+      dayOfWeek,
+      segmentOrder,
+      dayType: dayType as WorkShiftDayType,
+      isWorkingDay,
+      startMinute,
+      endMinute,
+      requiredMinutes,
+    };
+  });
+
+  const uniqueSegments = new Set(
+    days.map(
+      (day) =>
+        `${day.dayOfWeek}-${day.dayType}-${day.segmentOrder}`
+    )
+  );
+
+  if (uniqueSegments.size !== days.length) {
+    throw new ShiftError(
+      "ترتیب بازه‌های یک روز نباید تکراری باشد."
+    );
+  }
+
+  return days;
+}
+
+function getErrorResponse(error: unknown) {
+  if (
+    error instanceof ShiftError ||
+    error instanceof RequestOriginError ||
+    error instanceof AuthError ||
+    error instanceof PermissionDeniedError
+  ) {
+    return errorResponse(
+      error.message,
+      error.statusCode
+    );
+  }
+
+  if (
+    isObject(error) &&
+    error.code === "P2002"
+  ) {
+    return errorResponse(
+      "کد این شیفت قبلاً ثبت شده است.",
+      409
+    );
+  }
+
+  console.error("[WORK_SHIFT_ERROR]", error);
+
+  return errorResponse(
+    "خطا در پردازش اطلاعات شیفت.",
+    500
+  );
+}
+
+// ==========================================
+// GET - LIST SHIFTS
+// ==========================================
+
+export async function GET(request: NextRequest) {
+  try {
+    await authorizeGlobalRequest(
+      request,
+      "attendance.shift.view"
+    );
+
+    const shifts = await prisma.workShift.findMany({
+      include: {
+        days: {
+          orderBy: [
+            { dayOfWeek: "asc" },
+            { dayType: "asc" },
+            { segmentOrder: "asc" },
+          ],
+        },
+
+        _count: {
+          select: {
+            assignments: true,
+          },
+        },
+      },
+
+      orderBy: [
+        { isDefault: "desc" },
+        { createdAt: "desc" },
+      ],
+    });
+
+    return successResponse({
+      shifts,
+      count: shifts.length,
+    });
+
+  } catch (error) {
+    return getErrorResponse(error);
+  }
+}
+
+// ==========================================
+// POST - CREATE SHIFT
+// ==========================================
+
+export async function POST(request: NextRequest) {
+  try {
+    assertSameOriginRequest(request);
+
+    const { user: actor } =
+      await authorizeGlobalRequest(
+        request,
+        "attendance.shift.create"
+      );
+
+    let body: unknown;
+
+    try {
+      body = await request.json();
+    } catch {
+      throw new ShiftError(
+        "ساختار درخواست معتبر نیست."
+      );
+    }
+
+    if (!isObject(body)) {
+      throw new ShiftError(
+        "اطلاعات شیفت معتبر نیست."
+      );
+    }
+
+    const code = readText(
+      body.code,
+      "کد شیفت",
+      50
+    );
+
+    const name = readText(
+      body.name,
+      "نام شیفت",
+      120
+    );
+
+    const description =
+      body.description === undefined ||
+      body.description === null ||
+      body.description === ""
+        ? null
+        : readText(
+            body.description,
+            "توضیحات",
+            2000
+          );
+
+    const isDefault =
+      body.isDefault === undefined
+        ? false
+        : body.isDefault;
+
+    if (typeof isDefault !== "boolean") {
+      throw new ShiftError(
+        "وضعیت شیفت پیش‌فرض معتبر نیست."
+      );
+    }
+
+    const days = parseDays(body.days);
+
+    const created = await prisma.$transaction(
+      async (tx) => {
+        // فقط یک شیفت پیش‌فرض فعال باشد.
+        if (isDefault) {
+          await tx.workShift.updateMany({
+            where: {
+              isDefault: true,
+            },
+            data: {
+              isDefault: false,
+            },
+          });
+        }
+
+        const shift = await tx.workShift.create({
+          data: {
+            code,
+            name,
+            description,
+            isDefault,
+            isActive: true,
+            version: 1,
+
+            days: {
+              create: days,
+            },
+          },
+
+          include: {
+            days: {
+              orderBy: [
+                { dayOfWeek: "asc" },
+                { dayType: "asc" },
+                { segmentOrder: "asc" },
+              ],
+            },
+          },
+        });
+
+        await tx.organizationAuditLog.create({
+          data: {
+            actorUserId: actor.id,
+            entityType: "WorkShift",
+            entityId: shift.id,
+            action: "WORK_SHIFT_CREATED",
+            ipAddress:
+              request.headers
+                .get("x-forwarded-for")
+                ?.split(",")[0]
+                ?.trim() ??
+              request.headers.get("x-real-ip"),
+            afterData: {
+              code,
+              name,
+              version: shift.version,
+              isDefault,
+              daysCount: days.length,
+            },
+          },
+        });
+
+        return shift;
+      }
+    );
+
+    return successResponse(
+      {
+        shift: created,
+        message: "شیفت کاری با موفقیت ثبت شد.",
+      },
+      201
+    );
+
+  } catch (error) {
+    return getErrorResponse(error);
+  }
+}
+
+
+==========================================
+FILE: app\api\attendance\shifts\[id]\route.ts
+==========================================
+
+import { NextRequest } from "next/server";
+
+import {
+  Prisma,
+  WorkShiftDayType,
+} from "@/generated/prisma/client";
+
+import { prisma } from "@/libs/prisma";
+
+import {
+  successResponse,
+  errorResponse,
+} from "@/libs/api-response";
+
+import {
+  assertSameOriginRequest,
+  authorizeGlobalRequest,
+} from "@/modules/auth/auth.middleware";
+
+import { AuthError } from "@/modules/auth/auth.service";
+
+import {
+  PermissionDeniedError,
+} from "@/modules/permissions/access-control";
+
+// ==========================================
+// TYPES
+// ==========================================
+
+type Context = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+
+class WorkShiftError extends Error {
+  constructor(
+    message: string,
+    public statusCode = 400
+  ) {
+    super(message);
+    this.name = "WorkShiftError";
+  }
+}
+
+type WorkShiftDayInput = {
+  dayOfWeek: number;
+  segmentOrder: number;
+  dayType: WorkShiftDayType;
+  isWorkingDay: boolean;
+  startMinute: number | null;
+  endMinute: number | null;
+  requiredMinutes: number;
+};
+
+// ==========================================
+// HELPERS
+// ==========================================
+
+function isObject(
+  value: unknown
+): value is Record<string, unknown> {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    !Array.isArray(value)
+  );
+}
+
+function readString(
+  value: unknown,
+  field: string,
+  required = true
+): string | null {
+  if (
+    value === undefined ||
+    value === null ||
+    value === ""
+  ) {
+    if (required) {
+      throw new WorkShiftError(
+        `${field} الزامی است.`
+      );
+    }
+
+    return null;
+  }
+
+  if (typeof value !== "string") {
+    throw new WorkShiftError(
+      `${field} معتبر نیست.`
+    );
+  }
+
+  const result = value.trim();
+
+  if (!result && required) {
+    throw new WorkShiftError(
+      `${field} الزامی است.`
+    );
+  }
+
+  return result || null;
+}
+
+function readInteger(
+  value: unknown,
+  field: string,
+  min: number,
+  max: number
+): number {
+  if (
+    typeof value !== "number" ||
+    !Number.isInteger(value) ||
+    value < min ||
+    value > max
+  ) {
+    throw new WorkShiftError(
+      `${field} باید عدد صحیح بین ${min} و ${max} باشد.`
+    );
+  }
+
+  return value;
+}
+
+function getIpAddress(
+  request: NextRequest
+): string | null {
+  return (
+    request.headers
+      .get("x-forwarded-for")
+      ?.split(",")[0]
+      ?.trim() ||
+    request.headers.get("x-real-ip") ||
+    null
+  );
+}
+
+function parseDays(
+  value: unknown
+): WorkShiftDayInput[] {
+  if (
+    !Array.isArray(value) ||
+    value.length === 0 ||
+    value.length > 100
+  ) {
+    throw new WorkShiftError(
+      "برنامه هفتگی شیفت معتبر نیست."
+    );
+  }
+
+  const days: WorkShiftDayInput[] = [];
+  const uniqueSegments = new Set<string>();
+
+  for (const item of value) {
+    if (!isObject(item)) {
+      throw new WorkShiftError(
+        "اطلاعات روز کاری معتبر نیست."
+      );
+    }
+
+    const dayOfWeek = readInteger(
+      item.dayOfWeek,
+      "روز هفته",
+      0,
+      6
+    );
+
+    const segmentOrder = readInteger(
+      item.segmentOrder ?? 1,
+      "ترتیب بازه کاری",
+      1,
+      100
+    );
+
+    const dayType =
+      item.dayType ?? WorkShiftDayType.NORMAL;
+
+    if (
+      dayType !== WorkShiftDayType.NORMAL &&
+      dayType !== WorkShiftDayType.HOLIDAY
+    ) {
+      throw new WorkShiftError(
+        "نوع روز کاری معتبر نیست."
+      );
+    }
+
+    if (typeof item.isWorkingDay !== "boolean") {
+      throw new WorkShiftError(
+        "وضعیت روز کاری معتبر نیست."
+      );
+    }
+
+    const requiredMinutes = readInteger(
+      item.requiredMinutes ??
+        (item.isWorkingDay ? 480 : 0),
+      "دقایق کاری",
+      0,
+      1440
+    );
+
+    let startMinute: number | null = null;
+    let endMinute: number | null = null;
+
+    if (item.isWorkingDay) {
+      startMinute = readInteger(
+        item.startMinute,
+        "ساعت شروع",
+        0,
+        1439
+      );
+
+      endMinute = readInteger(
+        item.endMinute,
+        "ساعت پایان",
+        0,
+        1439
+      );
+
+      if (startMinute === endMinute) {
+        throw new WorkShiftError(
+          "ساعت شروع و پایان نمی‌توانند یکسان باشند."
+        );
+      }
+
+      if (requiredMinutes <= 0) {
+        throw new WorkShiftError(
+          "مدت کارکرد باید بیشتر از صفر باشد."
+        );
+      }
+    } else {
+      if (
+        item.startMinute != null ||
+        item.endMinute != null
+      ) {
+        throw new WorkShiftError(
+          "روز غیرکاری نباید ساعت شروع یا پایان داشته باشد."
+        );
+      }
+    }
+
+    const uniqueKey =
+      `${dayOfWeek}-${dayType}-${segmentOrder}`;
+
+    if (uniqueSegments.has(uniqueKey)) {
+      throw new WorkShiftError(
+        "ترتیب بازه‌های یک روز نباید تکراری باشد."
+      );
+    }
+
+    uniqueSegments.add(uniqueKey);
+
+    days.push({
+      dayOfWeek,
+      segmentOrder,
+      dayType,
+      isWorkingDay: item.isWorkingDay,
+      startMinute,
+      endMinute,
+      requiredMinutes,
+    });
+  }
+
+  return days;
+}
+
+// ==========================================
+// ERROR HANDLER
+// ==========================================
+
+function handleError(error: unknown) {
+  if (error instanceof WorkShiftError) {
+    return errorResponse(
+      error.message,
+      error.statusCode
+    );
+  }
+
+  if (error instanceof AuthError) {
+    return errorResponse(
+      "احراز هویت ناموفق است.",
+      401
+    );
+  }
+
+  if (error instanceof PermissionDeniedError) {
+    return errorResponse(
+      "شما مجوز انجام این عملیات را ندارید.",
+      403
+    );
+  }
+
+  if (
+    isObject(error) &&
+    error.code === "P2002"
+  ) {
+    return errorResponse(
+      "اطلاعات تکراری است.",
+      409
+    );
+  }
+
+  if (
+    isObject(error) &&
+    error.code === "P2034"
+  ) {
+    return errorResponse(
+      "اطلاعات هم‌زمان تغییر کرده است. دوباره تلاش کنید.",
+      409
+    );
+  }
+
+  if (
+    isObject(error) &&
+    error.code === "P2025"
+  ) {
+    return errorResponse(
+      "شیفت موردنظر پیدا نشد.",
+      404
+    );
+  }
+
+  console.error(
+    "[WORK_SHIFT_DETAIL_ERROR]",
+    error
+  );
+
+  return errorResponse(
+    "خطای داخلی در مدیریت شیفت کاری.",
+    500
+  );
+}
+
+// ==========================================
+// GET - WORK SHIFT DETAILS
+// ==========================================
+
+export async function GET(
+  request: NextRequest,
+  context: Context
+) {
+  try {
+    await authorizeGlobalRequest(
+      request,
+      "attendance.shift.view"
+    );
+
+    const { id: shiftId } = await context.params;
+
+    if (!shiftId?.trim()) {
+      throw new WorkShiftError(
+        "شناسه شیفت معتبر نیست."
+      );
+    }
+
+    const shift = await prisma.workShift.findUnique({
+      where: {
+        id: shiftId,
+      },
+
+      include: {
+        days: {
+          orderBy: [
+            { dayOfWeek: "asc" },
+            { segmentOrder: "asc" },
+          ],
+        },
+
+        assignments: {
+          where: {
+            isActive: true,
+          },
+
+          include: {
+            organizationUnit: {
+              select: {
+                id: true,
+                code: true,
+                name: true,
+              },
+            },
+
+            employeeAssignment: {
+              select: {
+                id: true,
+                user: {
+                  select: {
+                    id: true,
+                    fullName: true,
+                    username: true,
+                  },
+                },
+                organizationUnit: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+
+          orderBy: {
+            validFrom: "desc",
+          },
+        },
+
+        _count: {
+          select: {
+            assignments: true,
+          },
+        },
+      },
+    });
+
+    if (!shift) {
+      throw new WorkShiftError(
+        "شیفت موردنظر پیدا نشد.",
+        404
+      );
+    }
+
+    const latestVersion =
+      await prisma.workShift.findFirst({
+        where: {
+          code: shift.code,
+        },
+
+        orderBy: {
+          version: "desc",
+        },
+
+        select: {
+          id: true,
+          version: true,
+        },
+      });
+
+    return successResponse({
+      shift,
+
+      versionInfo: {
+        currentVersion: shift.version,
+        latestVersion:
+          latestVersion?.version ?? shift.version,
+        isLatestVersion:
+          latestVersion?.id === shift.id,
+      },
+
+      statistics: {
+        totalAssignments:
+          shift._count.assignments,
+
+        activeAssignments:
+          shift.assignments.length,
+      },
+    });
+
+  } catch (error) {
+    return handleError(error);
+  }
+}
+
+// ==========================================
+// PATCH - UPDATE WORK SHIFT
+// ==========================================
+
+export async function PATCH(
+  request: NextRequest,
+  context: Context
+) {
+  try {
+    assertSameOriginRequest(request);
+
+    const { user: actor } =
+      await authorizeGlobalRequest(
+        request,
+        "attendance.shift.update"
+      );
+
+    const { id: shiftId } = await context.params;
+
+    if (!shiftId?.trim()) {
+      throw new WorkShiftError(
+        "شناسه شیفت معتبر نیست."
+      );
+    }
+
+    let body: unknown;
+
+    try {
+      body = await request.json();
+    } catch {
+      throw new WorkShiftError(
+        "ساختار اطلاعات ارسالی معتبر نیست."
+      );
+    }
+
+    if (!isObject(body)) {
+      throw new WorkShiftError(
+        "اطلاعات ارسالی معتبر نیست."
+      );
+    }
+
+    const result = await prisma.$transaction(
+      async (tx) => {
+        const existing =
+          await tx.workShift.findUnique({
+            where: {
+              id: shiftId,
+            },
+
+            include: {
+              days: true,
+              _count: {
+                select: {
+                  assignments: true,
+                },
+              },
+            },
+          });
+
+        if (!existing) {
+          throw new WorkShiftError(
+            "شیفت موردنظر پیدا نشد.",
+            404
+          );
+        }
+
+        if (!existing.isActive) {
+          throw new WorkShiftError(
+            "شیفت غیرفعال قابل ویرایش نیست."
+          );
+        }
+
+        const latestVersion =
+          await tx.workShift.findFirst({
+            where: {
+              code: existing.code,
+            },
+
+            orderBy: {
+              version: "desc",
+            },
+
+            select: {
+              id: true,
+            },
+          });
+
+        if (latestVersion?.id !== existing.id) {
+          throw new WorkShiftError(
+            "فقط آخرین نسخه فعال شیفت قابل ویرایش است."
+          );
+        }
+
+        const data: Prisma.WorkShiftUpdateInput = {};
+
+        if ("name" in body) {
+          const name = readString(
+            body.name,
+            "نام شیفت"
+          )!;
+
+          if (name.length > 150) {
+            throw new WorkShiftError(
+              "نام شیفت نباید بیشتر از ۱۵۰ کاراکتر باشد."
+            );
+          }
+
+          data.name = name;
+        }
+
+        if ("description" in body) {
+          const description = readString(
+            body.description,
+            "توضیحات",
+            false
+          );
+
+          if (
+            description &&
+            description.length > 2000
+          ) {
+            throw new WorkShiftError(
+              "توضیحات نباید بیشتر از ۲۰۰۰ کاراکتر باشد."
+            );
+          }
+
+          data.description = description;
+        }
+
+        if ("isDefault" in body) {
+          if (typeof body.isDefault !== "boolean") {
+            throw new WorkShiftError(
+              "وضعیت شیفت پیش‌فرض معتبر نیست."
+            );
+          }
+
+          data.isDefault = body.isDefault;
+        }
+
+        let parsedDays:
+          WorkShiftDayInput[] | undefined;
+
+        if ("days" in body) {
+          if (existing._count.assignments > 0) {
+            throw new WorkShiftError(
+              "این شیفت دارای سوابق انتصاب است. برای تغییر ساعات کاری باید نسخه جدیدی از شیفت ایجاد شود.",
+              409
+            );
+          }
+
+          parsedDays = parseDays(body.days);
+        }
+
+        const isBecomingDefault =
+          body.isDefault === true;
+
+        if (isBecomingDefault) {
+          await tx.workShift.updateMany({
+            where: {
+              isActive: true,
+              isDefault: true,
+              id: {
+                not: shiftId,
+              },
+            },
+
+            data: {
+              isDefault: false,
+            },
+          });
+        }
+
+        if (parsedDays) {
+          await tx.workShiftDay.deleteMany({
+            where: {
+              shiftId,
+            },
+          });
+
+          await tx.workShiftDay.createMany({
+            data: parsedDays.map((day) => ({
+              ...day,
+              shiftId,
+            })),
+          });
+        }
+
+        const updated =
+          await tx.workShift.update({
+            where: {
+              id: shiftId,
+            },
+
+            data,
+
+            include: {
+              days: {
+                orderBy: [
+                  { dayOfWeek: "asc" },
+                  { segmentOrder: "asc" },
+                ],
+              },
+            },
+          });
+
+        await tx.organizationAuditLog.create({
+          data: {
+            actorUserId: actor.id,
+            entityType: "WorkShift",
+            entityId: updated.id,
+            action: "WORK_SHIFT_UPDATED",
+
+            beforeData: {
+              name: existing.name,
+              description: existing.description,
+              isDefault: existing.isDefault,
+              days: existing.days.map((day) => ({
+                dayOfWeek: day.dayOfWeek,
+                segmentOrder: day.segmentOrder,
+                dayType: day.dayType,
+                isWorkingDay: day.isWorkingDay,
+                startMinute: day.startMinute,
+                endMinute: day.endMinute,
+                requiredMinutes: day.requiredMinutes,
+              })),
+            } satisfies Prisma.InputJsonObject,
+
+            afterData: {
+              name: updated.name,
+              description: updated.description,
+              isDefault: updated.isDefault,
+              days: updated.days.map((day) => ({
+                dayOfWeek: day.dayOfWeek,
+                segmentOrder: day.segmentOrder,
+                dayType: day.dayType,
+                isWorkingDay: day.isWorkingDay,
+                startMinute: day.startMinute,
+                endMinute: day.endMinute,
+                requiredMinutes: day.requiredMinutes,
+              })),
+            } satisfies Prisma.InputJsonObject,
+
+            ipAddress: getIpAddress(request),
+          },
+        });
+
+        return updated;
+      },
+      {
+        isolationLevel:
+          Prisma.TransactionIsolationLevel.Serializable,
+      }
+    );
+
+    return successResponse({
+      shift: result,
+      message: "اطلاعات شیفت با موفقیت ویرایش شد.",
+    });
+
+  } catch (error) {
+    return handleError(error);
+  }
+}
+
+// ==========================================
+// DELETE - DEACTIVATE WORK SHIFT
+// ==========================================
+
+export async function DELETE(
+  request: NextRequest,
+  context: Context
+) {
+  try {
+    assertSameOriginRequest(request);
+
+    const { user: actor } =
+      await authorizeGlobalRequest(
+        request,
+        "attendance.shift.delete"
+      );
+
+    const { id: shiftId } = await context.params;
+
+    if (!shiftId?.trim()) {
+      throw new WorkShiftError(
+        "شناسه شیفت معتبر نیست."
+      );
+    }
+
+    const result = await prisma.$transaction(
+      async (tx) => {
+        const existing =
+          await tx.workShift.findUnique({
+            where: {
+              id: shiftId,
+            },
+          });
+
+        if (!existing) {
+          throw new WorkShiftError(
+            "شیفت موردنظر پیدا نشد.",
+            404
+          );
+        }
+
+        if (!existing.isActive) {
+          throw new WorkShiftError(
+            "این شیفت قبلاً غیرفعال شده است."
+          );
+        }
+
+        const updated =
+          await tx.workShift.update({
+            where: {
+              id: shiftId,
+            },
+
+            data: {
+              isActive: false,
+              isDefault: false,
+            },
+          });
+
+        await tx.organizationAuditLog.create({
+          data: {
+            actorUserId: actor.id,
+            entityType: "WorkShift",
+            entityId: shiftId,
+            action: "WORK_SHIFT_DEACTIVATED",
+
+            beforeData: {
+              isActive: existing.isActive,
+              isDefault: existing.isDefault,
+            },
+
+            afterData: {
+              isActive: false,
+              isDefault: false,
+            },
+
+            ipAddress: getIpAddress(request),
+          },
+        });
+
+        return updated;
+      },
+      {
+        isolationLevel:
+          Prisma.TransactionIsolationLevel.Serializable,
+      }
+    );
+
+    return successResponse({
+      shift: result,
+      message:
+        "شیفت با موفقیت غیرفعال شد. سوابق قبلی حفظ شده‌اند.",
+    });
+
+  } catch (error) {
+    return handleError(error);
+  }
+}
+
+
+==========================================
+FILE: app\api\attendance\shift-assignments\route.ts
+==========================================
+
+import { NextRequest } from "next/server";
+
+import {
+  Prisma,
+  ShiftAssignmentTarget,
+} from "@/generated/prisma/client";
+
+import { prisma } from "@/libs/prisma";
+
+import {
+  successResponse,
+  errorResponse,
+} from "@/libs/api-response";
+
+import {
+  authorizeGlobalRequest,
+  assertSameOriginRequest,
+} from "@/modules/auth/auth.middleware";
+
+import { AuthError } from "@/modules/auth/auth.service";
+
+import {
+  PermissionDeniedError,
+} from "@/modules/permissions/access-control";
+
+// ==========================================
+// TYPES
+// ==========================================
+
+class ShiftAssignmentError extends Error {
+  constructor(
+    message: string,
+    public statusCode = 400
+  ) {
+    super(message);
+    this.name = "ShiftAssignmentError";
+  }
+}
+
+type AssignmentInput = {
+  shiftId: string;
+  targetType: ShiftAssignmentTarget;
+  organizationUnitId: string | null;
+  employeeAssignmentId: string | null;
+  validFrom: Date;
+  validTo: Date | null;
+  notes: string | null;
+};
+
+// ==========================================
+// HELPERS
+// ==========================================
+
+function isObject(
+  value: unknown
+): value is Record<string, unknown> {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    !Array.isArray(value)
+  );
+}
+
+function parseString(
+  value: unknown,
+  field: string,
+  maxLength = 200
+): string {
+  if (typeof value !== "string") {
+    throw new ShiftAssignmentError(
+      `${field} معتبر نیست.`
+    );
+  }
+
+  const result = value.trim();
+
+  if (!result) {
+    throw new ShiftAssignmentError(
+      `${field} الزامی است.`
+    );
+  }
+
+  if (result.length > maxLength) {
+    throw new ShiftAssignmentError(
+      `${field} بیش از حد مجاز طولانی است.`
+    );
+  }
+
+  return result;
+}
+
+function parseOptionalString(
+  value: unknown,
+  field: string,
+  maxLength = 1000
+): string | null {
+  if (
+    value === undefined ||
+    value === null ||
+    value === ""
+  ) {
+    return null;
+  }
+
+  if (typeof value !== "string") {
+    throw new ShiftAssignmentError(
+      `${field} معتبر نیست.`
+    );
+  }
+
+  const result = value.trim();
+
+  if (result.length > maxLength) {
+    throw new ShiftAssignmentError(
+      `${field} بیش از حد مجاز طولانی است.`
+    );
+  }
+
+  return result || null;
+}
+
+function parseDate(
+  value: unknown,
+  field: string,
+  optional = false
+): Date | null {
+  if (
+    value === undefined ||
+    value === null ||
+    value === ""
+  ) {
+    if (optional) return null;
+
+    throw new ShiftAssignmentError(
+      `${field} الزامی است.`
+    );
+  }
+
+  if (
+    typeof value !== "string" ||
+    !/^\d{4}-\d{2}-\d{2}$/.test(value)
+  ) {
+    throw new ShiftAssignmentError(
+      `${field} باید با فرمت YYYY-MM-DD باشد.`
+    );
+  }
+
+  const date = new Date(
+    `${value}T00:00:00.000Z`
+  );
+
+  if (
+    Number.isNaN(date.getTime()) ||
+    date.toISOString().slice(0, 10) !== value
+  ) {
+    throw new ShiftAssignmentError(
+      `${field} معتبر نیست.`
+    );
+  }
+
+  return date;
+}
+
+function parseAssignment(
+  body: Record<string, unknown>
+): AssignmentInput {
+  const shiftId = parseString(
+    body.shiftId,
+    "شناسه شیفت",
+    100
+  );
+
+  const targetType = body.targetType;
+
+  if (
+    typeof targetType !== "string" ||
+    !Object.values(ShiftAssignmentTarget).includes(
+      targetType as ShiftAssignmentTarget
+    )
+  ) {
+    throw new ShiftAssignmentError(
+      "نوع اختصاص شیفت معتبر نیست."
+    );
+  }
+
+  const organizationUnitId =
+    parseOptionalString(
+      body.organizationUnitId,
+      "واحد سازمانی",
+      100
+    );
+
+  const employeeAssignmentId =
+    parseOptionalString(
+      body.employeeAssignmentId,
+      "پرسنل",
+      100
+    );
+
+  const validFrom = parseDate(
+    body.validFrom,
+    "تاریخ شروع"
+  )!;
+
+  const validTo = parseDate(
+    body.validTo,
+    "تاریخ پایان",
+    true
+  );
+
+  if (
+    validTo &&
+    validTo.getTime() < validFrom.getTime()
+  ) {
+    throw new ShiftAssignmentError(
+      "تاریخ پایان نمی‌تواند قبل از تاریخ شروع باشد."
+    );
+  }
+
+  if (
+    targetType === ShiftAssignmentTarget.COMPANY &&
+    (organizationUnitId || employeeAssignmentId)
+  ) {
+    throw new ShiftAssignmentError(
+      "برای اختصاص شیفت به کل شرکت، شناسه واحد و کارمند نباید ارسال شود."
+    );
+  }
+
+  if (
+    targetType === ShiftAssignmentTarget.UNIT &&
+    (!organizationUnitId || employeeAssignmentId)
+  ) {
+    throw new ShiftAssignmentError(
+      "برای اختصاص شیفت به واحد، فقط شناسه واحد سازمانی الزامی است."
+    );
+  }
+
+  if (
+    targetType === ShiftAssignmentTarget.EMPLOYEE &&
+    (!employeeAssignmentId || organizationUnitId)
+  ) {
+    throw new ShiftAssignmentError(
+      "برای اختصاص شیفت به کارمند، فقط شناسه انتصاب کارمند الزامی است."
+    );
+  }
+
+  return {
+    shiftId,
+    targetType: targetType as ShiftAssignmentTarget,
+    organizationUnitId,
+    employeeAssignmentId,
+    validFrom,
+    validTo,
+    notes: parseOptionalString(
+      body.notes,
+      "توضیحات"
+    ),
+  };
+}
+
+function getErrorResponse(error: unknown) {
+  if (error instanceof ShiftAssignmentError) {
+    return errorResponse(
+      error.message,
+      error.statusCode
+    );
+  }
+
+  if (error instanceof AuthError) {
+    return errorResponse(
+      "احراز هویت ناموفق است.",
+      401
+    );
+  }
+
+  if (error instanceof PermissionDeniedError) {
+    return errorResponse(
+      "شما مجوز انجام این عملیات را ندارید.",
+      403
+    );
+  }
+
+  if (
+    isObject(error) &&
+    error.code === "P2002"
+  ) {
+    return errorResponse(
+      "اطلاعات تکراری است.",
+      409
+    );
+  }
+
+  if (
+    isObject(error) &&
+    error.code === "P2003"
+  ) {
+    return errorResponse(
+      "ارتباط با اطلاعات سازمانی معتبر نیست.",
+      400
+    );
+  }
+
+  if (
+    isObject(error) &&
+    error.code === "P2025"
+  ) {
+    return errorResponse(
+      "اطلاعات موردنظر پیدا نشد.",
+      404
+    );
+  }
+
+  if (
+    isObject(error) &&
+    error.code === "P2034"
+  ) {
+    return errorResponse(
+      "عملیات هم‌زمان دیگری انجام شده است. دوباره تلاش کنید.",
+      409
+    );
+  }
+
+  console.error(
+    "[SHIFT_ASSIGNMENT_ERROR]",
+    error
+  );
+
+  return errorResponse(
+    "خطای داخلی در مدیریت اختصاص شیفت.",
+    500
+  );
+}
+
+function getClientIp(request: NextRequest) {
+  return (
+    request.headers
+      .get("x-forwarded-for")
+      ?.split(",")[0]
+      ?.trim() ||
+    request.headers.get("x-real-ip") ||
+    null
+  );
+}
+
+// ==========================================
+// GET - LIST SHIFT ASSIGNMENTS
+// ==========================================
+
+export async function GET(
+  request: NextRequest
+) {
+  try {
+    await authorizeGlobalRequest(
+      request,
+      "attendance.shift.view"
+    );
+
+    const params =
+      request.nextUrl.searchParams;
+
+    const targetTypeParam =
+      params.get("targetType");
+
+    const shiftId =
+      params.get("shiftId");
+
+    const organizationUnitId =
+      params.get("organizationUnitId");
+
+    const employeeAssignmentId =
+      params.get("employeeAssignmentId");
+
+    const activeParam =
+      params.get("active");
+
+    const page = Number(
+      params.get("page") || "1"
+    );
+
+    const pageSize = Number(
+      params.get("pageSize") || "50"
+    );
+
+    if (
+      !Number.isInteger(page) ||
+      page < 1 ||
+      page > 100000
+    ) {
+      throw new ShiftAssignmentError(
+        "شماره صفحه معتبر نیست."
+      );
+    }
+
+    if (
+      !Number.isInteger(pageSize) ||
+      pageSize < 1 ||
+      pageSize > 100
+    ) {
+      throw new ShiftAssignmentError(
+        "تعداد رکورد در صفحه باید بین ۱ تا ۱۰۰ باشد."
+      );
+    }
+
+    const where: Prisma.ShiftAssignmentWhereInput = {};
+
+    if (shiftId) {
+      where.shiftId = shiftId;
+    }
+
+    if (organizationUnitId) {
+      where.organizationUnitId =
+        organizationUnitId;
+    }
+
+    if (employeeAssignmentId) {
+      where.employeeAssignmentId =
+        employeeAssignmentId;
+    }
+
+    if (targetTypeParam) {
+      if (
+        !Object.values(
+          ShiftAssignmentTarget
+        ).includes(
+          targetTypeParam as ShiftAssignmentTarget
+        )
+      ) {
+        throw new ShiftAssignmentError(
+          "نوع اختصاص شیفت معتبر نیست."
+        );
+      }
+
+      where.targetType =
+        targetTypeParam as ShiftAssignmentTarget;
+    }
+
+    if (activeParam === "true") {
+      where.isActive = true;
+    } else if (activeParam === "false") {
+      where.isActive = false;
+    } else if (
+      activeParam !== null &&
+      activeParam !== "all"
+    ) {
+      throw new ShiftAssignmentError(
+        "فیلتر وضعیت معتبر نیست."
+      );
+    }
+
+    const [assignments, total] =
+      await prisma.$transaction([
+        prisma.shiftAssignment.findMany({
+          where,
+
+          include: {
+            shift: {
+              include: {
+                days: {
+                  orderBy: [
+                    { dayOfWeek: "asc" },
+                    { segmentOrder: "asc" },
+                  ],
+                },
+              },
+            },
+
+            organizationUnit: {
+              select: {
+                id: true,
+                code: true,
+                name: true,
+                status: true,
+              },
+            },
+
+            employeeAssignment: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    username: true,
+                    fullName: true,
+                    isActive: true,
+                  },
+                },
+
+                organizationUnit: {
+                  select: {
+                    id: true,
+                    code: true,
+                    name: true,
+                  },
+                },
+
+                position: {
+                  select: {
+                    id: true,
+                    title: true,
+                  },
+                },
+              },
+            },
+          },
+
+          orderBy: [
+            { validFrom: "desc" },
+            { createdAt: "desc" },
+          ],
+
+          skip: (page - 1) * pageSize,
+          take: pageSize,
+        }),
+
+        prisma.shiftAssignment.count({
+          where,
+        }),
+      ]);
+
+    return successResponse({
+      assignments,
+
+      pagination: {
+        page,
+        pageSize,
+        total,
+        totalPages: Math.ceil(
+          total / pageSize
+        ),
+      },
+    });
+
+  } catch (error) {
+    return getErrorResponse(error);
+  }
+}
+
+// ==========================================
+// POST - CREATE SHIFT ASSIGNMENT
+// ==========================================
+
+export async function POST(
+  request: NextRequest
+) {
+  try {
+    assertSameOriginRequest(request);
+
+    const { user: actor } =
+      await authorizeGlobalRequest(
+        request,
+        "attendance.shift.create"
+      );
+
+    let body: unknown;
+
+    try {
+      body = await request.json();
+    } catch {
+      throw new ShiftAssignmentError(
+        "ساختار اطلاعات ارسالی معتبر نیست."
+      );
+    }
+
+    if (!isObject(body)) {
+      throw new ShiftAssignmentError(
+        "اطلاعات ارسالی معتبر نیست."
+      );
+    }
+
+    const input = parseAssignment(body);
+
+    const assignment = await prisma.$transaction(
+      async (tx) => {
+        // ----------------------------------
+        // 1. Check shift
+        // ----------------------------------
+
+        const shift =
+          await tx.workShift.findUnique({
+            where: {
+              id: input.shiftId,
+            },
+          });
+
+        if (!shift) {
+          throw new ShiftAssignmentError(
+            "شیفت موردنظر پیدا نشد.",
+            404
+          );
+        }
+
+        if (!shift.isActive) {
+          throw new ShiftAssignmentError(
+            "امکان اختصاص شیفت غیرفعال وجود ندارد."
+          );
+        }
+
+        // ----------------------------------
+        // 2. Check organization target
+        // ----------------------------------
+
+        if (
+          input.targetType ===
+          ShiftAssignmentTarget.UNIT
+        ) {
+          const unit =
+            await tx.organizationUnit.findUnique({
+              where: {
+                id: input.organizationUnitId!,
+              },
+
+              select: {
+                id: true,
+                status: true,
+              },
+            });
+
+          if (!unit) {
+            throw new ShiftAssignmentError(
+              "واحد سازمانی موردنظر پیدا نشد.",
+              404
+            );
+          }
+
+          if (unit.status !== "ACTIVE") {
+            throw new ShiftAssignmentError(
+              "واحد سازمانی غیرفعال است."
+            );
+          }
+        }
+
+        // ----------------------------------
+        // 3. Check employee target
+        // ----------------------------------
+
+        if (
+          input.targetType ===
+          ShiftAssignmentTarget.EMPLOYEE
+        ) {
+          const employee =
+            await tx.employeeAssignment.findUnique({
+              where: {
+                id: input.employeeAssignmentId!,
+              },
+
+              include: {
+                user: {
+                  select: {
+                    isActive: true,
+                  },
+                },
+              },
+            });
+
+          if (!employee) {
+            throw new ShiftAssignmentError(
+              "انتصاب کارمند موردنظر پیدا نشد.",
+              404
+            );
+          }
+
+          if (
+            employee.status !== "ACTIVE" ||
+            !employee.user.isActive
+          ) {
+            throw new ShiftAssignmentError(
+              "کارمند موردنظر فعال نیست."
+            );
+          }
+
+          if (
+            employee.endDate &&
+            new Date(employee.endDate) <
+              input.validFrom
+          ) {
+            throw new ShiftAssignmentError(
+              "تاریخ شروع شیفت بعد از پایان انتصاب کارمند است."
+            );
+          }
+
+          if (
+            new Date(employee.startDate) >
+            (input.validTo ?? input.validFrom)
+          ) {
+            throw new ShiftAssignmentError(
+              "بازه اختصاص شیفت با تاریخ شروع انتصاب کارمند مطابقت ندارد."
+            );
+          }
+        }
+
+        // ----------------------------------
+        // 4. Prevent overlapping assignments
+        // ----------------------------------
+
+        const targetWhere:
+          Prisma.ShiftAssignmentWhereInput = {
+            isActive: true,
+            targetType: input.targetType,
+          };
+
+        if (
+          input.targetType ===
+          ShiftAssignmentTarget.UNIT
+        ) {
+          targetWhere.organizationUnitId =
+            input.organizationUnitId;
+        }
+
+        if (
+          input.targetType ===
+          ShiftAssignmentTarget.EMPLOYEE
+        ) {
+          targetWhere.employeeAssignmentId =
+            input.employeeAssignmentId;
+        }
+
+        const overlapWhere:
+          Prisma.ShiftAssignmentWhereInput = {
+            ...targetWhere,
+
+            validFrom: {
+              lte:
+                input.validTo ??
+                new Date("9999-12-31T00:00:00.000Z"),
+            },
+
+            OR: [
+              {
+                validTo: null,
+              },
+              {
+                validTo: {
+                  gte: input.validFrom,
+                },
+              },
+            ],
+          };
+
+        const overlapping =
+          await tx.shiftAssignment.findFirst({
+            where: overlapWhere,
+
+            select: {
+              id: true,
+              shiftId: true,
+              validFrom: true,
+              validTo: true,
+            },
+          });
+
+        if (overlapping) {
+          throw new ShiftAssignmentError(
+            "برای این هدف در بازه زمانی انتخاب‌شده، شیفت فعال دیگری وجود دارد.",
+            409
+          );
+        }
+
+        // ----------------------------------
+        // 5. Create assignment
+        // ----------------------------------
+
+        const created =
+          await tx.shiftAssignment.create({
+            data: {
+              shiftId: input.shiftId,
+              targetType: input.targetType,
+
+              organizationUnitId:
+                input.organizationUnitId,
+
+              employeeAssignmentId:
+                input.employeeAssignmentId,
+
+              validFrom: input.validFrom,
+              validTo: input.validTo,
+
+              isActive: true,
+
+              assignedById: actor.id,
+              notes: input.notes,
+            },
+
+            include: {
+              shift: {
+                include: {
+                  days: {
+                    orderBy: [
+                      { dayOfWeek: "asc" },
+                      { segmentOrder: "asc" },
+                    ],
+                  },
+                },
+              },
+
+              organizationUnit: {
+                select: {
+                  id: true,
+                  code: true,
+                  name: true,
+                },
+              },
+
+              employeeAssignment: {
+                include: {
+                  user: {
+                    select: {
+                      id: true,
+                      fullName: true,
+                      username: true,
+                    },
+                  },
+                },
+              },
+            },
+          });
+
+        // ----------------------------------
+        // 6. Audit log
+        // ----------------------------------
+
+        await tx.organizationAuditLog.create({
+          data: {
+            actorUserId: actor.id,
+
+            entityType: "ShiftAssignment",
+            entityId: created.id,
+
+            action: "SHIFT_ASSIGNED",
+
+            afterData: {
+              shiftId: created.shiftId,
+              shiftName: created.shift.name,
+
+              targetType: created.targetType,
+
+              organizationUnitId:
+                created.organizationUnitId,
+
+              employeeAssignmentId:
+                created.employeeAssignmentId,
+
+              validFrom: input.validFrom.toISOString(),
+
+              validTo:
+                input.validTo?.toISOString() ?? null,
+
+              isActive: true,
+            },
+
+            ipAddress: getClientIp(request),
+          },
+        });
+
+        return created;
+      },
+      {
+        isolationLevel:
+          Prisma.TransactionIsolationLevel.Serializable,
+      }
+    );
+
+    return successResponse(
+      {
+        assignment,
+
+        message:
+          "شیفت با موفقیت به هدف موردنظر اختصاص داده شد.",
+      },
+      201
+    );
+
+  } catch (error) {
+    return getErrorResponse(error);
+  }
+}
+
+
+==========================================
+FILE: app\api\attendance\shift-assignments\[id]\route.ts
+==========================================
+
+import { NextRequest } from "next/server";
+
+import {
+  Prisma,
+} from "@/generated/prisma/client";
+
+import { prisma } from "@/libs/prisma";
+
+import {
+  successResponse,
+  errorResponse,
+} from "@/libs/api-response";
+
+import {
+  authorizeGlobalRequest,
+  assertSameOriginRequest,
+} from "@/modules/auth/auth.middleware";
+
+import { AuthError } from "@/modules/auth/auth.service";
+
+import {
+  PermissionDeniedError,
+} from "@/modules/permissions/access-control";
+
+// ==========================================
+// TYPES
+// ==========================================
+
+type RouteContext = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+
+class ShiftAssignmentError extends Error {
+  constructor(
+    message: string,
+    public statusCode = 400
+  ) {
+    super(message);
+    this.name = "ShiftAssignmentError";
+  }
+}
+
+// ==========================================
+// HELPERS
+// ==========================================
+
+function isObject(
+  value: unknown
+): value is Record<string, unknown> {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    !Array.isArray(value)
+  );
+}
+
+function parseString(
+  value: unknown,
+  field: string,
+  maxLength = 200
+): string {
+  if (typeof value !== "string") {
+    throw new ShiftAssignmentError(
+      `${field} معتبر نیست.`
+    );
+  }
+
+  const result = value.trim();
+
+  if (!result) {
+    throw new ShiftAssignmentError(
+      `${field} الزامی است.`
+    );
+  }
+
+  if (result.length > maxLength) {
+    throw new ShiftAssignmentError(
+      `${field} بیش از حد مجاز طولانی است.`
+    );
+  }
+
+  return result;
+}
+
+function parseOptionalString(
+  value: unknown,
+  field: string,
+  maxLength = 1000
+): string | null {
+  if (
+    value === null ||
+    value === ""
+  ) {
+    return null;
+  }
+
+  if (typeof value !== "string") {
+    throw new ShiftAssignmentError(
+      `${field} معتبر نیست.`
+    );
+  }
+
+  const result = value.trim();
+
+  if (result.length > maxLength) {
+    throw new ShiftAssignmentError(
+      `${field} بیش از حد مجاز طولانی است.`
+    );
+  }
+
+  return result || null;
+}
+
+function parseDate(
+  value: unknown,
+  field: string
+): Date {
+  if (
+    typeof value !== "string" ||
+    !/^\d{4}-\d{2}-\d{2}$/.test(value)
+  ) {
+    throw new ShiftAssignmentError(
+      `${field} باید با فرمت YYYY-MM-DD باشد.`
+    );
+  }
+
+  const date = new Date(
+    `${value}T00:00:00.000Z`
+  );
+
+  if (
+    Number.isNaN(date.getTime()) ||
+    date.toISOString().slice(0, 10) !== value
+  ) {
+    throw new ShiftAssignmentError(
+      `${field} معتبر نیست.`
+    );
+  }
+
+  return date;
+}
+
+function getClientIp(request: NextRequest) {
+  return (
+    request.headers
+      .get("x-forwarded-for")
+      ?.split(",")[0]
+      ?.trim() ||
+    request.headers.get("x-real-ip") ||
+    null
+  );
+}
+
+function getErrorResponse(error: unknown) {
+  if (error instanceof ShiftAssignmentError) {
+    return errorResponse(
+      error.message,
+      error.statusCode
+    );
+  }
+
+  if (error instanceof AuthError) {
+    return errorResponse(
+      "احراز هویت ناموفق است.",
+      401
+    );
+  }
+
+  if (error instanceof PermissionDeniedError) {
+    return errorResponse(
+      "شما مجوز انجام این عملیات را ندارید.",
+      403
+    );
+  }
+
+  if (
+    isObject(error) &&
+    error.code === "P2002"
+  ) {
+    return errorResponse(
+      "اطلاعات تکراری است.",
+      409
+    );
+  }
+
+  if (
+    isObject(error) &&
+    error.code === "P2003"
+  ) {
+    return errorResponse(
+      "ارتباط با اطلاعات موردنظر معتبر نیست.",
+      400
+    );
+  }
+
+  if (
+    isObject(error) &&
+    error.code === "P2025"
+  ) {
+    return errorResponse(
+      "اطلاعات موردنظر پیدا نشد.",
+      404
+    );
+  }
+
+  if (
+    isObject(error) &&
+    error.code === "P2034"
+  ) {
+    return errorResponse(
+      "تغییر هم‌زمان دیگری انجام شده است. دوباره تلاش کنید.",
+      409
+    );
+  }
+
+  console.error(
+    "[SHIFT_ASSIGNMENT_DETAIL_ERROR]",
+    error
+  );
+
+  return errorResponse(
+    "خطای داخلی در مدیریت انتصاب شیفت.",
+    500
+  );
+}
+
+// ==========================================
+// INCLUDE
+// ==========================================
+
+const assignmentInclude = {
+  shift: {
+    include: {
+      days: {
+        orderBy: [
+          { dayOfWeek: "asc" as const },
+          { segmentOrder: "asc" as const },
+        ],
+      },
+    },
+  },
+
+  organizationUnit: {
+    select: {
+      id: true,
+      code: true,
+      name: true,
+      status: true,
+    },
+  },
+
+  employeeAssignment: {
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+          fullName: true,
+          isActive: true,
+        },
+      },
+
+      organizationUnit: {
+        select: {
+          id: true,
+          code: true,
+          name: true,
+        },
+      },
+
+      position: {
+        select: {
+          id: true,
+          title: true,
+        },
+      },
+    },
+  },
+} satisfies Prisma.ShiftAssignmentInclude;
+
+// ==========================================
+// GET - GET ASSIGNMENT DETAILS
+// ==========================================
+
+export async function GET(
+  request: NextRequest,
+  context: RouteContext
+) {
+  try {
+    await authorizeGlobalRequest(
+      request,
+      "attendance.shift.view"
+    );
+
+    const { id } = await context.params;
+
+    if (!id?.trim()) {
+      throw new ShiftAssignmentError(
+        "شناسه انتصاب معتبر نیست."
+      );
+    }
+
+    const assignment =
+      await prisma.shiftAssignment.findUnique({
+        where: {
+          id,
+        },
+
+        include: assignmentInclude,
+      });
+
+    if (!assignment) {
+      throw new ShiftAssignmentError(
+        "انتصاب شیفت پیدا نشد.",
+        404
+      );
+    }
+
+    return successResponse({
+      assignment,
+    });
+
+  } catch (error) {
+    return getErrorResponse(error);
+  }
+}
+
+// ==========================================
+// PATCH - UPDATE ASSIGNMENT
+// ==========================================
+
+export async function PATCH(
+  request: NextRequest,
+  context: RouteContext
+) {
+  try {
+    assertSameOriginRequest(request);
+
+    const { user: actor } =
+      await authorizeGlobalRequest(
+        request,
+        "attendance.shift.update"
+      );
+
+    const { id } = await context.params;
+
+    if (!id?.trim()) {
+      throw new ShiftAssignmentError(
+        "شناسه انتصاب معتبر نیست."
+      );
+    }
+
+    let body: unknown;
+
+    try {
+      body = await request.json();
+    } catch {
+      throw new ShiftAssignmentError(
+        "ساختار اطلاعات ارسالی معتبر نیست."
+      );
+    }
+
+    if (!isObject(body)) {
+      throw new ShiftAssignmentError(
+        "اطلاعات ارسالی معتبر نیست."
+      );
+    }
+
+    const updated = await prisma.$transaction(
+      async (tx) => {
+        const existing =
+          await tx.shiftAssignment.findUnique({
+            where: {
+              id,
+            },
+
+            include: {
+              shift: true,
+            },
+          });
+
+        if (!existing) {
+          throw new ShiftAssignmentError(
+            "انتصاب شیفت پیدا نشد.",
+            404
+          );
+        }
+
+        if (!existing.isActive) {
+          throw new ShiftAssignmentError(
+            "انتصاب غیرفعال قابل ویرایش نیست."
+          );
+        }
+
+        // ------------------------------
+        // Parse update fields
+        // ------------------------------
+
+        let shiftId = existing.shiftId;
+
+        if (body.shiftId !== undefined) {
+          shiftId = parseString(
+            body.shiftId,
+            "شناسه شیفت",
+            100
+          );
+        }
+
+        let validFrom = existing.validFrom;
+
+        if (body.validFrom !== undefined) {
+          validFrom = parseDate(
+            body.validFrom,
+            "تاریخ شروع"
+          );
+        }
+
+        let validTo = existing.validTo;
+
+        if (body.validTo !== undefined) {
+          validTo =
+            body.validTo === null
+              ? null
+              : parseDate(
+                  body.validTo,
+                  "تاریخ پایان"
+                );
+        }
+
+        let notes = existing.notes;
+
+        if (body.notes !== undefined) {
+          notes = parseOptionalString(
+            body.notes,
+            "توضیحات"
+          );
+        }
+
+        if (
+          validTo &&
+          validTo.getTime() < validFrom.getTime()
+        ) {
+          throw new ShiftAssignmentError(
+            "تاریخ پایان نمی‌تواند قبل از تاریخ شروع باشد."
+          );
+        }
+
+        // ------------------------------
+        // Check shift
+        // ------------------------------
+
+        const shift =
+          await tx.workShift.findUnique({
+            where: {
+              id: shiftId,
+            },
+          });
+
+        if (!shift) {
+          throw new ShiftAssignmentError(
+            "شیفت انتخاب‌شده پیدا نشد.",
+            404
+          );
+        }
+
+        if (!shift.isActive) {
+          throw new ShiftAssignmentError(
+            "امکان اختصاص شیفت غیرفعال وجود ندارد."
+          );
+        }
+
+        // ------------------------------
+        // Check target overlap
+        // ------------------------------
+
+        const targetWhere:
+          Prisma.ShiftAssignmentWhereInput = {
+            id: {
+              not: id,
+            },
+
+            isActive: true,
+
+            targetType: existing.targetType,
+          };
+
+        if (
+          existing.targetType === "UNIT"
+        ) {
+          targetWhere.organizationUnitId =
+            existing.organizationUnitId;
+        }
+
+        if (
+          existing.targetType === "EMPLOYEE"
+        ) {
+          targetWhere.employeeAssignmentId =
+            existing.employeeAssignmentId;
+        }
+
+        const overlapWhere:
+          Prisma.ShiftAssignmentWhereInput = {
+            ...targetWhere,
+
+            validFrom: {
+              lte:
+                validTo ??
+                new Date("9999-12-31T00:00:00.000Z"),
+            },
+
+            OR: [
+              {
+                validTo: null,
+              },
+              {
+                validTo: {
+                  gte: validFrom,
+                },
+              },
+            ],
+          };
+
+        const overlapping =
+          await tx.shiftAssignment.findFirst({
+            where: overlapWhere,
+
+            select: {
+              id: true,
+            },
+          });
+
+        if (overlapping) {
+          throw new ShiftAssignmentError(
+            "در بازه زمانی انتخاب‌شده، انتصاب فعال دیگری برای این هدف وجود دارد.",
+            409
+          );
+        }
+
+        // ------------------------------
+        // Update
+        // ------------------------------
+
+        const result =
+          await tx.shiftAssignment.update({
+            where: {
+              id,
+            },
+
+            data: {
+              shiftId,
+              validFrom,
+              validTo,
+              notes,
+            },
+
+            include: assignmentInclude,
+          });
+
+        // ------------------------------
+        // Audit log
+        // ------------------------------
+
+        await tx.organizationAuditLog.create({
+          data: {
+            actorUserId: actor.id,
+
+            entityType: "ShiftAssignment",
+            entityId: id,
+
+            action: "SHIFT_ASSIGNMENT_UPDATED",
+
+            beforeData: {
+              shiftId: existing.shiftId,
+              validFrom:
+                existing.validFrom.toISOString(),
+
+              validTo:
+                existing.validTo?.toISOString() ?? null,
+
+              notes: existing.notes,
+            },
+
+            afterData: {
+              shiftId: result.shiftId,
+              validFrom:
+                result.validFrom.toISOString(),
+
+              validTo:
+                result.validTo?.toISOString() ?? null,
+
+              notes: result.notes,
+            },
+
+            ipAddress: getClientIp(request),
+          },
+        });
+
+        return result;
+      },
+      {
+        isolationLevel:
+          Prisma.TransactionIsolationLevel.Serializable,
+      }
+    );
+
+    return successResponse({
+      assignment: updated,
+
+      message:
+        "انتصاب شیفت با موفقیت ویرایش شد.",
+    });
+
+  } catch (error) {
+    return getErrorResponse(error);
+  }
+}
+
+// ==========================================
+// DELETE - SOFT DEACTIVATE
+// ==========================================
+
+export async function DELETE(
+  request: NextRequest,
+  context: RouteContext
+) {
+  try {
+    assertSameOriginRequest(request);
+
+    const { user: actor } =
+      await authorizeGlobalRequest(
+        request,
+        "attendance.shift.update"
+      );
+
+    const { id } = await context.params;
+
+    if (!id?.trim()) {
+      throw new ShiftAssignmentError(
+        "شناسه انتصاب معتبر نیست."
+      );
+    }
+
+    const result = await prisma.$transaction(
+      async (tx) => {
+        const existing =
+          await tx.shiftAssignment.findUnique({
+            where: {
+              id,
+            },
+          });
+
+        if (!existing) {
+          throw new ShiftAssignmentError(
+            "انتصاب شیفت پیدا نشد.",
+            404
+          );
+        }
+
+        if (!existing.isActive) {
+          throw new ShiftAssignmentError(
+            "این انتصاب قبلاً غیرفعال شده است."
+          );
+        }
+
+        const updated =
+          await tx.shiftAssignment.update({
+            where: {
+              id,
+            },
+
+            data: {
+              isActive: false,
+            },
+          });
+
+        await tx.organizationAuditLog.create({
+          data: {
+            actorUserId: actor.id,
+
+            entityType: "ShiftAssignment",
+            entityId: id,
+
+            action: "SHIFT_ASSIGNMENT_DEACTIVATED",
+
+            beforeData: {
+              shiftId: existing.shiftId,
+              targetType: existing.targetType,
+              validFrom:
+                existing.validFrom.toISOString(),
+
+              validTo:
+                existing.validTo?.toISOString() ?? null,
+
+              isActive: true,
+            },
+
+            afterData: {
+              isActive: false,
+            },
+
+            ipAddress: getClientIp(request),
+          },
+        });
+
+        return updated;
+      }
+    );
+
+    return successResponse({
+      assignment: result,
+
+      message:
+        "انتصاب شیفت غیرفعال شد و سوابق آن حفظ گردید.",
+    });
+
+  } catch (error) {
+    return getErrorResponse(error);
+  }
+}
+
+
+==========================================
+FILE: app\api\attendance\holidays\route.ts
+==========================================
+
+import { NextRequest } from "next/server";
+
+import {
+  HolidayType,
+  Prisma,
+} from "@/generated/prisma/client";
+
+import { prisma } from "@/libs/prisma";
+
+import {
+  successResponse,
+  errorResponse,
+} from "@/libs/api-response";
+
+import {
+  authorizeGlobalRequest,
+  assertSameOriginRequest,
+} from "@/modules/auth/auth.middleware";
+
+import { AuthError } from "@/modules/auth/auth.service";
+
+import {
+  PermissionDeniedError,
+} from "@/modules/permissions/access-control";
+
+// ==========================================
+// TYPES
+// ==========================================
+
+class HolidayCalendarError extends Error {
+  constructor(
+    message: string,
+    public statusCode = 400
+  ) {
+    super(message);
+    this.name = "HolidayCalendarError";
+  }
+}
+
+type HolidayDayInput = {
+  date: Date;
+  jalaliDate: string;
+  title: string;
+  holidayType: HolidayType;
+  isHoliday: boolean;
+  isWorkingDayOverride: boolean | null;
+};
+
+// ==========================================
+// HELPERS
+// ==========================================
+
+function isObject(
+  value: unknown
+): value is Record<string, unknown> {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    !Array.isArray(value)
+  );
+}
+
+function parseYear(value: unknown): number {
+  if (
+    typeof value !== "number" ||
+    !Number.isInteger(value) ||
+    value < 1300 ||
+    value > 1600
+  ) {
+    throw new HolidayCalendarError(
+      "سال شمسی معتبر نیست."
+    );
+  }
+
+  return value;
+}
+
+function parseString(
+  value: unknown,
+  field: string,
+  maxLength: number
+): string {
+  if (typeof value !== "string") {
+    throw new HolidayCalendarError(
+      `${field} معتبر نیست.`
+    );
+  }
+
+  const result = value.trim();
+
+  if (!result) {
+    throw new HolidayCalendarError(
+      `${field} الزامی است.`
+    );
+  }
+
+  if (result.length > maxLength) {
+    throw new HolidayCalendarError(
+      `${field} بیش از حد مجاز طولانی است.`
+    );
+  }
+
+  return result;
+}
+
+function parseHolidayDays(
+  value: unknown
+): HolidayDayInput[] {
+  if (value === undefined) {
+    return [];
+  }
+
+  if (
+    !Array.isArray(value) ||
+    value.length > 400
+  ) {
+    throw new HolidayCalendarError(
+      "فهرست تعطیلات معتبر نیست."
+    );
+  }
+
+  const days: HolidayDayInput[] = [];
+  const usedDates = new Set<string>();
+
+  const allowedTypes = Object.values(HolidayType);
+
+  for (const item of value) {
+    if (!isObject(item)) {
+      throw new HolidayCalendarError(
+        "اطلاعات روز تعطیل معتبر نیست."
+      );
+    }
+
+    const dateString = parseString(
+      item.date,
+      "تاریخ میلادی",
+      10
+    );
+
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+      throw new HolidayCalendarError(
+        "تاریخ میلادی باید با فرمت YYYY-MM-DD باشد."
+      );
+    }
+
+    const date = new Date(
+      `${dateString}T00:00:00.000Z`
+    );
+
+    if (
+      Number.isNaN(date.getTime()) ||
+      date.toISOString().slice(0, 10) !== dateString
+    ) {
+      throw new HolidayCalendarError(
+        "تاریخ میلادی معتبر نیست."
+      );
+    }
+
+    if (usedDates.has(dateString)) {
+      throw new HolidayCalendarError(
+        "برای یک تاریخ نمی‌توان بیش از یک رکورد در یک تقویم ثبت کرد."
+      );
+    }
+
+    usedDates.add(dateString);
+
+    const jalaliDate = parseString(
+      item.jalaliDate,
+      "تاریخ شمسی",
+      10
+    );
+
+    if (!/^\d{4}\/\d{2}\/\d{2}$/.test(jalaliDate)) {
+      throw new HolidayCalendarError(
+        "تاریخ شمسی باید با فرمت YYYY/MM/DD باشد."
+      );
+    }
+
+    const title = parseString(
+      item.title,
+      "عنوان مناسبت",
+      200
+    );
+
+    if (
+      typeof item.holidayType !== "string" ||
+      !allowedTypes.includes(
+        item.holidayType as HolidayType
+      )
+    ) {
+      throw new HolidayCalendarError(
+        "نوع تعطیلی معتبر نیست."
+      );
+    }
+
+    if (typeof item.isHoliday !== "boolean") {
+      throw new HolidayCalendarError(
+        "وضعیت تعطیلی معتبر نیست."
+      );
+    }
+
+    const override = item.isWorkingDayOverride;
+
+    if (
+      override !== null &&
+      typeof override !== "boolean"
+    ) {
+      throw new HolidayCalendarError(
+        "وضعیت استثنای روز کاری معتبر نیست."
+      );
+    }
+
+    days.push({
+      date,
+      jalaliDate,
+      title,
+      holidayType: item.holidayType as HolidayType,
+      isHoliday: item.isHoliday,
+      isWorkingDayOverride: override,
+    });
+  }
+
+  return days;
+}
+
+function getErrorResponse(error: unknown) {
+  if (error instanceof HolidayCalendarError) {
+    return errorResponse(
+      error.message,
+      error.statusCode
+    );
+  }
+
+  if (error instanceof AuthError) {
+    return errorResponse(
+      "احراز هویت ناموفق است.",
+      401
+    );
+  }
+
+  if (error instanceof PermissionDeniedError) {
+    return errorResponse(
+      "شما مجوز انجام این عملیات را ندارید.",
+      403
+    );
+  }
+
+  if (
+    isObject(error) &&
+    error.code === "P2002"
+  ) {
+    return errorResponse(
+      "برای این سال یا تاریخ قبلاً اطلاعات ثبت شده است.",
+      409
+    );
+  }
+
+  if (
+    isObject(error) &&
+    error.code === "P2034"
+  ) {
+    return errorResponse(
+      "اطلاعات هم‌زمان تغییر کرده است. دوباره تلاش کنید.",
+      409
+    );
+  }
+
+  console.error(
+    "[HOLIDAY_CALENDAR_ERROR]",
+    error
+  );
+
+  return errorResponse(
+    "خطای داخلی در مدیریت تقویم تعطیلات.",
+    500
+  );
+}
+
+// ==========================================
+// GET - LIST HOLIDAY CALENDARS
+// ==========================================
+
+export async function GET(
+  request: NextRequest
+) {
+  try {
+    await authorizeGlobalRequest(
+      request,
+      "attendance.attendance.view"
+    );
+
+    const params =
+      request.nextUrl.searchParams;
+
+    const yearParam = params.get("year");
+    const activeParam = params.get("active");
+
+    const where: Prisma.HolidayCalendarWhereInput = {};
+
+    if (yearParam !== null) {
+      const year = Number(yearParam);
+
+      where.jalaliYear = parseYear(year);
+    }
+
+    if (activeParam === "true") {
+      where.isActive = true;
+    } else if (activeParam === "false") {
+      where.isActive = false;
+    }
+
+    const calendars =
+      await prisma.holidayCalendar.findMany({
+        where,
+
+        include: {
+          days: {
+            orderBy: {
+              date: "asc",
+            },
+          },
+
+          _count: {
+            select: {
+              days: true,
+            },
+          },
+        },
+
+        orderBy: {
+          jalaliYear: "desc",
+        },
+
+        take: 100,
+      });
+
+    return successResponse({
+      calendars,
+      count: calendars.length,
+    });
+
+  } catch (error) {
+    return getErrorResponse(error);
+  }
+}
+
+// ==========================================
+// POST - CREATE HOLIDAY CALENDAR
+// ==========================================
+
+export async function POST(
+  request: NextRequest
+) {
+  try {
+    assertSameOriginRequest(request);
+
+    const { user: actor } =
+      await authorizeGlobalRequest(
+        request,
+        "attendance.attendance.create"
+      );
+
+    let body: unknown;
+
+    try {
+      body = await request.json();
+    } catch {
+      throw new HolidayCalendarError(
+        "ساختار اطلاعات ارسالی معتبر نیست."
+      );
+    }
+
+    if (!isObject(body)) {
+      throw new HolidayCalendarError(
+        "اطلاعات تقویم معتبر نیست."
+      );
+    }
+
+    const jalaliYear = parseYear(
+      body.jalaliYear
+    );
+
+    const name = parseString(
+      body.name,
+      "نام تقویم",
+      150
+    );
+
+    const isActive =
+      body.isActive === undefined
+        ? true
+        : body.isActive;
+
+    if (typeof isActive !== "boolean") {
+      throw new HolidayCalendarError(
+        "وضعیت فعال بودن تقویم معتبر نیست."
+      );
+    }
+
+    const days = parseHolidayDays(
+      body.days
+    );
+
+    // Ensure every registered date belongs
+    // to the selected Jalali year.
+
+    for (const day of days) {
+      const dayYear = Number(
+        day.jalaliDate.slice(0, 4)
+      );
+
+      if (dayYear !== jalaliYear) {
+        throw new HolidayCalendarError(
+          "سال تاریخ مناسبت با سال تقویم مطابقت ندارد."
+        );
+      }
+    }
+
+    const calendar = await prisma.$transaction(
+      async (tx) => {
+        const created =
+          await tx.holidayCalendar.create({
+            data: {
+              jalaliYear,
+              name,
+              isActive,
+
+              days: {
+                create: days,
+              },
+            },
+
+            include: {
+              days: {
+                orderBy: {
+                  date: "asc",
+                },
+              },
+
+              _count: {
+                select: {
+                  days: true,
+                },
+              },
+            },
+          });
+
+        await tx.organizationAuditLog.create({
+          data: {
+            actorUserId: actor.id,
+            entityType: "HolidayCalendar",
+            entityId: created.id,
+            action: "HOLIDAY_CALENDAR_CREATED",
+
+            afterData: {
+              jalaliYear: created.jalaliYear,
+              name: created.name,
+              isActive: created.isActive,
+              daysCount: created.days.length,
+            },
+
+            ipAddress:
+              request.headers
+                .get("x-forwarded-for")
+                ?.split(",")[0]
+                ?.trim() ||
+              request.headers.get("x-real-ip") ||
+              null,
+          },
+        });
+
+        return created;
+      },
+      {
+        isolationLevel:
+          Prisma.TransactionIsolationLevel.Serializable,
+      }
+    );
+
+    return successResponse(
+      {
+        calendar,
+        message:
+          "تقویم تعطیلات با موفقیت ایجاد شد.",
+      },
+      201
+    );
+
+  } catch (error) {
+    return getErrorResponse(error);
+  }
+}
+
+
+==========================================
+FILE: app\api\attendance\holidays\[calendarId]\route.ts
+==========================================
+
+import { NextRequest } from "next/server";
+
+import {
+  HolidayType,
+  Prisma,
+} from "@/generated/prisma/client";
+
+import { prisma } from "@/libs/prisma";
+
+import {
+  successResponse,
+  errorResponse,
+} from "@/libs/api-response";
+
+import {
+  authorizeGlobalRequest,
+  assertSameOriginRequest,
+} from "@/modules/auth/auth.middleware";
+
+import { AuthError } from "@/modules/auth/auth.service";
+
+import {
+  PermissionDeniedError,
+} from "@/modules/permissions/access-control";
+
+// ==========================================
+// TYPES
+// ==========================================
+
+type RouteContext = {
+  params: Promise<{
+    calendarId: string;
+  }>;
+};
+
+class HolidayError extends Error {
+  constructor(
+    message: string,
+    public statusCode = 400
+  ) {
+    super(message);
+    this.name = "HolidayError";
+  }
+}
+
+type HolidayInput = {
+  date: Date;
+  jalaliDate: string;
+  title: string;
+  holidayType: HolidayType;
+  isHoliday: boolean;
+  isWorkingDayOverride: boolean | null;
+};
+
+// ==========================================
+// HELPERS
+// ==========================================
+
+function isObject(
+  value: unknown
+): value is Record<string, unknown> {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    !Array.isArray(value)
+  );
+}
+
+function parseString(
+  value: unknown,
+  field: string,
+  maxLength: number
+): string {
+  if (typeof value !== "string") {
+    throw new HolidayError(
+      `${field} معتبر نیست.`
+    );
+  }
+
+  const result = value.trim();
+
+  if (!result) {
+    throw new HolidayError(
+      `${field} الزامی است.`
+    );
+  }
+
+  if (result.length > maxLength) {
+    throw new HolidayError(
+      `${field} بیش از حد مجاز طولانی است.`
+    );
+  }
+
+  return result;
+}
+
+function parseHolidayInput(
+  value: unknown,
+  jalaliYear: number
+): HolidayInput {
+  if (!isObject(value)) {
+    throw new HolidayError(
+      "اطلاعات روز تعطیل معتبر نیست."
+    );
+  }
+
+  const dateString = parseString(
+    value.date,
+    "تاریخ میلادی",
+    10
+  );
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+    throw new HolidayError(
+      "تاریخ میلادی باید با فرمت YYYY-MM-DD باشد."
+    );
+  }
+
+  const date = new Date(
+    `${dateString}T00:00:00.000Z`
+  );
+
+  if (
+    Number.isNaN(date.getTime()) ||
+    date.toISOString().slice(0, 10) !== dateString
+  ) {
+    throw new HolidayError(
+      "تاریخ میلادی معتبر نیست."
+    );
+  }
+
+  const jalaliDate = parseString(
+    value.jalaliDate,
+    "تاریخ شمسی",
+    10
+  );
+
+  if (!/^\d{4}\/\d{2}\/\d{2}$/.test(jalaliDate)) {
+    throw new HolidayError(
+      "تاریخ شمسی باید با فرمت YYYY/MM/DD باشد."
+    );
+  }
+
+  const parsedYear = Number(
+    jalaliDate.slice(0, 4)
+  );
+
+  if (parsedYear !== jalaliYear) {
+    throw new HolidayError(
+      "سال تاریخ مناسبت با سال تقویم مطابقت ندارد."
+    );
+  }
+
+  const title = parseString(
+    value.title,
+    "عنوان مناسبت",
+    200
+  );
+
+  const allowedTypes = Object.values(HolidayType);
+
+  if (
+    typeof value.holidayType !== "string" ||
+    !allowedTypes.includes(
+      value.holidayType as HolidayType
+    )
+  ) {
+    throw new HolidayError(
+      "نوع تعطیلی معتبر نیست."
+    );
+  }
+
+  if (typeof value.isHoliday !== "boolean") {
+    throw new HolidayError(
+      "وضعیت تعطیلی معتبر نیست."
+    );
+  }
+
+  const override = value.isWorkingDayOverride;
+
+  if (
+    override !== null &&
+    typeof override !== "boolean"
+  ) {
+    throw new HolidayError(
+      "وضعیت استثنای روز کاری معتبر نیست."
+    );
+  }
+
+  return {
+    date,
+    jalaliDate,
+    title,
+    holidayType: value.holidayType as HolidayType,
+    isHoliday: value.isHoliday,
+    isWorkingDayOverride: override,
+  };
+}
+
+function getErrorResponse(error: unknown) {
+  if (error instanceof HolidayError) {
+    return errorResponse(
+      error.message,
+      error.statusCode
+    );
+  }
+
+  if (error instanceof AuthError) {
+    return errorResponse(
+      "احراز هویت ناموفق است.",
+      401
+    );
+  }
+
+  if (error instanceof PermissionDeniedError) {
+    return errorResponse(
+      "شما مجوز انجام این عملیات را ندارید.",
+      403
+    );
+  }
+
+  if (
+    isObject(error) &&
+    error.code === "P2002"
+  ) {
+    return errorResponse(
+      "برای این تاریخ قبلاً مناسبت ثبت شده است.",
+      409
+    );
+  }
+
+  if (
+    isObject(error) &&
+    error.code === "P2025"
+  ) {
+    return errorResponse(
+      "اطلاعات موردنظر پیدا نشد.",
+      404
+    );
+  }
+
+  if (
+    isObject(error) &&
+    error.code === "P2034"
+  ) {
+    return errorResponse(
+      "اطلاعات هم‌زمان تغییر کرده است. دوباره تلاش کنید.",
+      409
+    );
+  }
+
+  console.error(
+    "[HOLIDAY_API_ERROR]",
+    error
+  );
+
+  return errorResponse(
+    "خطای داخلی در مدیریت تقویم تعطیلات.",
+    500
+  );
+}
+
+function getClientIp(request: NextRequest) {
+  return (
+    request.headers
+      .get("x-forwarded-for")
+      ?.split(",")[0]
+      ?.trim() ||
+    request.headers.get("x-real-ip") ||
+    null
+  );
+}
+
+// ==========================================
+// GET - GET SINGLE CALENDAR
+// ==========================================
+
+export async function GET(
+  request: NextRequest,
+  context: RouteContext
+) {
+  try {
+    await authorizeGlobalRequest(
+      request,
+      "attendance.attendance.view"
+    );
+
+    const { calendarId } = await context.params;
+
+    if (!calendarId?.trim()) {
+      throw new HolidayError(
+        "شناسه تقویم معتبر نیست."
+      );
+    }
+
+    const calendar =
+      await prisma.holidayCalendar.findUnique({
+        where: {
+          id: calendarId,
+        },
+
+        include: {
+          days: {
+            orderBy: {
+              date: "asc",
+            },
+          },
+
+          _count: {
+            select: {
+              days: true,
+            },
+          },
+        },
+      });
+
+    if (!calendar) {
+      throw new HolidayError(
+        "تقویم موردنظر پیدا نشد.",
+        404
+      );
+    }
+
+    return successResponse({
+      calendar,
+    });
+
+  } catch (error) {
+    return getErrorResponse(error);
+  }
+}
+
+// ==========================================
+// PATCH - UPDATE CALENDAR
+// ==========================================
+
+export async function PATCH(
+  request: NextRequest,
+  context: RouteContext
+) {
+  try {
+    assertSameOriginRequest(request);
+
+    const { user: actor } =
+      await authorizeGlobalRequest(
+        request,
+        "attendance.attendance.update"
+      );
+
+    const { calendarId } = await context.params;
+
+    if (!calendarId?.trim()) {
+      throw new HolidayError(
+        "شناسه تقویم معتبر نیست."
+      );
+    }
+
+    let body: unknown;
+
+    try {
+      body = await request.json();
+    } catch {
+      throw new HolidayError(
+        "ساختار اطلاعات ارسالی معتبر نیست."
+      );
+    }
+
+    if (!isObject(body)) {
+      throw new HolidayError(
+        "اطلاعات ارسالی معتبر نیست."
+      );
+    }
+
+    const existing =
+      await prisma.holidayCalendar.findUnique({
+        where: {
+          id: calendarId,
+        },
+
+        include: {
+          days: true,
+        },
+      });
+
+    if (!existing) {
+      throw new HolidayError(
+        "تقویم موردنظر پیدا نشد.",
+        404
+      );
+    }
+
+    const updateData: Prisma.HolidayCalendarUpdateInput = {};
+
+    if (body.name !== undefined) {
+      updateData.name = parseString(
+        body.name,
+        "نام تقویم",
+        150
+      );
+    }
+
+    if (body.isActive !== undefined) {
+      if (typeof body.isActive !== "boolean") {
+        throw new HolidayError(
+          "وضعیت فعال بودن تقویم معتبر نیست."
+        );
+      }
+
+      updateData.isActive = body.isActive;
+    }
+
+    let parsedDays: HolidayInput[] | undefined;
+
+    if (body.days !== undefined) {
+      if (
+        !Array.isArray(body.days) ||
+        body.days.length > 400
+      ) {
+        throw new HolidayError(
+          "فهرست تعطیلات معتبر نیست."
+        );
+      }
+
+      parsedDays = body.days.map((item) =>
+        parseHolidayInput(
+          item,
+          existing.jalaliYear
+        )
+      );
+
+      const uniqueDates = new Set(
+        parsedDays.map((item) =>
+          item.date.toISOString().slice(0, 10)
+        )
+      );
+
+      if (uniqueDates.size !== parsedDays.length) {
+        throw new HolidayError(
+          "تاریخ تکراری در فهرست تعطیلات وجود دارد."
+        );
+      }
+    }
+
+    const updated = await prisma.$transaction(
+      async (tx) => {
+        if (parsedDays !== undefined) {
+          for (const day of parsedDays) {
+            const existingDay =
+              await tx.holidayCalendarDay.findUnique({
+                where: {
+                  calendarId_date: {
+                    calendarId,
+                    date: day.date,
+                  },
+                },
+              });
+
+            if (existingDay) {
+              await tx.holidayCalendarDay.update({
+                where: {
+                  id: existingDay.id,
+                },
+
+                data: {
+                  jalaliDate: day.jalaliDate,
+                  title: day.title,
+                  holidayType: day.holidayType,
+                  isHoliday: day.isHoliday,
+                  isWorkingDayOverride:
+                    day.isWorkingDayOverride,
+                },
+              });
+            } else {
+              await tx.holidayCalendarDay.create({
+                data: {
+                  calendarId,
+                  ...day,
+                },
+              });
+            }
+          }
+        }
+
+        const result =
+          await tx.holidayCalendar.update({
+            where: {
+              id: calendarId,
+            },
+
+            data: updateData,
+
+            include: {
+              days: {
+                orderBy: {
+                  date: "asc",
+                },
+              },
+
+              _count: {
+                select: {
+                  days: true,
+                },
+              },
+            },
+          });
+
+        await tx.organizationAuditLog.create({
+          data: {
+            actorUserId: actor.id,
+            entityType: "HolidayCalendar",
+            entityId: calendarId,
+            action: "HOLIDAY_CALENDAR_UPDATED",
+
+            beforeData: {
+              name: existing.name,
+              isActive: existing.isActive,
+              daysCount: existing.days.length,
+            },
+
+            afterData: {
+              name: result.name,
+              isActive: result.isActive,
+              daysCount: result.days.length,
+            },
+
+            ipAddress: getClientIp(request),
+          },
+        });
+
+        return result;
+      },
+      {
+        isolationLevel:
+          Prisma.TransactionIsolationLevel.Serializable,
+      }
+    );
+
+    return successResponse({
+      calendar: updated,
+      message:
+        "تقویم تعطیلات با موفقیت ویرایش شد.",
+    });
+
+  } catch (error) {
+    return getErrorResponse(error);
+  }
+}
+
+// ==========================================
+// DELETE - SOFT DEACTIVATE CALENDAR
+// ==========================================
+
+export async function DELETE(
+  request: NextRequest,
+  context: RouteContext
+) {
+  try {
+    assertSameOriginRequest(request);
+
+    const { user: actor } =
+      await authorizeGlobalRequest(
+        request,
+        "attendance.attendance.update"
+      );
+
+    const { calendarId } = await context.params;
+
+    if (!calendarId?.trim()) {
+      throw new HolidayError(
+        "شناسه تقویم معتبر نیست."
+      );
+    }
+
+    const existing =
+      await prisma.holidayCalendar.findUnique({
+        where: {
+          id: calendarId,
+        },
+
+        include: {
+          _count: {
+            select: {
+              days: true,
+            },
+          },
+        },
+      });
+
+    if (!existing) {
+      throw new HolidayError(
+        "تقویم موردنظر پیدا نشد.",
+        404
+      );
+    }
+
+    if (!existing.isActive) {
+      return successResponse({
+        message:
+          "این تقویم قبلاً غیرفعال شده است.",
+      });
+    }
+
+    await prisma.$transaction(
+      async (tx) => {
+        await tx.holidayCalendar.update({
+          where: {
+            id: calendarId,
+          },
+
+          data: {
+            isActive: false,
+          },
+        });
+
+        await tx.organizationAuditLog.create({
+          data: {
+            actorUserId: actor.id,
+            entityType: "HolidayCalendar",
+            entityId: calendarId,
+            action: "HOLIDAY_CALENDAR_DEACTIVATED",
+
+            beforeData: {
+              name: existing.name,
+              isActive: true,
+            },
+
+            afterData: {
+              name: existing.name,
+              isActive: false,
+            },
+
+            ipAddress: getClientIp(request),
+          },
+        });
+      }
+    );
+
+    return successResponse({
+      message:
+        "تقویم با موفقیت غیرفعال شد. اطلاعات و سوابق آن حفظ شده‌اند.",
+    });
+
+  } catch (error) {
+    return getErrorResponse(error);
+  }
+}
+
+

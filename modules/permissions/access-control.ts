@@ -1,3 +1,4 @@
+
 import "server-only";
 
 import { prisma } from "@/libs/prisma";
@@ -37,11 +38,12 @@ const emptyResult = (): PermissionResult => ({
 /**
  * بررسی مجوز در سطح کاربر و مسئولیت سازمانی
  *
- * اگر assignmentId ارسال نشود:
- * فقط مسئولیت اصلی و فعال کاربر بررسی می‌شود.
+ * بدون assignmentId:
+ * مسئولیت اصلی و فعال کاربر بررسی می‌شود.
  *
- * اگر assignmentId ارسال شود:
- * مالکیت و فعال بودن آن مسئولیت بررسی می‌شود.
+ * با assignmentId:
+ * همان مسئولیت مشخص، در صورت تعلق به کاربر و فعال بودن،
+ * بررسی می‌شود.
  */
 export async function checkPermission({
   userId,
@@ -55,37 +57,32 @@ export async function checkPermission({
       id: userId,
       isActive: true,
     },
-
     select: {
       id: true,
+      accessLevel: true,
 
       roles: {
         where: {
           isActive: true,
-
           OR: [
             { expiresAt: null },
             { expiresAt: { gt: now } },
           ],
-
           role: {
             isActive: true,
           },
         },
-
         select: {
           role: {
             select: {
               key: true,
               isSystem: true,
-
               permissions: {
                 where: {
                   permission: {
                     key: permission,
                   },
                 },
-
                 select: {
                   isAllowed: true,
                   scope: true,
@@ -99,46 +96,38 @@ export async function checkPermission({
       employeeAssignments: {
         where: {
           status: "ACTIVE",
-
           AND: [
+            { startDate: { lte: now } },
             {
               OR: [
                 { endDate: null },
                 { endDate: { gt: now } },
               ],
             },
-
             assignmentId
               ? { id: assignmentId }
-              : { isPrimary: true },
+              : {},
           ],
         },
-
         orderBy: [
           { isPrimary: "desc" },
           { startDate: "desc" },
         ],
-
-        take: 1,
-
         select: {
           id: true,
 
           roles: {
             where: {
               isActive: true,
-
               OR: [
                 { expiresAt: null },
                 { expiresAt: { gt: now } },
               ],
-
               role: {
                 isActive: true,
                 isSystem: false,
               },
             },
-
             select: {
               role: {
                 select: {
@@ -148,7 +137,6 @@ export async function checkPermission({
                         key: permission,
                       },
                     },
-
                     select: {
                       isAllowed: true,
                       scope: true,
@@ -162,17 +150,14 @@ export async function checkPermission({
           permissions: {
             where: {
               isActive: true,
-
               OR: [
                 { expiresAt: null },
                 { expiresAt: { gt: now } },
               ],
-
               permission: {
                 key: permission,
               },
             },
-
             select: {
               isAllowed: true,
               scope: true,
@@ -183,26 +168,28 @@ export async function checkPermission({
     },
   });
 
-  if (!user) {
+  if (!user || user.accessLevel !== "ERP") {
     return emptyResult();
   }
 
-  const assignment =
-    user.employeeAssignments[0] ?? null;
+  const assignments = user.employeeAssignments;
+  const assignment = assignments[0] ?? null;
 
-  // مسئولیت ارسالی باید متعلق به همین کاربر و فعال باشد.
   if (assignmentId && !assignment) {
     return emptyResult();
   }
 
-  // مدیر سیستم به تمام مجوزها دسترسی دارد.
+  // Technical administrators must never bypass business approval permissions.
+  const businessDecision = /(?:^|\.)(?:approve|approval|reject|finalize|decision|review)(?:\.|$)/i.test(permission);
+
+  // مدیر سیستم
   const isSystemAdmin = user.roles.some(
     (userRole) =>
       userRole.role.isSystem &&
       userRole.role.key === "system_admin"
   );
 
-  if (isSystemAdmin) {
+  if (isSystemAdmin && !businessDecision) {
     return {
       allowed: true,
       scopes: [DataScope.ALL],
@@ -211,21 +198,22 @@ export async function checkPermission({
     };
   }
 
-  // مجوزهای نقش‌های عمومی کاربر
+  // مجوزهای عمومی
   const globalGrants = user.roles.flatMap(
     (userRole) => userRole.role.permissions
   );
 
-  // مجوزهای نقش‌های مسئولیت فعال
-  const assignmentRoleGrants =
-    assignment?.roles.flatMap(
-      (assignmentRole) =>
-        assignmentRole.role.permissions
-    ) ?? [];
+  // مجوزهای نقش‌های مسئولیت انتخاب‌شده
+  const assignmentRoleGrants = assignments.flatMap(
+    (item) => item.roles.flatMap(
+      (assignmentRole) => assignmentRole.role.permissions
+    )
+  );
 
   // مجوزهای مستقیم مسئولیت
-  const assignmentDirectGrants =
-    assignment?.permissions ?? [];
+  const assignmentDirectGrants = assignments.flatMap(
+    (item) => item.permissions
+  );
 
   const grants = [
     ...globalGrants,
@@ -233,7 +221,7 @@ export async function checkPermission({
     ...assignmentDirectGrants,
   ];
 
-  // منع صریح دسترسی بر اجازه اولویت دارد.
+  // منع صریح دسترسی اولویت دارد.
   if (grants.some((grant) => !grant.isAllowed)) {
     return {
       allowed: false,
@@ -248,7 +236,10 @@ export async function checkPermission({
   );
 
   if (allowedGrants.length === 0) {
-    return emptyResult();
+    return {
+      ...emptyResult(),
+      activeAssignmentId: assignment?.id ?? null,
+    };
   }
 
   const scopes = [
@@ -263,6 +254,54 @@ export async function checkPermission({
     isSystemAdmin: false,
     activeAssignmentId: assignment?.id ?? null,
   };
+}
+
+/**
+ * دریافت تمام مجوزهای مؤثر کاربر
+ *
+ * این تابع از همان موتور checkPermission استفاده می‌کند.
+ * بنابراین منطق Sidebar و کنترل دسترسی صفحات یکسان است.
+ *
+ * فقط مجوزهای ماژول‌های فعال بررسی می‌شوند.
+ */
+export async function getUserPermissions(
+  userId: string
+): Promise<string[]> {
+  const permissions = await prisma.permission.findMany({
+    where: {
+      module: {
+        isActive: true,
+      },
+    },
+    select: {
+      key: true,
+    },
+    orderBy: {
+      key: "asc",
+    },
+  });
+
+  if (permissions.length === 0) {
+    return [];
+  }
+
+  const results = await Promise.all(
+    permissions.map(async ({ key }) => {
+      const result = await checkPermission({
+        userId,
+        permission: key,
+      });
+
+      return {
+        key,
+        allowed: result.allowed,
+      };
+    })
+  );
+
+  return results
+    .filter((item) => item.allowed)
+    .map((item) => item.key);
 }
 
 /**

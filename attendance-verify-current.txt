@@ -1,0 +1,1071 @@
+﻿
+import { NextRequest } from "next/server";
+
+import {
+  AttendanceChallengeStatus,
+  AttendanceEventType,
+  AttendanceVerificationStatus,
+  AttendanceVerificationType,
+  EmployeeShiftScheduleStatus,
+  Prisma,
+} from "@/generated/prisma/client";
+
+import { prisma } from "@/libs/prisma";
+import { decryptReferenceImage } from "@/libs/attendance/biometric-crypto";
+
+import {
+  FaceProviderUnavailableError,
+  FaceVerificationRejectedError,
+  verifyLiveFace,
+} from "@/libs/attendance/face-verification";
+
+import {
+  errorResponse,
+  successResponse,
+} from "@/libs/api-response";
+
+import {
+  assertSameOriginRequest,
+  authorizeRequest,
+  RequestOriginError,
+} from "@/modules/auth/auth.middleware";
+
+import { AuthError } from "@/modules/auth/auth.service";
+import { PermissionDeniedError } from "@/modules/permissions/access-control";
+
+import {
+  calculateDistanceMeters,
+  getApiError,
+  getRequestIp,
+  getSaturdayBasedDayOfWeek,
+  getWorkDate,
+  isPlainObject,
+  safeHexEqual,
+  sha256,
+} from "@/modules/attendance/attendance-utils";
+
+import {
+  calculateAttendance,
+  type AttendancePunch,
+} from "@/modules/attendance/attendance-calculator";
+
+class VerifyError extends Error {
+  constructor(
+    message: string,
+    public statusCode = 400
+  ) {
+    super(message);
+    this.name = "VerifyError";
+  }
+}
+
+type VerifyBody = {
+  nonce: string;
+  latitude: number;
+  longitude: number;
+  accuracyMeters: number;
+  liveSessionToken: string;
+};
+
+type Transaction = Prisma.TransactionClient;
+
+function parseBody(value: unknown): VerifyBody {
+  if (!isPlainObject(value)) {
+    throw new VerifyError("اطلاعات درخواست معتبر نیست.");
+  }
+
+  const {
+    nonce,
+    latitude,
+    longitude,
+    accuracyMeters,
+    liveSessionToken,
+  } = value;
+
+  if (
+    typeof nonce !== "string" ||
+    nonce.length < 30 ||
+    nonce.length > 100
+  ) {
+    throw new VerifyError("چالش امنیتی معتبر نیست.");
+  }
+
+  if (
+    typeof latitude !== "number" ||
+    !Number.isFinite(latitude) ||
+    latitude < -90 ||
+    latitude > 90 ||
+    typeof longitude !== "number" ||
+    !Number.isFinite(longitude) ||
+    longitude < -180 ||
+    longitude > 180
+  ) {
+    throw new VerifyError("مختصات GPS معتبر نیست.");
+  }
+
+  if (
+    typeof accuracyMeters !== "number" ||
+    !Number.isFinite(accuracyMeters) ||
+    accuracyMeters <= 0 ||
+    accuracyMeters > 30
+  ) {
+    throw new VerifyError(
+      "دقت GPS کافی نیست؛ دقت باید حداکثر ۳۰ متر باشد.",
+      422
+    );
+  }
+
+  if (
+    typeof liveSessionToken !== "string" ||
+    liveSessionToken.length < 20 ||
+    liveSessionToken.length > 5000
+  ) {
+    throw new VerifyError(
+      "توکن نشست زنده چهره معتبر نیست."
+    );
+  }
+
+  return {
+    nonce,
+    latitude,
+    longitude,
+    accuracyMeters,
+    liveSessionToken,
+  };
+}
+
+async function failChallenge(
+  id: string,
+  reason: string
+) {
+  await prisma.attendanceChallenge.updateMany({
+    where: {
+      id,
+      status: AttendanceChallengeStatus.OPEN,
+      consumedAt: null,
+    },
+    data: {
+      status: AttendanceChallengeStatus.FAILED,
+      failedAt: new Date(),
+      failureReason: reason.slice(0, 200),
+    },
+  });
+}
+
+function getWeekStart(workDate: Date): Date {
+  const result = new Date(workDate);
+  result.setUTCDate(
+    result.getUTCDate() -
+      getSaturdayBasedDayOfWeek(result)
+  );
+  return result;
+}
+
+function previousDate(workDate: Date): Date {
+  const result = new Date(workDate);
+  result.setUTCDate(result.getUTCDate() - 1);
+  return result;
+}
+
+async function getScheduleSnapshot(
+  tx: Transaction,
+  userId: string,
+  workDate: Date
+) {
+  const schedule =
+    await tx.employeeShiftSchedule.findFirst({
+      where: {
+        employeeUserId: userId,
+        weekStartDate: getWeekStart(workDate),
+        status: EmployeeShiftScheduleStatus.APPROVED,
+      },
+      orderBy: {
+        version: "desc",
+      },
+      select: {
+        id: true,
+        version: true,
+        segments: {
+          where: { workDate },
+          orderBy: [
+            { startsAt: "asc" },
+            { segmentOrder: "asc" },
+          ],
+          select: {
+            startsAt: true,
+            endsAt: true,
+            requiredMinutes: true,
+          },
+        },
+      },
+    });
+
+  if (!schedule) {
+    return null;
+  }
+
+  const segments = schedule.segments;
+
+  return {
+    scheduleId: schedule.id,
+    scheduleVersion: schedule.version,
+    requiredMinutes: segments.reduce(
+      (sum, segment) =>
+        sum + segment.requiredMinutes,
+      0
+    ),
+    scheduledStartAt:
+      segments.length > 0
+        ? segments[0].startsAt
+        : null,
+    scheduledEndAt:
+      segments.length > 0
+        ? segments.reduce(
+            (latest, segment) =>
+              segment.endsAt > latest
+                ? segment.endsAt
+                : latest,
+            segments[0].endsAt
+          )
+        : null,
+  };
+}
+
+async function getLegacyRequiredMinutes(
+  tx: Transaction,
+  assignmentId: string,
+  organizationUnitId: string,
+  workDate: Date
+) {
+  const dayOfWeek =
+    getSaturdayBasedDayOfWeek(workDate);
+
+  const shiftAssignments =
+    await tx.shiftAssignment.findMany({
+      where: {
+        isActive: true,
+        validFrom: { lte: workDate },
+        AND: [
+          {
+            OR: [
+              { validTo: null },
+              { validTo: { gte: workDate } },
+            ],
+          },
+        ],
+        OR: [
+          {
+            targetType: "EMPLOYEE",
+            employeeAssignmentId: assignmentId,
+          },
+          {
+            targetType: "UNIT",
+            organizationUnitId,
+          },
+          {
+            targetType: "COMPANY",
+          },
+        ],
+      },
+      include: {
+        shift: {
+          include: {
+            days: true,
+          },
+        },
+      },
+    });
+
+  const rank = (target: string) => {
+    switch (target) {
+      case "EMPLOYEE":
+        return 3;
+      case "UNIT":
+        return 2;
+      case "COMPANY":
+        return 1;
+      default:
+        return 0;
+    }
+  };
+
+  shiftAssignments.sort(
+    (a, b) =>
+      rank(b.targetType) - rank(a.targetType)
+  );
+
+  const selectedShift =
+    shiftAssignments[0] ?? null;
+
+  const days =
+    selectedShift?.shift.days.filter(
+      (day) =>
+        day.dayOfWeek === dayOfWeek &&
+        day.dayType === "NORMAL"
+    ) ?? [];
+
+  return {
+    shiftAssignmentId: selectedShift?.id ?? null,
+    requiredMinutes:
+      days.length > 0
+        ? days.reduce(
+            (sum, day) =>
+              sum +
+              (day.isWorkingDay
+                ? day.requiredMinutes
+                : 0),
+            0
+          )
+        : 480,
+  };
+}
+
+function handleError(error: unknown) {
+  if (
+    error instanceof VerifyError ||
+    error instanceof RequestOriginError ||
+    error instanceof AuthError ||
+    error instanceof PermissionDeniedError ||
+    error instanceof FaceProviderUnavailableError ||
+    error instanceof FaceVerificationRejectedError
+  ) {
+    return errorResponse(
+      error.message,
+      error.statusCode
+    );
+  }
+
+  if (
+    error instanceof Prisma.PrismaClientKnownRequestError &&
+    (error.code === "P2034" ||
+      error.code === "P2002")
+  ) {
+    return errorResponse(
+      "اطلاعات تردد هم‌زمان تغییر کرده است. دوباره تلاش کنید.",
+      409
+    );
+  }
+
+  const parsed = getApiError(error);
+
+  console.error("[ATTENDANCE_VERIFY]", error);
+
+  return errorResponse(
+    parsed.message,
+    parsed.statusCode
+  );
+}
+
+export async function POST(
+  request: NextRequest,
+  context: {
+    params: Promise<{ challengeId: string }>;
+  }
+) {
+  let challengeId = "";
+
+  try {
+    assertSameOriginRequest(request);
+
+    challengeId =
+      (await context.params).challengeId;
+
+    if (
+      !challengeId ||
+      challengeId.length > 100
+    ) {
+      throw new VerifyError(
+        "شناسه چالش معتبر نیست.",
+        404
+      );
+    }
+
+    const challenge =
+      await prisma.attendanceChallenge.findUnique({
+        where: { id: challengeId },
+      });
+
+    if (!challenge) {
+      throw new VerifyError(
+        "چالش پیدا نشد.",
+        404
+      );
+    }
+
+    const auth = await authorizeRequest(
+      request,
+      "attendance.attendance.create",
+      challenge.employeeAssignmentId
+    );
+
+    if (challenge.userId !== auth.user.id) {
+      throw new VerifyError(
+        "چالش پیدا نشد.",
+        404
+      );
+    }
+
+    if (
+      challenge.status !==
+        AttendanceChallengeStatus.OPEN ||
+      challenge.consumedAt
+    ) {
+      throw new VerifyError(
+        "چالش قبلاً استفاده شده یا معتبر نیست.",
+        409
+      );
+    }
+
+    const now = new Date();
+
+    if (challenge.expiresAt <= now) {
+      await prisma.attendanceChallenge.updateMany({
+        where: {
+          id: challenge.id,
+          status: AttendanceChallengeStatus.OPEN,
+        },
+        data: {
+          status: AttendanceChallengeStatus.EXPIRED,
+          failureReason: "CHALLENGE_EXPIRED",
+        },
+      });
+
+      throw new VerifyError(
+        "مهلت درخواست تمام شده است؛ دوباره شروع کنید.",
+        410
+      );
+    }
+
+    const body = parseBody(
+      await request.json().catch(() => null)
+    );
+
+    if (
+      !safeHexEqual(
+        challenge.nonceHash,
+        sha256(body.nonce)
+      )
+    ) {
+      await failChallenge(
+        challenge.id,
+        "INVALID_NONCE"
+      );
+
+      throw new VerifyError(
+        "اعتبار چالش امنیتی تأیید نشد.",
+        403
+      );
+    }
+
+    const assignment =
+      await prisma.employeeAssignment.findFirst({
+        where: {
+          id: challenge.employeeAssignmentId,
+          userId: auth.user.id,
+          status: "ACTIVE",
+          startDate: { lte: now },
+          OR: [
+            { endDate: null },
+            { endDate: { gt: now } },
+          ],
+        },
+        include: {
+          location: true,
+          organizationUnit: {
+            include: {
+              location: true,
+            },
+          },
+        },
+      });
+
+    if (!assignment) {
+      await failChallenge(
+        challenge.id,
+        "ASSIGNMENT_INACTIVE"
+      );
+
+      throw new VerifyError(
+        "مسئولیت سازمانی فعال نیست.",
+        403
+      );
+    }
+
+    const location =
+      assignment.location ??
+      assignment.organizationUnit.location;
+
+    if (
+      !location ||
+      location.status !== "ACTIVE" ||
+      !location.geofenceEnabled ||
+      location.latitude === null ||
+      location.longitude === null
+    ) {
+      await failChallenge(
+        challenge.id,
+        "LOCATION_NOT_CONFIGURED"
+      );
+
+      throw new VerifyError(
+        "محدوده حضور معتبر پیکربندی نشده است.",
+        409
+      );
+    }
+
+    const distance = calculateDistanceMeters(
+      body.latitude,
+      body.longitude,
+      Number(location.latitude),
+      Number(location.longitude)
+    );
+
+    if (
+      distance + body.accuracyMeters >
+      location.geofenceRadiusMeters
+    ) {
+      await failChallenge(
+        challenge.id,
+        "OUTSIDE_OR_UNCERTAIN_GEOFENCE"
+      );
+
+      throw new VerifyError(
+        `موقعیت مکانی معتبر نیست؛ فاصله ${Math.round(
+          distance
+        )} متر و خطای GPS برابر ${Math.round(
+          body.accuracyMeters
+        )} متر است.`,
+        403
+      );
+    }
+
+    const faceProfile =
+      await prisma.faceIdentityProfile.findUnique({
+        where: {
+          userId: auth.user.id,
+        },
+      });
+
+    if (
+      !faceProfile ||
+      !faceProfile.isActive ||
+      !faceProfile.consentAcceptedAt
+    ) {
+      throw new VerifyError(
+        "تصویر مرجع یا رضایت ثبت‌شده برای احراز چهره وجود ندارد.",
+        409
+      );
+    }
+
+    let referenceImage: Buffer;
+
+    try {
+      referenceImage = decryptReferenceImage({
+        encrypted:
+          faceProfile.referenceImageEncrypted,
+        iv: faceProfile.referenceImageIv,
+        authTag:
+          faceProfile.referenceImageAuthTag,
+        keyVersion:
+          faceProfile.encryptionKeyVersion,
+      });
+    } catch {
+      throw new VerifyError(
+        "بازیابی امن تصویر مرجع ممکن نیست.",
+        503
+      );
+    }
+
+    const face = await verifyLiveFace({
+      challengeId: challenge.id,
+      challengeNonce: body.nonce,
+      userId: auth.user.id,
+      action: challenge.action,
+      liveSessionToken:
+        body.liveSessionToken,
+      referenceImage,
+      referenceImageMimeType:
+        faceProfile.referenceImageMimeType,
+    });
+
+    const today = getWorkDate(now);
+
+    const eventType =
+      challenge.action === "CHECK_IN"
+        ? AttendanceEventType.CHECK_IN
+        : AttendanceEventType.CHECK_OUT;
+
+    const saved = await prisma.$transaction(
+      async (tx) => {
+        // Lock the employee, not merely one assignment.
+        // All attendance requests for the same user
+        // are serialized across organizational roles.
+        const lockedUsers =
+          await tx.$queryRaw<
+            Array<{ id: string }>
+          >`
+            SELECT id
+            FROM "User"
+            WHERE id = ${auth.user.id}
+            FOR UPDATE
+          `;
+
+        if (lockedUsers.length !== 1) {
+          throw new VerifyError(
+            "حساب کارمند یافت نشد.",
+            404
+          );
+        }
+
+        const consumed =
+          await tx.attendanceChallenge.updateMany({
+            where: {
+              id: challenge.id,
+              userId: auth.user.id,
+              status:
+                AttendanceChallengeStatus.OPEN,
+              consumedAt: null,
+              expiresAt: { gt: now },
+            },
+            data: {
+              status:
+                AttendanceChallengeStatus.CONSUMED,
+              consumedAt: now,
+            },
+          });
+
+        if (consumed.count !== 1) {
+          throw new VerifyError(
+            "چالش قبلاً مصرف شده یا منقضی شده است.",
+            409
+          );
+        }
+
+        // Search across ALL assignments belonging
+        // to this employee, including historical ones.
+        // This allows a checkout after a role change.
+        const candidateRecords =
+          await tx.attendanceRecord.findMany({
+            where: {
+              employeeAssignment: {
+                userId: auth.user.id,
+              },
+              workDate: {
+                gte: previousDate(today),
+                lte: today,
+              },
+            },
+            include: {
+              events: {
+                orderBy: [
+                  { occurredAt: "asc" },
+                  { createdAt: "asc" },
+                ],
+                select: {
+                  eventType: true,
+                  occurredAt: true,
+                },
+              },
+            },
+            orderBy: {
+              createdAt: "desc",
+            },
+          });
+
+        const recordStates =
+          candidateRecords.map((record) => {
+            const last =
+              record.events.at(-1) ?? null;
+
+            const isOpen =
+              last?.eventType ===
+                AttendanceEventType.CHECK_IN ||
+              last?.eventType ===
+                AttendanceEventType.BREAK_END ||
+              last?.eventType ===
+                AttendanceEventType.BREAK_START;
+
+            return {
+              record,
+              isOpen,
+              last,
+            };
+          });
+
+        const openRecords =
+          recordStates.filter(
+            (item) => item.isOpen
+          );
+
+        if (openRecords.length > 1) {
+          throw new VerifyError(
+            "چند رکورد حضور باز برای کارمند وجود دارد؛ اصلاح توسط مسئول حضور و غیاب لازم است.",
+            409
+          );
+        }
+
+        const openRecord =
+          openRecords[0] ?? null;
+
+        if (
+          challenge.action === "CHECK_IN" &&
+          openRecord
+        ) {
+          throw new VerifyError(
+            "ورود قبلی کارمند هنوز بسته نشده است.",
+            409
+          );
+        }
+
+        if (
+          challenge.action === "CHECK_OUT" &&
+          !openRecord
+        ) {
+          throw new VerifyError(
+            "برای ثبت خروج، ورود باز معتبری یافت نشد.",
+            409
+          );
+        }
+
+        if (
+          challenge.action === "CHECK_OUT" &&
+          openRecord?.last?.eventType ===
+            AttendanceEventType.BREAK_START
+        ) {
+          throw new VerifyError(
+            "ابتدا باید استراحت باز پایان یابد.",
+            409
+          );
+        }
+
+        // Checkout always belongs to the open record.
+        // Therefore, 00:30 can close yesterday's shift.
+        let record: Prisma.AttendanceRecordGetPayload<object> | null =          challenge.action === "CHECK_OUT"
+            ? openRecord!.record
+            : recordStates.find(
+                (item) =>
+                  item.record.workDate.getTime() ===
+                  today.getTime()
+              )?.record ?? null;
+
+        let scheduleSource:
+          | "APPROVED_WEEKLY_SCHEDULE"
+          | "LEGACY_SHIFT"
+          | "EXISTING_RECORD";
+
+        if (!record) {
+          if (
+            challenge.action === "CHECK_OUT"
+          ) {
+            throw new VerifyError(
+              "رکورد ورود معتبر پیدا نشد.",
+              409
+            );
+          }
+
+          const approved =
+            await getScheduleSnapshot(
+              tx,
+              auth.user.id,
+              today
+            );
+
+          const legacy = approved
+            ? null
+            : await getLegacyRequiredMinutes(
+                tx,
+                assignment.id,
+                assignment.organizationUnitId,
+                today
+              );
+
+          scheduleSource = approved
+            ? "APPROVED_WEEKLY_SCHEDULE"
+            : "LEGACY_SHIFT";
+
+          record =
+            await tx.attendanceRecord.create({
+              data: {
+                employeeAssignmentId:
+                  assignment.id,
+                shiftAssignmentId:
+                  legacy?.shiftAssignmentId ??
+                  null,
+                checkpointLocationId:
+                  location.id,
+                workDate: today,
+                timeZone: "Asia/Tehran",
+                requiredMinutes:
+                  approved?.requiredMinutes ??
+                  legacy!.requiredMinutes,
+                scheduledStartAt:
+                  approved?.scheduledStartAt ??
+                  null,
+                scheduledEndAt:
+                  approved?.scheduledEndAt ??
+                  null,
+                status: "OPEN",
+              },
+            });
+        }
+        if (record === null) {
+  throw new VerifyError(
+    "رکورد حضور و غیاب ایجاد یا بازیابی نشد.",
+    500
+  );
+}
+ else {
+          scheduleSource =
+            "EXISTING_RECORD";
+        }
+
+        const latest =
+          await tx.attendanceEvent.findFirst({
+            where: {
+              attendanceRecordId: record.id,
+            },
+            orderBy: [
+              { occurredAt: "desc" },
+              { createdAt: "desc" },
+            ],
+          });
+
+        if (
+          challenge.action === "CHECK_IN" &&
+          latest &&
+          latest.eventType !==
+            AttendanceEventType.CHECK_OUT &&
+          latest.eventType !==
+            AttendanceEventType.AUTO_CHECK_OUT
+        ) {
+          throw new VerifyError(
+            "ورود قبلی هنوز بسته نشده است.",
+            409
+          );
+        }
+
+        if (
+          challenge.action === "CHECK_OUT" &&
+          (!latest ||
+            (latest.eventType !==
+              AttendanceEventType.CHECK_IN &&
+              latest.eventType !==
+                AttendanceEventType.BREAK_END))
+        ) {
+          throw new VerifyError(
+            "برای خروج، ورود باز معتبر لازم است.",
+            409
+          );
+        }
+
+        const event =
+          await tx.attendanceEvent.create({
+            data: {
+              attendanceRecordId:
+                record.id,
+              eventType,
+              occurredAt: now,
+              latitude: body.latitude,
+              longitude: body.longitude,
+              accuracyMeters:
+                body.accuracyMeters,
+              distanceFromCheckpointMeters:
+                distance,
+              geofencePassed: true,
+              source: "PWA",
+              ipAddress:
+                getRequestIp(request),
+              userAgent:
+                request.headers.get(
+                  "user-agent"
+                ),
+              idempotencyKey:
+                challenge.id,
+              notes:
+                `Face provider: ${face.provider}; ` +
+                `verification: ${face.verificationId}`,
+            },
+          });
+
+        await tx.attendanceVerification.createMany({
+          data: [
+            {
+              attendanceEventId: event.id,
+              verificationType:
+                AttendanceVerificationType.GPS,
+              status:
+                AttendanceVerificationStatus.PASSED,
+              provider:
+                "BROWSER_GEOLOCATION",
+              details: {
+                distanceMeters: distance,
+                accuracyMeters:
+                  body.accuracyMeters,
+                geofenceRadiusMeters:
+                  location.geofenceRadiusMeters,
+              },
+              verifiedAt: now,
+            },
+            {
+              attendanceEventId: event.id,
+              verificationType:
+                AttendanceVerificationType.FACE,
+              status:
+                AttendanceVerificationStatus.PASSED,
+              score:
+                face.similarityScore,
+              provider: face.provider,
+              details: {
+                verificationId:
+                  face.verificationId,
+              },
+              verifiedAt: now,
+            },
+            {
+              attendanceEventId: event.id,
+              verificationType:
+                AttendanceVerificationType.LIVENESS,
+              status:
+                AttendanceVerificationStatus.PASSED,
+              provider: face.provider,
+              details: {
+                verificationId:
+                  face.verificationId,
+              },
+              verifiedAt: now,
+            },
+          ],
+        });
+
+        const allEvents =
+          await tx.attendanceEvent.findMany({
+            where: {
+              attendanceRecordId:
+                record.id,
+            },
+            orderBy: [
+              { occurredAt: "asc" },
+              { createdAt: "asc" },
+            ],
+            select: {
+              eventType: true,
+              occurredAt: true,
+            },
+          });
+
+        const punches: AttendancePunch[] =
+          allEvents.map((item) => ({
+            type: item.eventType,
+            occurredAt: item.occurredAt,
+          }));
+
+        const calculation =
+          calculateAttendance({
+            punches,
+            requiredMinutes:
+              record.requiredMinutes,
+            scheduledStartAt:
+              record.scheduledStartAt,
+            scheduledEndAt:
+              record.scheduledEndAt,
+          });
+
+        const updatedRecord =
+          await tx.attendanceRecord.update({
+            where: {
+              id: record.id,
+            },
+            data: {
+              firstCheckInAt:
+                calculation.firstCheckInAt,
+              lastCheckOutAt:
+                calculation.lastCheckOutAt,
+              workedMinutes:
+                calculation.workedMinutes,
+              breakMinutes:
+                calculation.breakMinutes,
+              overtimeMinutes:
+                calculation.overtimeMinutes,
+              lateMinutes:
+                calculation.lateMinutes,
+              earlyLeaveMinutes:
+                calculation.earlyLeaveMinutes,
+              status:
+                calculation.isComplete &&
+                !calculation.requiresReview
+                  ? "COMPLETED"
+                  : "OPEN",
+            },
+          });
+
+        return {
+          event,
+          record: updatedRecord,
+          calculation: {
+            requiredMinutes:
+              calculation.requiredMinutes,
+            workedMinutes:
+              calculation.workedMinutes,
+            breakMinutes:
+              calculation.breakMinutes,
+            deficitMinutes:
+              calculation.deficitMinutes,
+            proposedOvertimeMinutes:
+              calculation.overtimeMinutes,
+            lateMinutes:
+              calculation.lateMinutes,
+            earlyLeaveMinutes:
+              calculation.earlyLeaveMinutes,
+            isComplete:
+              calculation.isComplete,
+            requiresReview:
+              calculation.requiresReview,
+            warnings:
+              calculation.warnings,
+          },
+          scheduleSource,
+        };
+      },
+      {
+        isolationLevel:
+          Prisma.TransactionIsolationLevel.Serializable,
+        maxWait: 5000,
+        timeout: 15000,
+      }
+    );
+
+    const response = successResponse({
+      event: saved.event,
+      record: saved.record,
+      calculation: saved.calculation,
+      scheduleSource:
+        saved.scheduleSource,
+      message:
+        challenge.action === "CHECK_IN"
+          ? "ورود با موفقیت ثبت شد."
+          : "خروج با موفقیت ثبت شد.",
+    });
+
+    response.headers.set(
+      "Cache-Control",
+      "no-store, private"
+    );
+
+    return response;
+  } catch (error) {
+    if (
+      challengeId &&
+      (error instanceof
+        FaceVerificationRejectedError ||
+        error instanceof VerifyError)
+    ) {
+      await failChallenge(
+        challengeId,
+        error.message
+      ).catch(() => undefined);
+    }
+
+    return handleError(error);
+  }
+}
+

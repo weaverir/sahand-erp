@@ -1,0 +1,291 @@
+
+import "dotenv/config";
+
+import { prisma } from "../libs/prisma";
+
+const usernames = ["hr.test", "ceo.test"];
+
+const moduleKeys = [
+  "dashboard",
+  "hr",
+  "organization",
+  "items",
+];
+
+async function main() {
+  const now = new Date();
+
+  for (const username of usernames) {
+    console.log("\n====================================");
+    console.log(`USER: ${username}`);
+    console.log("====================================");
+
+    const user = await prisma.user.findUnique({
+      where: { username },
+      select: {
+        id: true,
+        username: true,
+        fullName: true,
+        isActive: true,
+        accessLevel: true,
+
+        roles: {
+          where: {
+            isActive: true,
+            OR: [
+              { expiresAt: null },
+              { expiresAt: { gt: now } },
+            ],
+            role: { isActive: true },
+          },
+          select: {
+            isActive: true,
+            expiresAt: true,
+            role: {
+              select: {
+                key: true,
+                isSystem: true,
+                permissions: {
+                  select: {
+                    isAllowed: true,
+                    permission: {
+                      select: { key: true },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+
+        employeeAssignments: {
+          where: {
+            status: "ACTIVE",
+            OR: [
+              { endDate: null },
+              { endDate: { gt: now } },
+            ],
+          },
+          orderBy: {
+            startDate: "desc",
+          },
+          select: {
+            id: true,
+            status: true,
+            isPrimary: true,
+            endDate: true,
+
+            roles: {
+              where: {
+                isActive: true,
+                OR: [
+                  { expiresAt: null },
+                  { expiresAt: { gt: now } },
+                ],
+                role: {
+                  isActive: true,
+                  isSystem: false,
+                },
+              },
+              select: {
+                role: {
+                  select: {
+                    key: true,
+                    permissions: {
+                      select: {
+                        isAllowed: true,
+                        permission: {
+                          select: { key: true },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+
+            permissions: {
+              where: {
+                isActive: true,
+                OR: [
+                  { expiresAt: null },
+                  { expiresAt: { gt: now } },
+                ],
+              },
+              select: {
+                isAllowed: true,
+                permission: {
+                  select: { key: true },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      console.log("USER NOT FOUND");
+      continue;
+    }
+
+    console.log("\nPROFILE:");
+    console.table({
+      username: user.username,
+      fullName: user.fullName,
+      isActive: user.isActive,
+      accessLevel: user.accessLevel,
+    });
+
+    const isSystemAdmin = user.roles.some(
+      (r) =>
+        r.role.isSystem &&
+        r.role.key === "system_admin"
+    );
+
+    console.log("\nGLOBAL ROLES:");
+
+    console.log(
+      JSON.stringify(
+        user.roles.map((r) => ({
+          role: r.role.key,
+          active: r.isActive,
+          expiresAt: r.expiresAt,
+          permissions: r.role.permissions.map((p) => ({
+            key: p.permission.key,
+            allowed: p.isAllowed,
+          })),
+        })),
+        null,
+        2
+      )
+    );
+
+    console.log("\nACTIVE ASSIGNMENTS:");
+
+    console.log(
+      JSON.stringify(
+        user.employeeAssignments.map((a) => ({
+          id: a.id,
+          primary: a.isPrimary,
+          status: a.status,
+          endDate: a.endDate,
+          roles: a.roles.map((r) => r.role.key),
+          directPermissions: a.permissions.map((p) => ({
+            key: p.permission.key,
+            allowed: p.isAllowed,
+          })),
+        })),
+        null,
+        2
+      )
+    );
+
+    const globalGrants = user.roles.flatMap(
+      (r) => r.role.permissions
+    );
+
+    const assignmentRoleGrants =
+      user.employeeAssignments.flatMap(
+        (a) =>
+          a.roles.flatMap(
+            (r) => r.role.permissions
+          )
+      );
+
+    const assignmentDirectGrants =
+      user.employeeAssignments.flatMap(
+        (a) => a.permissions
+      );
+
+    const grants = [
+      ...globalGrants,
+      ...assignmentRoleGrants,
+      ...assignmentDirectGrants,
+    ];
+
+    const denied = new Set(
+      grants
+        .filter((g) => !g.isAllowed)
+        .map((g) => g.permission.key)
+    );
+
+    const allowed = new Set(
+      grants
+        .filter((g) => g.isAllowed)
+        .map((g) => g.permission.key)
+    );
+
+    const effectivePermissions = isSystemAdmin
+      ? (
+          await prisma.permission.findMany({
+            select: { key: true },
+          })
+        ).map((p) => p.key)
+      : [...allowed].filter(
+          (key) => !denied.has(key)
+        );
+
+    console.log("\nSYSTEM ADMIN:", isSystemAdmin);
+
+    console.log("\nEFFECTIVE PERMISSIONS:");
+    console.log(effectivePermissions);
+
+    const modulePermissions =
+      await prisma.permission.findMany({
+        where: {
+          module: {
+            key: { in: moduleKeys },
+          },
+        },
+        select: {
+          key: true,
+          module: {
+            select: { key: true },
+          },
+        },
+        orderBy: { key: "asc" },
+      });
+
+    console.log("\nMODULE ACCESS:");
+
+    for (const moduleKey of moduleKeys) {
+      const permissions = modulePermissions.filter(
+        (p) => p.module.key === moduleKey
+      );
+
+      const moduleAllowed = permissions
+        .filter((p) =>
+          effectivePermissions.includes(p.key)
+        )
+        .map((p) => p.key);
+
+      const moduleDenied = permissions
+        .filter((p) =>
+          !effectivePermissions.includes(p.key)
+        )
+        .map((p) => p.key);
+
+      console.log(`\n${moduleKey}:`);
+      console.log("Total:", permissions.length);
+      console.log("Allowed:", moduleAllowed);
+      console.log("Not granted:", moduleDenied);
+    }
+
+    console.log("\nPRIMARY ASSIGNMENT:");
+    console.log(
+      user.employeeAssignments.find(
+        (a) => a.isPrimary
+      )?.id ?? "NO PRIMARY ASSIGNMENT"
+    );
+  }
+}
+
+main()
+  .catch((error) => {
+    console.error("DIAGNOSTIC ERROR:", error);
+    process.exitCode = 1;
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

@@ -1,31 +1,31 @@
-import { Suspense, type ReactNode } from "react";
+
+import type { ReactNode } from "react";
+import { Suspense } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import ErpShell from "@/components/layout/erp-shell";
-
-import { AUTH_COOKIE_NAMES } from "@/modules/auth/auth.constants";
+import { AUTH_COOKIE_NAMES } from "@/modules/auth/auth.cookies";
 import { getAuthenticatedUser } from "@/modules/auth/auth.service";
 
 interface ErpLayoutProps {
   children: ReactNode;
 }
 
-async function ProtectedErpContent({
+async function AuthenticatedErpContent({
   children,
-}: ErpLayoutProps) {
-  const cookieStore = await cookies();
+}: {
+  children: ReactNode;
+}) {
+  const store = await cookies();
+  const token = store.get(AUTH_COOKIE_NAMES.access)?.value;
 
-  const accessToken = cookieStore.get(
-    AUTH_COOKIE_NAMES.access
-  )?.value;
-
-  if (!accessToken) {
+  if (!token) {
     redirect("/");
   }
 
   try {
-    await getAuthenticatedUser(accessToken);
+    await getAuthenticatedUser(token);
   } catch {
     redirect("/");
   }
@@ -37,19 +37,10 @@ export default function ErpLayout({
   children,
 }: ErpLayoutProps) {
   return (
-    <Suspense
-      fallback={
-        <div
-          className="flex min-h-screen items-center justify-center"
-          dir="rtl"
-        >
-          در حال بررسی دسترسی...
-        </div>
-      }
-    >
-      <ProtectedErpContent>
+    <Suspense fallback={null}>
+      <AuthenticatedErpContent>
         {children}
-      </ProtectedErpContent>
+      </AuthenticatedErpContent>
     </Suspense>
   );
 }

@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import { canWithdrawLeave } from '../modules/attendance/leave-cancellation-policy';
+const base = { status: 'PENDING', employeeUserId: 'employee', actorUserId: 'employee', approvalDecisions: [null, null] };
+test('employee can withdraw unreviewed pending leave', () => assert.equal(canWithdrawLeave(base), true));
+test('other employee cannot withdraw', () => assert.equal(canWithdrawLeave({ ...base, actorUserId: 'other' }), false));
+test('partially approved leave cannot be withdrawn', () => assert.equal(canWithdrawLeave({ ...base, status: 'PARTIALLY_APPROVED' }), false));
+test('approved leave cannot be withdrawn', () => assert.equal(canWithdrawLeave({ ...base, status: 'APPROVED' }), false));
+test('rejected leave cannot be withdrawn', () => assert.equal(canWithdrawLeave({ ...base, status: 'REJECTED' }), false));
+test('already cancelled leave cannot be withdrawn', () => assert.equal(canWithdrawLeave({ ...base, status: 'CANCELLED' }), false));
+test('reviewed pending leave cannot be withdrawn', () => assert.equal(canWithdrawLeave({ ...base, approvalDecisions: ['APPROVED', null] }), false));

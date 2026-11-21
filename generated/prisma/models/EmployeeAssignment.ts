@@ -271,8 +271,12 @@ export type EmployeeAssignmentWhereInput = {
   history?: Prisma.OrganizationAssignmentHistoryListRelationFilter
   roles?: Prisma.EmployeeAssignmentRoleListRelationFilter
   permissions?: Prisma.EmployeeAssignmentPermissionListRelationFilter
+  shiftAssignments?: Prisma.ShiftAssignmentListRelationFilter
   outgoingRelationships?: Prisma.OrganizationRelationshipListRelationFilter
   incomingRelationships?: Prisma.OrganizationRelationshipListRelationFilter
+  attendanceRecords?: Prisma.AttendanceRecordListRelationFilter
+  attendanceChallenges?: Prisma.AttendanceChallengeListRelationFilter
+  leaveRequests?: Prisma.LeaveRequestListRelationFilter
 }
 
 export type EmployeeAssignmentOrderByWithRelationInput = {
@@ -300,8 +304,12 @@ export type EmployeeAssignmentOrderByWithRelationInput = {
   history?: Prisma.OrganizationAssignmentHistoryOrderByRelationAggregateInput
   roles?: Prisma.EmployeeAssignmentRoleOrderByRelationAggregateInput
   permissions?: Prisma.EmployeeAssignmentPermissionOrderByRelationAggregateInput
+  shiftAssignments?: Prisma.ShiftAssignmentOrderByRelationAggregateInput
   outgoingRelationships?: Prisma.OrganizationRelationshipOrderByRelationAggregateInput
   incomingRelationships?: Prisma.OrganizationRelationshipOrderByRelationAggregateInput
+  attendanceRecords?: Prisma.AttendanceRecordOrderByRelationAggregateInput
+  attendanceChallenges?: Prisma.AttendanceChallengeOrderByRelationAggregateInput
+  leaveRequests?: Prisma.LeaveRequestOrderByRelationAggregateInput
 }
 
 export type EmployeeAssignmentWhereUniqueInput = Prisma.AtLeast<{
@@ -332,8 +340,12 @@ export type EmployeeAssignmentWhereUniqueInput = Prisma.AtLeast<{
   history?: Prisma.OrganizationAssignmentHistoryListRelationFilter
   roles?: Prisma.EmployeeAssignmentRoleListRelationFilter
   permissions?: Prisma.EmployeeAssignmentPermissionListRelationFilter
+  shiftAssignments?: Prisma.ShiftAssignmentListRelationFilter
   outgoingRelationships?: Prisma.OrganizationRelationshipListRelationFilter
   incomingRelationships?: Prisma.OrganizationRelationshipListRelationFilter
+  attendanceRecords?: Prisma.AttendanceRecordListRelationFilter
+  attendanceChallenges?: Prisma.AttendanceChallengeListRelationFilter
+  leaveRequests?: Prisma.LeaveRequestListRelationFilter
 }, "id">
 
 export type EmployeeAssignmentOrderByWithAggregationInput = {
@@ -398,8 +410,12 @@ export type EmployeeAssignmentCreateInput = {
   history?: Prisma.OrganizationAssignmentHistoryCreateNestedManyWithoutAssignmentInput
   roles?: Prisma.EmployeeAssignmentRoleCreateNestedManyWithoutAssignmentInput
   permissions?: Prisma.EmployeeAssignmentPermissionCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentCreateNestedManyWithoutEmployeeAssignmentInput
   outgoingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutSourceAssignmentInput
   incomingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentUncheckedCreateInput = {
@@ -422,8 +438,12 @@ export type EmployeeAssignmentUncheckedCreateInput = {
   history?: Prisma.OrganizationAssignmentHistoryUncheckedCreateNestedManyWithoutAssignmentInput
   roles?: Prisma.EmployeeAssignmentRoleUncheckedCreateNestedManyWithoutAssignmentInput
   permissions?: Prisma.EmployeeAssignmentPermissionUncheckedCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutSourceAssignmentInput
   incomingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentUpdateInput = {
@@ -446,8 +466,12 @@ export type EmployeeAssignmentUpdateInput = {
   history?: Prisma.OrganizationAssignmentHistoryUpdateManyWithoutAssignmentNestedInput
   roles?: Prisma.EmployeeAssignmentRoleUpdateManyWithoutAssignmentNestedInput
   permissions?: Prisma.EmployeeAssignmentPermissionUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUpdateManyWithoutEmployeeAssignmentNestedInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutSourceAssignmentNestedInput
   incomingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentUncheckedUpdateInput = {
@@ -470,8 +494,12 @@ export type EmployeeAssignmentUncheckedUpdateInput = {
   history?: Prisma.OrganizationAssignmentHistoryUncheckedUpdateManyWithoutAssignmentNestedInput
   roles?: Prisma.EmployeeAssignmentRoleUncheckedUpdateManyWithoutAssignmentNestedInput
   permissions?: Prisma.EmployeeAssignmentPermissionUncheckedUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutSourceAssignmentNestedInput
   incomingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentCreateManyInput = {
@@ -901,6 +929,64 @@ export type EmployeeAssignmentUpdateOneRequiredWithoutHistoryNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeAssignmentUpdateToOneWithWhereWithoutHistoryInput, Prisma.EmployeeAssignmentUpdateWithoutHistoryInput>, Prisma.EmployeeAssignmentUncheckedUpdateWithoutHistoryInput>
 }
 
+export type EmployeeAssignmentCreateNestedOneWithoutShiftAssignmentsInput = {
+  create?: Prisma.XOR<Prisma.EmployeeAssignmentCreateWithoutShiftAssignmentsInput, Prisma.EmployeeAssignmentUncheckedCreateWithoutShiftAssignmentsInput>
+  connectOrCreate?: Prisma.EmployeeAssignmentCreateOrConnectWithoutShiftAssignmentsInput
+  connect?: Prisma.EmployeeAssignmentWhereUniqueInput
+}
+
+export type EmployeeAssignmentUpdateOneWithoutShiftAssignmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeAssignmentCreateWithoutShiftAssignmentsInput, Prisma.EmployeeAssignmentUncheckedCreateWithoutShiftAssignmentsInput>
+  connectOrCreate?: Prisma.EmployeeAssignmentCreateOrConnectWithoutShiftAssignmentsInput
+  upsert?: Prisma.EmployeeAssignmentUpsertWithoutShiftAssignmentsInput
+  disconnect?: Prisma.EmployeeAssignmentWhereInput | boolean
+  delete?: Prisma.EmployeeAssignmentWhereInput | boolean
+  connect?: Prisma.EmployeeAssignmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeAssignmentUpdateToOneWithWhereWithoutShiftAssignmentsInput, Prisma.EmployeeAssignmentUpdateWithoutShiftAssignmentsInput>, Prisma.EmployeeAssignmentUncheckedUpdateWithoutShiftAssignmentsInput>
+}
+
+export type EmployeeAssignmentCreateNestedOneWithoutAttendanceRecordsInput = {
+  create?: Prisma.XOR<Prisma.EmployeeAssignmentCreateWithoutAttendanceRecordsInput, Prisma.EmployeeAssignmentUncheckedCreateWithoutAttendanceRecordsInput>
+  connectOrCreate?: Prisma.EmployeeAssignmentCreateOrConnectWithoutAttendanceRecordsInput
+  connect?: Prisma.EmployeeAssignmentWhereUniqueInput
+}
+
+export type EmployeeAssignmentUpdateOneRequiredWithoutAttendanceRecordsNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeAssignmentCreateWithoutAttendanceRecordsInput, Prisma.EmployeeAssignmentUncheckedCreateWithoutAttendanceRecordsInput>
+  connectOrCreate?: Prisma.EmployeeAssignmentCreateOrConnectWithoutAttendanceRecordsInput
+  upsert?: Prisma.EmployeeAssignmentUpsertWithoutAttendanceRecordsInput
+  connect?: Prisma.EmployeeAssignmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeAssignmentUpdateToOneWithWhereWithoutAttendanceRecordsInput, Prisma.EmployeeAssignmentUpdateWithoutAttendanceRecordsInput>, Prisma.EmployeeAssignmentUncheckedUpdateWithoutAttendanceRecordsInput>
+}
+
+export type EmployeeAssignmentCreateNestedOneWithoutAttendanceChallengesInput = {
+  create?: Prisma.XOR<Prisma.EmployeeAssignmentCreateWithoutAttendanceChallengesInput, Prisma.EmployeeAssignmentUncheckedCreateWithoutAttendanceChallengesInput>
+  connectOrCreate?: Prisma.EmployeeAssignmentCreateOrConnectWithoutAttendanceChallengesInput
+  connect?: Prisma.EmployeeAssignmentWhereUniqueInput
+}
+
+export type EmployeeAssignmentUpdateOneRequiredWithoutAttendanceChallengesNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeAssignmentCreateWithoutAttendanceChallengesInput, Prisma.EmployeeAssignmentUncheckedCreateWithoutAttendanceChallengesInput>
+  connectOrCreate?: Prisma.EmployeeAssignmentCreateOrConnectWithoutAttendanceChallengesInput
+  upsert?: Prisma.EmployeeAssignmentUpsertWithoutAttendanceChallengesInput
+  connect?: Prisma.EmployeeAssignmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeAssignmentUpdateToOneWithWhereWithoutAttendanceChallengesInput, Prisma.EmployeeAssignmentUpdateWithoutAttendanceChallengesInput>, Prisma.EmployeeAssignmentUncheckedUpdateWithoutAttendanceChallengesInput>
+}
+
+export type EmployeeAssignmentCreateNestedOneWithoutLeaveRequestsInput = {
+  create?: Prisma.XOR<Prisma.EmployeeAssignmentCreateWithoutLeaveRequestsInput, Prisma.EmployeeAssignmentUncheckedCreateWithoutLeaveRequestsInput>
+  connectOrCreate?: Prisma.EmployeeAssignmentCreateOrConnectWithoutLeaveRequestsInput
+  connect?: Prisma.EmployeeAssignmentWhereUniqueInput
+}
+
+export type EmployeeAssignmentUpdateOneRequiredWithoutLeaveRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeAssignmentCreateWithoutLeaveRequestsInput, Prisma.EmployeeAssignmentUncheckedCreateWithoutLeaveRequestsInput>
+  connectOrCreate?: Prisma.EmployeeAssignmentCreateOrConnectWithoutLeaveRequestsInput
+  upsert?: Prisma.EmployeeAssignmentUpsertWithoutLeaveRequestsInput
+  connect?: Prisma.EmployeeAssignmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeAssignmentUpdateToOneWithWhereWithoutLeaveRequestsInput, Prisma.EmployeeAssignmentUpdateWithoutLeaveRequestsInput>, Prisma.EmployeeAssignmentUncheckedUpdateWithoutLeaveRequestsInput>
+}
+
 export type EmployeeAssignmentCreateWithoutUserInput = {
   id?: string
   responsibilityTitle?: string | null
@@ -920,8 +1006,12 @@ export type EmployeeAssignmentCreateWithoutUserInput = {
   history?: Prisma.OrganizationAssignmentHistoryCreateNestedManyWithoutAssignmentInput
   roles?: Prisma.EmployeeAssignmentRoleCreateNestedManyWithoutAssignmentInput
   permissions?: Prisma.EmployeeAssignmentPermissionCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentCreateNestedManyWithoutEmployeeAssignmentInput
   outgoingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutSourceAssignmentInput
   incomingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentUncheckedCreateWithoutUserInput = {
@@ -943,8 +1033,12 @@ export type EmployeeAssignmentUncheckedCreateWithoutUserInput = {
   history?: Prisma.OrganizationAssignmentHistoryUncheckedCreateNestedManyWithoutAssignmentInput
   roles?: Prisma.EmployeeAssignmentRoleUncheckedCreateNestedManyWithoutAssignmentInput
   permissions?: Prisma.EmployeeAssignmentPermissionUncheckedCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutSourceAssignmentInput
   incomingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentCreateOrConnectWithoutUserInput = {
@@ -1013,8 +1107,12 @@ export type EmployeeAssignmentCreateWithoutLocationInput = {
   history?: Prisma.OrganizationAssignmentHistoryCreateNestedManyWithoutAssignmentInput
   roles?: Prisma.EmployeeAssignmentRoleCreateNestedManyWithoutAssignmentInput
   permissions?: Prisma.EmployeeAssignmentPermissionCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentCreateNestedManyWithoutEmployeeAssignmentInput
   outgoingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutSourceAssignmentInput
   incomingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentUncheckedCreateWithoutLocationInput = {
@@ -1036,8 +1134,12 @@ export type EmployeeAssignmentUncheckedCreateWithoutLocationInput = {
   history?: Prisma.OrganizationAssignmentHistoryUncheckedCreateNestedManyWithoutAssignmentInput
   roles?: Prisma.EmployeeAssignmentRoleUncheckedCreateNestedManyWithoutAssignmentInput
   permissions?: Prisma.EmployeeAssignmentPermissionUncheckedCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutSourceAssignmentInput
   incomingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentCreateOrConnectWithoutLocationInput = {
@@ -1085,8 +1187,12 @@ export type EmployeeAssignmentCreateWithoutOrganizationUnitInput = {
   history?: Prisma.OrganizationAssignmentHistoryCreateNestedManyWithoutAssignmentInput
   roles?: Prisma.EmployeeAssignmentRoleCreateNestedManyWithoutAssignmentInput
   permissions?: Prisma.EmployeeAssignmentPermissionCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentCreateNestedManyWithoutEmployeeAssignmentInput
   outgoingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutSourceAssignmentInput
   incomingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentUncheckedCreateWithoutOrganizationUnitInput = {
@@ -1108,8 +1214,12 @@ export type EmployeeAssignmentUncheckedCreateWithoutOrganizationUnitInput = {
   history?: Prisma.OrganizationAssignmentHistoryUncheckedCreateNestedManyWithoutAssignmentInput
   roles?: Prisma.EmployeeAssignmentRoleUncheckedCreateNestedManyWithoutAssignmentInput
   permissions?: Prisma.EmployeeAssignmentPermissionUncheckedCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutSourceAssignmentInput
   incomingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentCreateOrConnectWithoutOrganizationUnitInput = {
@@ -1157,8 +1267,12 @@ export type EmployeeAssignmentCreateWithoutPositionInput = {
   history?: Prisma.OrganizationAssignmentHistoryCreateNestedManyWithoutAssignmentInput
   roles?: Prisma.EmployeeAssignmentRoleCreateNestedManyWithoutAssignmentInput
   permissions?: Prisma.EmployeeAssignmentPermissionCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentCreateNestedManyWithoutEmployeeAssignmentInput
   outgoingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutSourceAssignmentInput
   incomingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentUncheckedCreateWithoutPositionInput = {
@@ -1180,8 +1294,12 @@ export type EmployeeAssignmentUncheckedCreateWithoutPositionInput = {
   history?: Prisma.OrganizationAssignmentHistoryUncheckedCreateNestedManyWithoutAssignmentInput
   roles?: Prisma.EmployeeAssignmentRoleUncheckedCreateNestedManyWithoutAssignmentInput
   permissions?: Prisma.EmployeeAssignmentPermissionUncheckedCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutSourceAssignmentInput
   incomingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentCreateOrConnectWithoutPositionInput = {
@@ -1229,8 +1347,12 @@ export type EmployeeAssignmentCreateWithoutSubordinateAssignmentsInput = {
   history?: Prisma.OrganizationAssignmentHistoryCreateNestedManyWithoutAssignmentInput
   roles?: Prisma.EmployeeAssignmentRoleCreateNestedManyWithoutAssignmentInput
   permissions?: Prisma.EmployeeAssignmentPermissionCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentCreateNestedManyWithoutEmployeeAssignmentInput
   outgoingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutSourceAssignmentInput
   incomingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentUncheckedCreateWithoutSubordinateAssignmentsInput = {
@@ -1252,8 +1374,12 @@ export type EmployeeAssignmentUncheckedCreateWithoutSubordinateAssignmentsInput 
   history?: Prisma.OrganizationAssignmentHistoryUncheckedCreateNestedManyWithoutAssignmentInput
   roles?: Prisma.EmployeeAssignmentRoleUncheckedCreateNestedManyWithoutAssignmentInput
   permissions?: Prisma.EmployeeAssignmentPermissionUncheckedCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutSourceAssignmentInput
   incomingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentCreateOrConnectWithoutSubordinateAssignmentsInput = {
@@ -1280,8 +1406,12 @@ export type EmployeeAssignmentCreateWithoutManagerAssignmentInput = {
   history?: Prisma.OrganizationAssignmentHistoryCreateNestedManyWithoutAssignmentInput
   roles?: Prisma.EmployeeAssignmentRoleCreateNestedManyWithoutAssignmentInput
   permissions?: Prisma.EmployeeAssignmentPermissionCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentCreateNestedManyWithoutEmployeeAssignmentInput
   outgoingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutSourceAssignmentInput
   incomingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentUncheckedCreateWithoutManagerAssignmentInput = {
@@ -1303,8 +1433,12 @@ export type EmployeeAssignmentUncheckedCreateWithoutManagerAssignmentInput = {
   history?: Prisma.OrganizationAssignmentHistoryUncheckedCreateNestedManyWithoutAssignmentInput
   roles?: Prisma.EmployeeAssignmentRoleUncheckedCreateNestedManyWithoutAssignmentInput
   permissions?: Prisma.EmployeeAssignmentPermissionUncheckedCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutSourceAssignmentInput
   incomingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentCreateOrConnectWithoutManagerAssignmentInput = {
@@ -1347,8 +1481,12 @@ export type EmployeeAssignmentUpdateWithoutSubordinateAssignmentsInput = {
   history?: Prisma.OrganizationAssignmentHistoryUpdateManyWithoutAssignmentNestedInput
   roles?: Prisma.EmployeeAssignmentRoleUpdateManyWithoutAssignmentNestedInput
   permissions?: Prisma.EmployeeAssignmentPermissionUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUpdateManyWithoutEmployeeAssignmentNestedInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutSourceAssignmentNestedInput
   incomingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentUncheckedUpdateWithoutSubordinateAssignmentsInput = {
@@ -1370,8 +1508,12 @@ export type EmployeeAssignmentUncheckedUpdateWithoutSubordinateAssignmentsInput 
   history?: Prisma.OrganizationAssignmentHistoryUncheckedUpdateManyWithoutAssignmentNestedInput
   roles?: Prisma.EmployeeAssignmentRoleUncheckedUpdateManyWithoutAssignmentNestedInput
   permissions?: Prisma.EmployeeAssignmentPermissionUncheckedUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutSourceAssignmentNestedInput
   incomingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentUpsertWithWhereUniqueWithoutManagerAssignmentInput = {
@@ -1409,8 +1551,12 @@ export type EmployeeAssignmentCreateWithoutRolesInput = {
   subordinateAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutManagerAssignmentInput
   history?: Prisma.OrganizationAssignmentHistoryCreateNestedManyWithoutAssignmentInput
   permissions?: Prisma.EmployeeAssignmentPermissionCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentCreateNestedManyWithoutEmployeeAssignmentInput
   outgoingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutSourceAssignmentInput
   incomingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentUncheckedCreateWithoutRolesInput = {
@@ -1432,8 +1578,12 @@ export type EmployeeAssignmentUncheckedCreateWithoutRolesInput = {
   subordinateAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutManagerAssignmentInput
   history?: Prisma.OrganizationAssignmentHistoryUncheckedCreateNestedManyWithoutAssignmentInput
   permissions?: Prisma.EmployeeAssignmentPermissionUncheckedCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutSourceAssignmentInput
   incomingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentCreateOrConnectWithoutRolesInput = {
@@ -1471,8 +1621,12 @@ export type EmployeeAssignmentUpdateWithoutRolesInput = {
   subordinateAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutManagerAssignmentNestedInput
   history?: Prisma.OrganizationAssignmentHistoryUpdateManyWithoutAssignmentNestedInput
   permissions?: Prisma.EmployeeAssignmentPermissionUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUpdateManyWithoutEmployeeAssignmentNestedInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutSourceAssignmentNestedInput
   incomingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentUncheckedUpdateWithoutRolesInput = {
@@ -1494,8 +1648,12 @@ export type EmployeeAssignmentUncheckedUpdateWithoutRolesInput = {
   subordinateAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutManagerAssignmentNestedInput
   history?: Prisma.OrganizationAssignmentHistoryUncheckedUpdateManyWithoutAssignmentNestedInput
   permissions?: Prisma.EmployeeAssignmentPermissionUncheckedUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutSourceAssignmentNestedInput
   incomingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentCreateWithoutPermissionsInput = {
@@ -1517,8 +1675,12 @@ export type EmployeeAssignmentCreateWithoutPermissionsInput = {
   subordinateAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutManagerAssignmentInput
   history?: Prisma.OrganizationAssignmentHistoryCreateNestedManyWithoutAssignmentInput
   roles?: Prisma.EmployeeAssignmentRoleCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentCreateNestedManyWithoutEmployeeAssignmentInput
   outgoingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutSourceAssignmentInput
   incomingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentUncheckedCreateWithoutPermissionsInput = {
@@ -1540,8 +1702,12 @@ export type EmployeeAssignmentUncheckedCreateWithoutPermissionsInput = {
   subordinateAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutManagerAssignmentInput
   history?: Prisma.OrganizationAssignmentHistoryUncheckedCreateNestedManyWithoutAssignmentInput
   roles?: Prisma.EmployeeAssignmentRoleUncheckedCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutSourceAssignmentInput
   incomingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentCreateOrConnectWithoutPermissionsInput = {
@@ -1579,8 +1745,12 @@ export type EmployeeAssignmentUpdateWithoutPermissionsInput = {
   subordinateAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutManagerAssignmentNestedInput
   history?: Prisma.OrganizationAssignmentHistoryUpdateManyWithoutAssignmentNestedInput
   roles?: Prisma.EmployeeAssignmentRoleUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUpdateManyWithoutEmployeeAssignmentNestedInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutSourceAssignmentNestedInput
   incomingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentUncheckedUpdateWithoutPermissionsInput = {
@@ -1602,8 +1772,12 @@ export type EmployeeAssignmentUncheckedUpdateWithoutPermissionsInput = {
   subordinateAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutManagerAssignmentNestedInput
   history?: Prisma.OrganizationAssignmentHistoryUncheckedUpdateManyWithoutAssignmentNestedInput
   roles?: Prisma.EmployeeAssignmentRoleUncheckedUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutSourceAssignmentNestedInput
   incomingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentCreateWithoutOutgoingRelationshipsInput = {
@@ -1626,7 +1800,11 @@ export type EmployeeAssignmentCreateWithoutOutgoingRelationshipsInput = {
   history?: Prisma.OrganizationAssignmentHistoryCreateNestedManyWithoutAssignmentInput
   roles?: Prisma.EmployeeAssignmentRoleCreateNestedManyWithoutAssignmentInput
   permissions?: Prisma.EmployeeAssignmentPermissionCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentCreateNestedManyWithoutEmployeeAssignmentInput
   incomingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentUncheckedCreateWithoutOutgoingRelationshipsInput = {
@@ -1649,7 +1827,11 @@ export type EmployeeAssignmentUncheckedCreateWithoutOutgoingRelationshipsInput =
   history?: Prisma.OrganizationAssignmentHistoryUncheckedCreateNestedManyWithoutAssignmentInput
   roles?: Prisma.EmployeeAssignmentRoleUncheckedCreateNestedManyWithoutAssignmentInput
   permissions?: Prisma.EmployeeAssignmentPermissionUncheckedCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
   incomingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentCreateOrConnectWithoutOutgoingRelationshipsInput = {
@@ -1677,7 +1859,11 @@ export type EmployeeAssignmentCreateWithoutIncomingRelationshipsInput = {
   history?: Prisma.OrganizationAssignmentHistoryCreateNestedManyWithoutAssignmentInput
   roles?: Prisma.EmployeeAssignmentRoleCreateNestedManyWithoutAssignmentInput
   permissions?: Prisma.EmployeeAssignmentPermissionCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentCreateNestedManyWithoutEmployeeAssignmentInput
   outgoingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutSourceAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentUncheckedCreateWithoutIncomingRelationshipsInput = {
@@ -1700,7 +1886,11 @@ export type EmployeeAssignmentUncheckedCreateWithoutIncomingRelationshipsInput =
   history?: Prisma.OrganizationAssignmentHistoryUncheckedCreateNestedManyWithoutAssignmentInput
   roles?: Prisma.EmployeeAssignmentRoleUncheckedCreateNestedManyWithoutAssignmentInput
   permissions?: Prisma.EmployeeAssignmentPermissionUncheckedCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutSourceAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentCreateOrConnectWithoutIncomingRelationshipsInput = {
@@ -1739,7 +1929,11 @@ export type EmployeeAssignmentUpdateWithoutOutgoingRelationshipsInput = {
   history?: Prisma.OrganizationAssignmentHistoryUpdateManyWithoutAssignmentNestedInput
   roles?: Prisma.EmployeeAssignmentRoleUpdateManyWithoutAssignmentNestedInput
   permissions?: Prisma.EmployeeAssignmentPermissionUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUpdateManyWithoutEmployeeAssignmentNestedInput
   incomingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentUncheckedUpdateWithoutOutgoingRelationshipsInput = {
@@ -1762,7 +1956,11 @@ export type EmployeeAssignmentUncheckedUpdateWithoutOutgoingRelationshipsInput =
   history?: Prisma.OrganizationAssignmentHistoryUncheckedUpdateManyWithoutAssignmentNestedInput
   roles?: Prisma.EmployeeAssignmentRoleUncheckedUpdateManyWithoutAssignmentNestedInput
   permissions?: Prisma.EmployeeAssignmentPermissionUncheckedUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
   incomingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentUpsertWithoutIncomingRelationshipsInput = {
@@ -1796,7 +1994,11 @@ export type EmployeeAssignmentUpdateWithoutIncomingRelationshipsInput = {
   history?: Prisma.OrganizationAssignmentHistoryUpdateManyWithoutAssignmentNestedInput
   roles?: Prisma.EmployeeAssignmentRoleUpdateManyWithoutAssignmentNestedInput
   permissions?: Prisma.EmployeeAssignmentPermissionUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUpdateManyWithoutEmployeeAssignmentNestedInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutSourceAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentUncheckedUpdateWithoutIncomingRelationshipsInput = {
@@ -1819,7 +2021,11 @@ export type EmployeeAssignmentUncheckedUpdateWithoutIncomingRelationshipsInput =
   history?: Prisma.OrganizationAssignmentHistoryUncheckedUpdateManyWithoutAssignmentNestedInput
   roles?: Prisma.EmployeeAssignmentRoleUncheckedUpdateManyWithoutAssignmentNestedInput
   permissions?: Prisma.EmployeeAssignmentPermissionUncheckedUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutSourceAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentCreateWithoutHistoryInput = {
@@ -1841,8 +2047,12 @@ export type EmployeeAssignmentCreateWithoutHistoryInput = {
   subordinateAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutManagerAssignmentInput
   roles?: Prisma.EmployeeAssignmentRoleCreateNestedManyWithoutAssignmentInput
   permissions?: Prisma.EmployeeAssignmentPermissionCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentCreateNestedManyWithoutEmployeeAssignmentInput
   outgoingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutSourceAssignmentInput
   incomingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentUncheckedCreateWithoutHistoryInput = {
@@ -1864,8 +2074,12 @@ export type EmployeeAssignmentUncheckedCreateWithoutHistoryInput = {
   subordinateAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutManagerAssignmentInput
   roles?: Prisma.EmployeeAssignmentRoleUncheckedCreateNestedManyWithoutAssignmentInput
   permissions?: Prisma.EmployeeAssignmentPermissionUncheckedCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutSourceAssignmentInput
   incomingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
 }
 
 export type EmployeeAssignmentCreateOrConnectWithoutHistoryInput = {
@@ -1903,8 +2117,12 @@ export type EmployeeAssignmentUpdateWithoutHistoryInput = {
   subordinateAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutManagerAssignmentNestedInput
   roles?: Prisma.EmployeeAssignmentRoleUpdateManyWithoutAssignmentNestedInput
   permissions?: Prisma.EmployeeAssignmentPermissionUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUpdateManyWithoutEmployeeAssignmentNestedInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutSourceAssignmentNestedInput
   incomingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentUncheckedUpdateWithoutHistoryInput = {
@@ -1926,8 +2144,508 @@ export type EmployeeAssignmentUncheckedUpdateWithoutHistoryInput = {
   subordinateAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutManagerAssignmentNestedInput
   roles?: Prisma.EmployeeAssignmentRoleUncheckedUpdateManyWithoutAssignmentNestedInput
   permissions?: Prisma.EmployeeAssignmentPermissionUncheckedUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutSourceAssignmentNestedInput
   incomingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+}
+
+export type EmployeeAssignmentCreateWithoutShiftAssignmentsInput = {
+  id?: string
+  responsibilityTitle?: string | null
+  status?: $Enums.EmployeeAssignmentStatus
+  assignmentType?: $Enums.EmployeeAssignmentType
+  isPrimary?: boolean
+  startDate: Date | string
+  endDate?: Date | string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutEmployeeAssignmentsInput
+  organizationUnit: Prisma.OrganizationUnitCreateNestedOneWithoutAssignmentsInput
+  position?: Prisma.OrganizationPositionCreateNestedOneWithoutAssignmentsInput
+  location?: Prisma.OrganizationLocationCreateNestedOneWithoutAssignmentsInput
+  managerAssignment?: Prisma.EmployeeAssignmentCreateNestedOneWithoutSubordinateAssignmentsInput
+  subordinateAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutManagerAssignmentInput
+  history?: Prisma.OrganizationAssignmentHistoryCreateNestedManyWithoutAssignmentInput
+  roles?: Prisma.EmployeeAssignmentRoleCreateNestedManyWithoutAssignmentInput
+  permissions?: Prisma.EmployeeAssignmentPermissionCreateNestedManyWithoutAssignmentInput
+  outgoingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutSourceAssignmentInput
+  incomingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeAssignmentInput
+}
+
+export type EmployeeAssignmentUncheckedCreateWithoutShiftAssignmentsInput = {
+  id?: string
+  userId: string
+  organizationUnitId: string
+  positionId?: string | null
+  responsibilityTitle?: string | null
+  locationId?: string | null
+  managerAssignmentId?: string | null
+  status?: $Enums.EmployeeAssignmentStatus
+  assignmentType?: $Enums.EmployeeAssignmentType
+  isPrimary?: boolean
+  startDate: Date | string
+  endDate?: Date | string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  subordinateAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutManagerAssignmentInput
+  history?: Prisma.OrganizationAssignmentHistoryUncheckedCreateNestedManyWithoutAssignmentInput
+  roles?: Prisma.EmployeeAssignmentRoleUncheckedCreateNestedManyWithoutAssignmentInput
+  permissions?: Prisma.EmployeeAssignmentPermissionUncheckedCreateNestedManyWithoutAssignmentInput
+  outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutSourceAssignmentInput
+  incomingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+}
+
+export type EmployeeAssignmentCreateOrConnectWithoutShiftAssignmentsInput = {
+  where: Prisma.EmployeeAssignmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeAssignmentCreateWithoutShiftAssignmentsInput, Prisma.EmployeeAssignmentUncheckedCreateWithoutShiftAssignmentsInput>
+}
+
+export type EmployeeAssignmentUpsertWithoutShiftAssignmentsInput = {
+  update: Prisma.XOR<Prisma.EmployeeAssignmentUpdateWithoutShiftAssignmentsInput, Prisma.EmployeeAssignmentUncheckedUpdateWithoutShiftAssignmentsInput>
+  create: Prisma.XOR<Prisma.EmployeeAssignmentCreateWithoutShiftAssignmentsInput, Prisma.EmployeeAssignmentUncheckedCreateWithoutShiftAssignmentsInput>
+  where?: Prisma.EmployeeAssignmentWhereInput
+}
+
+export type EmployeeAssignmentUpdateToOneWithWhereWithoutShiftAssignmentsInput = {
+  where?: Prisma.EmployeeAssignmentWhereInput
+  data: Prisma.XOR<Prisma.EmployeeAssignmentUpdateWithoutShiftAssignmentsInput, Prisma.EmployeeAssignmentUncheckedUpdateWithoutShiftAssignmentsInput>
+}
+
+export type EmployeeAssignmentUpdateWithoutShiftAssignmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  responsibilityTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeAssignmentStatusFieldUpdateOperationsInput | $Enums.EmployeeAssignmentStatus
+  assignmentType?: Prisma.EnumEmployeeAssignmentTypeFieldUpdateOperationsInput | $Enums.EmployeeAssignmentType
+  isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutEmployeeAssignmentsNestedInput
+  organizationUnit?: Prisma.OrganizationUnitUpdateOneRequiredWithoutAssignmentsNestedInput
+  position?: Prisma.OrganizationPositionUpdateOneWithoutAssignmentsNestedInput
+  location?: Prisma.OrganizationLocationUpdateOneWithoutAssignmentsNestedInput
+  managerAssignment?: Prisma.EmployeeAssignmentUpdateOneWithoutSubordinateAssignmentsNestedInput
+  subordinateAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutManagerAssignmentNestedInput
+  history?: Prisma.OrganizationAssignmentHistoryUpdateManyWithoutAssignmentNestedInput
+  roles?: Prisma.EmployeeAssignmentRoleUpdateManyWithoutAssignmentNestedInput
+  permissions?: Prisma.EmployeeAssignmentPermissionUpdateManyWithoutAssignmentNestedInput
+  outgoingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutSourceAssignmentNestedInput
+  incomingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeAssignmentNestedInput
+}
+
+export type EmployeeAssignmentUncheckedUpdateWithoutShiftAssignmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationUnitId?: Prisma.StringFieldUpdateOperationsInput | string
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responsibilityTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerAssignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeAssignmentStatusFieldUpdateOperationsInput | $Enums.EmployeeAssignmentStatus
+  assignmentType?: Prisma.EnumEmployeeAssignmentTypeFieldUpdateOperationsInput | $Enums.EmployeeAssignmentType
+  isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subordinateAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutManagerAssignmentNestedInput
+  history?: Prisma.OrganizationAssignmentHistoryUncheckedUpdateManyWithoutAssignmentNestedInput
+  roles?: Prisma.EmployeeAssignmentRoleUncheckedUpdateManyWithoutAssignmentNestedInput
+  permissions?: Prisma.EmployeeAssignmentPermissionUncheckedUpdateManyWithoutAssignmentNestedInput
+  outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutSourceAssignmentNestedInput
+  incomingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+}
+
+export type EmployeeAssignmentCreateWithoutAttendanceRecordsInput = {
+  id?: string
+  responsibilityTitle?: string | null
+  status?: $Enums.EmployeeAssignmentStatus
+  assignmentType?: $Enums.EmployeeAssignmentType
+  isPrimary?: boolean
+  startDate: Date | string
+  endDate?: Date | string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutEmployeeAssignmentsInput
+  organizationUnit: Prisma.OrganizationUnitCreateNestedOneWithoutAssignmentsInput
+  position?: Prisma.OrganizationPositionCreateNestedOneWithoutAssignmentsInput
+  location?: Prisma.OrganizationLocationCreateNestedOneWithoutAssignmentsInput
+  managerAssignment?: Prisma.EmployeeAssignmentCreateNestedOneWithoutSubordinateAssignmentsInput
+  subordinateAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutManagerAssignmentInput
+  history?: Prisma.OrganizationAssignmentHistoryCreateNestedManyWithoutAssignmentInput
+  roles?: Prisma.EmployeeAssignmentRoleCreateNestedManyWithoutAssignmentInput
+  permissions?: Prisma.EmployeeAssignmentPermissionCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentCreateNestedManyWithoutEmployeeAssignmentInput
+  outgoingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutSourceAssignmentInput
+  incomingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutTargetAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeAssignmentInput
+}
+
+export type EmployeeAssignmentUncheckedCreateWithoutAttendanceRecordsInput = {
+  id?: string
+  userId: string
+  organizationUnitId: string
+  positionId?: string | null
+  responsibilityTitle?: string | null
+  locationId?: string | null
+  managerAssignmentId?: string | null
+  status?: $Enums.EmployeeAssignmentStatus
+  assignmentType?: $Enums.EmployeeAssignmentType
+  isPrimary?: boolean
+  startDate: Date | string
+  endDate?: Date | string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  subordinateAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutManagerAssignmentInput
+  history?: Prisma.OrganizationAssignmentHistoryUncheckedCreateNestedManyWithoutAssignmentInput
+  roles?: Prisma.EmployeeAssignmentRoleUncheckedCreateNestedManyWithoutAssignmentInput
+  permissions?: Prisma.EmployeeAssignmentPermissionUncheckedCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutSourceAssignmentInput
+  incomingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutTargetAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+}
+
+export type EmployeeAssignmentCreateOrConnectWithoutAttendanceRecordsInput = {
+  where: Prisma.EmployeeAssignmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeAssignmentCreateWithoutAttendanceRecordsInput, Prisma.EmployeeAssignmentUncheckedCreateWithoutAttendanceRecordsInput>
+}
+
+export type EmployeeAssignmentUpsertWithoutAttendanceRecordsInput = {
+  update: Prisma.XOR<Prisma.EmployeeAssignmentUpdateWithoutAttendanceRecordsInput, Prisma.EmployeeAssignmentUncheckedUpdateWithoutAttendanceRecordsInput>
+  create: Prisma.XOR<Prisma.EmployeeAssignmentCreateWithoutAttendanceRecordsInput, Prisma.EmployeeAssignmentUncheckedCreateWithoutAttendanceRecordsInput>
+  where?: Prisma.EmployeeAssignmentWhereInput
+}
+
+export type EmployeeAssignmentUpdateToOneWithWhereWithoutAttendanceRecordsInput = {
+  where?: Prisma.EmployeeAssignmentWhereInput
+  data: Prisma.XOR<Prisma.EmployeeAssignmentUpdateWithoutAttendanceRecordsInput, Prisma.EmployeeAssignmentUncheckedUpdateWithoutAttendanceRecordsInput>
+}
+
+export type EmployeeAssignmentUpdateWithoutAttendanceRecordsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  responsibilityTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeAssignmentStatusFieldUpdateOperationsInput | $Enums.EmployeeAssignmentStatus
+  assignmentType?: Prisma.EnumEmployeeAssignmentTypeFieldUpdateOperationsInput | $Enums.EmployeeAssignmentType
+  isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutEmployeeAssignmentsNestedInput
+  organizationUnit?: Prisma.OrganizationUnitUpdateOneRequiredWithoutAssignmentsNestedInput
+  position?: Prisma.OrganizationPositionUpdateOneWithoutAssignmentsNestedInput
+  location?: Prisma.OrganizationLocationUpdateOneWithoutAssignmentsNestedInput
+  managerAssignment?: Prisma.EmployeeAssignmentUpdateOneWithoutSubordinateAssignmentsNestedInput
+  subordinateAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutManagerAssignmentNestedInput
+  history?: Prisma.OrganizationAssignmentHistoryUpdateManyWithoutAssignmentNestedInput
+  roles?: Prisma.EmployeeAssignmentRoleUpdateManyWithoutAssignmentNestedInput
+  permissions?: Prisma.EmployeeAssignmentPermissionUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUpdateManyWithoutEmployeeAssignmentNestedInput
+  outgoingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutSourceAssignmentNestedInput
+  incomingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeAssignmentNestedInput
+}
+
+export type EmployeeAssignmentUncheckedUpdateWithoutAttendanceRecordsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationUnitId?: Prisma.StringFieldUpdateOperationsInput | string
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responsibilityTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerAssignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeAssignmentStatusFieldUpdateOperationsInput | $Enums.EmployeeAssignmentStatus
+  assignmentType?: Prisma.EnumEmployeeAssignmentTypeFieldUpdateOperationsInput | $Enums.EmployeeAssignmentType
+  isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subordinateAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutManagerAssignmentNestedInput
+  history?: Prisma.OrganizationAssignmentHistoryUncheckedUpdateManyWithoutAssignmentNestedInput
+  roles?: Prisma.EmployeeAssignmentRoleUncheckedUpdateManyWithoutAssignmentNestedInput
+  permissions?: Prisma.EmployeeAssignmentPermissionUncheckedUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutSourceAssignmentNestedInput
+  incomingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+}
+
+export type EmployeeAssignmentCreateWithoutAttendanceChallengesInput = {
+  id?: string
+  responsibilityTitle?: string | null
+  status?: $Enums.EmployeeAssignmentStatus
+  assignmentType?: $Enums.EmployeeAssignmentType
+  isPrimary?: boolean
+  startDate: Date | string
+  endDate?: Date | string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutEmployeeAssignmentsInput
+  organizationUnit: Prisma.OrganizationUnitCreateNestedOneWithoutAssignmentsInput
+  position?: Prisma.OrganizationPositionCreateNestedOneWithoutAssignmentsInput
+  location?: Prisma.OrganizationLocationCreateNestedOneWithoutAssignmentsInput
+  managerAssignment?: Prisma.EmployeeAssignmentCreateNestedOneWithoutSubordinateAssignmentsInput
+  subordinateAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutManagerAssignmentInput
+  history?: Prisma.OrganizationAssignmentHistoryCreateNestedManyWithoutAssignmentInput
+  roles?: Prisma.EmployeeAssignmentRoleCreateNestedManyWithoutAssignmentInput
+  permissions?: Prisma.EmployeeAssignmentPermissionCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentCreateNestedManyWithoutEmployeeAssignmentInput
+  outgoingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutSourceAssignmentInput
+  incomingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeAssignmentInput
+}
+
+export type EmployeeAssignmentUncheckedCreateWithoutAttendanceChallengesInput = {
+  id?: string
+  userId: string
+  organizationUnitId: string
+  positionId?: string | null
+  responsibilityTitle?: string | null
+  locationId?: string | null
+  managerAssignmentId?: string | null
+  status?: $Enums.EmployeeAssignmentStatus
+  assignmentType?: $Enums.EmployeeAssignmentType
+  isPrimary?: boolean
+  startDate: Date | string
+  endDate?: Date | string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  subordinateAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutManagerAssignmentInput
+  history?: Prisma.OrganizationAssignmentHistoryUncheckedCreateNestedManyWithoutAssignmentInput
+  roles?: Prisma.EmployeeAssignmentRoleUncheckedCreateNestedManyWithoutAssignmentInput
+  permissions?: Prisma.EmployeeAssignmentPermissionUncheckedCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutSourceAssignmentInput
+  incomingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+}
+
+export type EmployeeAssignmentCreateOrConnectWithoutAttendanceChallengesInput = {
+  where: Prisma.EmployeeAssignmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeAssignmentCreateWithoutAttendanceChallengesInput, Prisma.EmployeeAssignmentUncheckedCreateWithoutAttendanceChallengesInput>
+}
+
+export type EmployeeAssignmentUpsertWithoutAttendanceChallengesInput = {
+  update: Prisma.XOR<Prisma.EmployeeAssignmentUpdateWithoutAttendanceChallengesInput, Prisma.EmployeeAssignmentUncheckedUpdateWithoutAttendanceChallengesInput>
+  create: Prisma.XOR<Prisma.EmployeeAssignmentCreateWithoutAttendanceChallengesInput, Prisma.EmployeeAssignmentUncheckedCreateWithoutAttendanceChallengesInput>
+  where?: Prisma.EmployeeAssignmentWhereInput
+}
+
+export type EmployeeAssignmentUpdateToOneWithWhereWithoutAttendanceChallengesInput = {
+  where?: Prisma.EmployeeAssignmentWhereInput
+  data: Prisma.XOR<Prisma.EmployeeAssignmentUpdateWithoutAttendanceChallengesInput, Prisma.EmployeeAssignmentUncheckedUpdateWithoutAttendanceChallengesInput>
+}
+
+export type EmployeeAssignmentUpdateWithoutAttendanceChallengesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  responsibilityTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeAssignmentStatusFieldUpdateOperationsInput | $Enums.EmployeeAssignmentStatus
+  assignmentType?: Prisma.EnumEmployeeAssignmentTypeFieldUpdateOperationsInput | $Enums.EmployeeAssignmentType
+  isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutEmployeeAssignmentsNestedInput
+  organizationUnit?: Prisma.OrganizationUnitUpdateOneRequiredWithoutAssignmentsNestedInput
+  position?: Prisma.OrganizationPositionUpdateOneWithoutAssignmentsNestedInput
+  location?: Prisma.OrganizationLocationUpdateOneWithoutAssignmentsNestedInput
+  managerAssignment?: Prisma.EmployeeAssignmentUpdateOneWithoutSubordinateAssignmentsNestedInput
+  subordinateAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutManagerAssignmentNestedInput
+  history?: Prisma.OrganizationAssignmentHistoryUpdateManyWithoutAssignmentNestedInput
+  roles?: Prisma.EmployeeAssignmentRoleUpdateManyWithoutAssignmentNestedInput
+  permissions?: Prisma.EmployeeAssignmentPermissionUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUpdateManyWithoutEmployeeAssignmentNestedInput
+  outgoingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutSourceAssignmentNestedInput
+  incomingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeAssignmentNestedInput
+}
+
+export type EmployeeAssignmentUncheckedUpdateWithoutAttendanceChallengesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationUnitId?: Prisma.StringFieldUpdateOperationsInput | string
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responsibilityTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerAssignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeAssignmentStatusFieldUpdateOperationsInput | $Enums.EmployeeAssignmentStatus
+  assignmentType?: Prisma.EnumEmployeeAssignmentTypeFieldUpdateOperationsInput | $Enums.EmployeeAssignmentType
+  isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subordinateAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutManagerAssignmentNestedInput
+  history?: Prisma.OrganizationAssignmentHistoryUncheckedUpdateManyWithoutAssignmentNestedInput
+  roles?: Prisma.EmployeeAssignmentRoleUncheckedUpdateManyWithoutAssignmentNestedInput
+  permissions?: Prisma.EmployeeAssignmentPermissionUncheckedUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutSourceAssignmentNestedInput
+  incomingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+}
+
+export type EmployeeAssignmentCreateWithoutLeaveRequestsInput = {
+  id?: string
+  responsibilityTitle?: string | null
+  status?: $Enums.EmployeeAssignmentStatus
+  assignmentType?: $Enums.EmployeeAssignmentType
+  isPrimary?: boolean
+  startDate: Date | string
+  endDate?: Date | string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutEmployeeAssignmentsInput
+  organizationUnit: Prisma.OrganizationUnitCreateNestedOneWithoutAssignmentsInput
+  position?: Prisma.OrganizationPositionCreateNestedOneWithoutAssignmentsInput
+  location?: Prisma.OrganizationLocationCreateNestedOneWithoutAssignmentsInput
+  managerAssignment?: Prisma.EmployeeAssignmentCreateNestedOneWithoutSubordinateAssignmentsInput
+  subordinateAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutManagerAssignmentInput
+  history?: Prisma.OrganizationAssignmentHistoryCreateNestedManyWithoutAssignmentInput
+  roles?: Prisma.EmployeeAssignmentRoleCreateNestedManyWithoutAssignmentInput
+  permissions?: Prisma.EmployeeAssignmentPermissionCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentCreateNestedManyWithoutEmployeeAssignmentInput
+  outgoingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutSourceAssignmentInput
+  incomingRelationships?: Prisma.OrganizationRelationshipCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeCreateNestedManyWithoutEmployeeAssignmentInput
+}
+
+export type EmployeeAssignmentUncheckedCreateWithoutLeaveRequestsInput = {
+  id?: string
+  userId: string
+  organizationUnitId: string
+  positionId?: string | null
+  responsibilityTitle?: string | null
+  locationId?: string | null
+  managerAssignmentId?: string | null
+  status?: $Enums.EmployeeAssignmentStatus
+  assignmentType?: $Enums.EmployeeAssignmentType
+  isPrimary?: boolean
+  startDate: Date | string
+  endDate?: Date | string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  subordinateAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutManagerAssignmentInput
+  history?: Prisma.OrganizationAssignmentHistoryUncheckedCreateNestedManyWithoutAssignmentInput
+  roles?: Prisma.EmployeeAssignmentRoleUncheckedCreateNestedManyWithoutAssignmentInput
+  permissions?: Prisma.EmployeeAssignmentPermissionUncheckedCreateNestedManyWithoutAssignmentInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutSourceAssignmentInput
+  incomingRelationships?: Prisma.OrganizationRelationshipUncheckedCreateNestedManyWithoutTargetAssignmentInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedCreateNestedManyWithoutEmployeeAssignmentInput
+}
+
+export type EmployeeAssignmentCreateOrConnectWithoutLeaveRequestsInput = {
+  where: Prisma.EmployeeAssignmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeAssignmentCreateWithoutLeaveRequestsInput, Prisma.EmployeeAssignmentUncheckedCreateWithoutLeaveRequestsInput>
+}
+
+export type EmployeeAssignmentUpsertWithoutLeaveRequestsInput = {
+  update: Prisma.XOR<Prisma.EmployeeAssignmentUpdateWithoutLeaveRequestsInput, Prisma.EmployeeAssignmentUncheckedUpdateWithoutLeaveRequestsInput>
+  create: Prisma.XOR<Prisma.EmployeeAssignmentCreateWithoutLeaveRequestsInput, Prisma.EmployeeAssignmentUncheckedCreateWithoutLeaveRequestsInput>
+  where?: Prisma.EmployeeAssignmentWhereInput
+}
+
+export type EmployeeAssignmentUpdateToOneWithWhereWithoutLeaveRequestsInput = {
+  where?: Prisma.EmployeeAssignmentWhereInput
+  data: Prisma.XOR<Prisma.EmployeeAssignmentUpdateWithoutLeaveRequestsInput, Prisma.EmployeeAssignmentUncheckedUpdateWithoutLeaveRequestsInput>
+}
+
+export type EmployeeAssignmentUpdateWithoutLeaveRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  responsibilityTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeAssignmentStatusFieldUpdateOperationsInput | $Enums.EmployeeAssignmentStatus
+  assignmentType?: Prisma.EnumEmployeeAssignmentTypeFieldUpdateOperationsInput | $Enums.EmployeeAssignmentType
+  isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutEmployeeAssignmentsNestedInput
+  organizationUnit?: Prisma.OrganizationUnitUpdateOneRequiredWithoutAssignmentsNestedInput
+  position?: Prisma.OrganizationPositionUpdateOneWithoutAssignmentsNestedInput
+  location?: Prisma.OrganizationLocationUpdateOneWithoutAssignmentsNestedInput
+  managerAssignment?: Prisma.EmployeeAssignmentUpdateOneWithoutSubordinateAssignmentsNestedInput
+  subordinateAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutManagerAssignmentNestedInput
+  history?: Prisma.OrganizationAssignmentHistoryUpdateManyWithoutAssignmentNestedInput
+  roles?: Prisma.EmployeeAssignmentRoleUpdateManyWithoutAssignmentNestedInput
+  permissions?: Prisma.EmployeeAssignmentPermissionUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUpdateManyWithoutEmployeeAssignmentNestedInput
+  outgoingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutSourceAssignmentNestedInput
+  incomingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutEmployeeAssignmentNestedInput
+}
+
+export type EmployeeAssignmentUncheckedUpdateWithoutLeaveRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationUnitId?: Prisma.StringFieldUpdateOperationsInput | string
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responsibilityTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerAssignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeAssignmentStatusFieldUpdateOperationsInput | $Enums.EmployeeAssignmentStatus
+  assignmentType?: Prisma.EnumEmployeeAssignmentTypeFieldUpdateOperationsInput | $Enums.EmployeeAssignmentType
+  isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subordinateAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutManagerAssignmentNestedInput
+  history?: Prisma.OrganizationAssignmentHistoryUncheckedUpdateManyWithoutAssignmentNestedInput
+  roles?: Prisma.EmployeeAssignmentRoleUncheckedUpdateManyWithoutAssignmentNestedInput
+  permissions?: Prisma.EmployeeAssignmentPermissionUncheckedUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutSourceAssignmentNestedInput
+  incomingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentCreateManyUserInput = {
@@ -1966,8 +2684,12 @@ export type EmployeeAssignmentUpdateWithoutUserInput = {
   history?: Prisma.OrganizationAssignmentHistoryUpdateManyWithoutAssignmentNestedInput
   roles?: Prisma.EmployeeAssignmentRoleUpdateManyWithoutAssignmentNestedInput
   permissions?: Prisma.EmployeeAssignmentPermissionUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUpdateManyWithoutEmployeeAssignmentNestedInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutSourceAssignmentNestedInput
   incomingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentUncheckedUpdateWithoutUserInput = {
@@ -1989,8 +2711,12 @@ export type EmployeeAssignmentUncheckedUpdateWithoutUserInput = {
   history?: Prisma.OrganizationAssignmentHistoryUncheckedUpdateManyWithoutAssignmentNestedInput
   roles?: Prisma.EmployeeAssignmentRoleUncheckedUpdateManyWithoutAssignmentNestedInput
   permissions?: Prisma.EmployeeAssignmentPermissionUncheckedUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutSourceAssignmentNestedInput
   incomingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentUncheckedUpdateManyWithoutUserInput = {
@@ -2046,8 +2772,12 @@ export type EmployeeAssignmentUpdateWithoutLocationInput = {
   history?: Prisma.OrganizationAssignmentHistoryUpdateManyWithoutAssignmentNestedInput
   roles?: Prisma.EmployeeAssignmentRoleUpdateManyWithoutAssignmentNestedInput
   permissions?: Prisma.EmployeeAssignmentPermissionUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUpdateManyWithoutEmployeeAssignmentNestedInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutSourceAssignmentNestedInput
   incomingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentUncheckedUpdateWithoutLocationInput = {
@@ -2069,8 +2799,12 @@ export type EmployeeAssignmentUncheckedUpdateWithoutLocationInput = {
   history?: Prisma.OrganizationAssignmentHistoryUncheckedUpdateManyWithoutAssignmentNestedInput
   roles?: Prisma.EmployeeAssignmentRoleUncheckedUpdateManyWithoutAssignmentNestedInput
   permissions?: Prisma.EmployeeAssignmentPermissionUncheckedUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutSourceAssignmentNestedInput
   incomingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentUncheckedUpdateManyWithoutLocationInput = {
@@ -2126,8 +2860,12 @@ export type EmployeeAssignmentUpdateWithoutOrganizationUnitInput = {
   history?: Prisma.OrganizationAssignmentHistoryUpdateManyWithoutAssignmentNestedInput
   roles?: Prisma.EmployeeAssignmentRoleUpdateManyWithoutAssignmentNestedInput
   permissions?: Prisma.EmployeeAssignmentPermissionUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUpdateManyWithoutEmployeeAssignmentNestedInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutSourceAssignmentNestedInput
   incomingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentUncheckedUpdateWithoutOrganizationUnitInput = {
@@ -2149,8 +2887,12 @@ export type EmployeeAssignmentUncheckedUpdateWithoutOrganizationUnitInput = {
   history?: Prisma.OrganizationAssignmentHistoryUncheckedUpdateManyWithoutAssignmentNestedInput
   roles?: Prisma.EmployeeAssignmentRoleUncheckedUpdateManyWithoutAssignmentNestedInput
   permissions?: Prisma.EmployeeAssignmentPermissionUncheckedUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutSourceAssignmentNestedInput
   incomingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentUncheckedUpdateManyWithoutOrganizationUnitInput = {
@@ -2206,8 +2948,12 @@ export type EmployeeAssignmentUpdateWithoutPositionInput = {
   history?: Prisma.OrganizationAssignmentHistoryUpdateManyWithoutAssignmentNestedInput
   roles?: Prisma.EmployeeAssignmentRoleUpdateManyWithoutAssignmentNestedInput
   permissions?: Prisma.EmployeeAssignmentPermissionUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUpdateManyWithoutEmployeeAssignmentNestedInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutSourceAssignmentNestedInput
   incomingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentUncheckedUpdateWithoutPositionInput = {
@@ -2229,8 +2975,12 @@ export type EmployeeAssignmentUncheckedUpdateWithoutPositionInput = {
   history?: Prisma.OrganizationAssignmentHistoryUncheckedUpdateManyWithoutAssignmentNestedInput
   roles?: Prisma.EmployeeAssignmentRoleUncheckedUpdateManyWithoutAssignmentNestedInput
   permissions?: Prisma.EmployeeAssignmentPermissionUncheckedUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutSourceAssignmentNestedInput
   incomingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentUncheckedUpdateManyWithoutPositionInput = {
@@ -2286,8 +3036,12 @@ export type EmployeeAssignmentUpdateWithoutManagerAssignmentInput = {
   history?: Prisma.OrganizationAssignmentHistoryUpdateManyWithoutAssignmentNestedInput
   roles?: Prisma.EmployeeAssignmentRoleUpdateManyWithoutAssignmentNestedInput
   permissions?: Prisma.EmployeeAssignmentPermissionUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUpdateManyWithoutEmployeeAssignmentNestedInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutSourceAssignmentNestedInput
   incomingRelationships?: Prisma.OrganizationRelationshipUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentUncheckedUpdateWithoutManagerAssignmentInput = {
@@ -2309,8 +3063,12 @@ export type EmployeeAssignmentUncheckedUpdateWithoutManagerAssignmentInput = {
   history?: Prisma.OrganizationAssignmentHistoryUncheckedUpdateManyWithoutAssignmentNestedInput
   roles?: Prisma.EmployeeAssignmentRoleUncheckedUpdateManyWithoutAssignmentNestedInput
   permissions?: Prisma.EmployeeAssignmentPermissionUncheckedUpdateManyWithoutAssignmentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
   outgoingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutSourceAssignmentNestedInput
   incomingRelationships?: Prisma.OrganizationRelationshipUncheckedUpdateManyWithoutTargetAssignmentNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  attendanceChallenges?: Prisma.AttendanceChallengeUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeAssignmentNestedInput
 }
 
 export type EmployeeAssignmentUncheckedUpdateManyWithoutManagerAssignmentInput = {
@@ -2340,8 +3098,12 @@ export type EmployeeAssignmentCountOutputType = {
   history: number
   roles: number
   permissions: number
+  shiftAssignments: number
   outgoingRelationships: number
   incomingRelationships: number
+  attendanceRecords: number
+  attendanceChallenges: number
+  leaveRequests: number
 }
 
 export type EmployeeAssignmentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2349,8 +3111,12 @@ export type EmployeeAssignmentCountOutputTypeSelect<ExtArgs extends runtime.Type
   history?: boolean | EmployeeAssignmentCountOutputTypeCountHistoryArgs
   roles?: boolean | EmployeeAssignmentCountOutputTypeCountRolesArgs
   permissions?: boolean | EmployeeAssignmentCountOutputTypeCountPermissionsArgs
+  shiftAssignments?: boolean | EmployeeAssignmentCountOutputTypeCountShiftAssignmentsArgs
   outgoingRelationships?: boolean | EmployeeAssignmentCountOutputTypeCountOutgoingRelationshipsArgs
   incomingRelationships?: boolean | EmployeeAssignmentCountOutputTypeCountIncomingRelationshipsArgs
+  attendanceRecords?: boolean | EmployeeAssignmentCountOutputTypeCountAttendanceRecordsArgs
+  attendanceChallenges?: boolean | EmployeeAssignmentCountOutputTypeCountAttendanceChallengesArgs
+  leaveRequests?: boolean | EmployeeAssignmentCountOutputTypeCountLeaveRequestsArgs
 }
 
 /**
@@ -2394,6 +3160,13 @@ export type EmployeeAssignmentCountOutputTypeCountPermissionsArgs<ExtArgs extend
 /**
  * EmployeeAssignmentCountOutputType without action
  */
+export type EmployeeAssignmentCountOutputTypeCountShiftAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ShiftAssignmentWhereInput
+}
+
+/**
+ * EmployeeAssignmentCountOutputType without action
+ */
 export type EmployeeAssignmentCountOutputTypeCountOutgoingRelationshipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.OrganizationRelationshipWhereInput
 }
@@ -2403,6 +3176,27 @@ export type EmployeeAssignmentCountOutputTypeCountOutgoingRelationshipsArgs<ExtA
  */
 export type EmployeeAssignmentCountOutputTypeCountIncomingRelationshipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.OrganizationRelationshipWhereInput
+}
+
+/**
+ * EmployeeAssignmentCountOutputType without action
+ */
+export type EmployeeAssignmentCountOutputTypeCountAttendanceRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AttendanceRecordWhereInput
+}
+
+/**
+ * EmployeeAssignmentCountOutputType without action
+ */
+export type EmployeeAssignmentCountOutputTypeCountAttendanceChallengesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AttendanceChallengeWhereInput
+}
+
+/**
+ * EmployeeAssignmentCountOutputType without action
+ */
+export type EmployeeAssignmentCountOutputTypeCountLeaveRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LeaveRequestWhereInput
 }
 
 
@@ -2431,8 +3225,12 @@ export type EmployeeAssignmentSelect<ExtArgs extends runtime.Types.Extensions.In
   history?: boolean | Prisma.EmployeeAssignment$historyArgs<ExtArgs>
   roles?: boolean | Prisma.EmployeeAssignment$rolesArgs<ExtArgs>
   permissions?: boolean | Prisma.EmployeeAssignment$permissionsArgs<ExtArgs>
+  shiftAssignments?: boolean | Prisma.EmployeeAssignment$shiftAssignmentsArgs<ExtArgs>
   outgoingRelationships?: boolean | Prisma.EmployeeAssignment$outgoingRelationshipsArgs<ExtArgs>
   incomingRelationships?: boolean | Prisma.EmployeeAssignment$incomingRelationshipsArgs<ExtArgs>
+  attendanceRecords?: boolean | Prisma.EmployeeAssignment$attendanceRecordsArgs<ExtArgs>
+  attendanceChallenges?: boolean | Prisma.EmployeeAssignment$attendanceChallengesArgs<ExtArgs>
+  leaveRequests?: boolean | Prisma.EmployeeAssignment$leaveRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeAssignmentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["employeeAssignment"]>
 
@@ -2511,8 +3309,12 @@ export type EmployeeAssignmentInclude<ExtArgs extends runtime.Types.Extensions.I
   history?: boolean | Prisma.EmployeeAssignment$historyArgs<ExtArgs>
   roles?: boolean | Prisma.EmployeeAssignment$rolesArgs<ExtArgs>
   permissions?: boolean | Prisma.EmployeeAssignment$permissionsArgs<ExtArgs>
+  shiftAssignments?: boolean | Prisma.EmployeeAssignment$shiftAssignmentsArgs<ExtArgs>
   outgoingRelationships?: boolean | Prisma.EmployeeAssignment$outgoingRelationshipsArgs<ExtArgs>
   incomingRelationships?: boolean | Prisma.EmployeeAssignment$incomingRelationshipsArgs<ExtArgs>
+  attendanceRecords?: boolean | Prisma.EmployeeAssignment$attendanceRecordsArgs<ExtArgs>
+  attendanceChallenges?: boolean | Prisma.EmployeeAssignment$attendanceChallengesArgs<ExtArgs>
+  leaveRequests?: boolean | Prisma.EmployeeAssignment$leaveRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeAssignmentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type EmployeeAssignmentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2542,8 +3344,12 @@ export type $EmployeeAssignmentPayload<ExtArgs extends runtime.Types.Extensions.
     history: Prisma.$OrganizationAssignmentHistoryPayload<ExtArgs>[]
     roles: Prisma.$EmployeeAssignmentRolePayload<ExtArgs>[]
     permissions: Prisma.$EmployeeAssignmentPermissionPayload<ExtArgs>[]
+    shiftAssignments: Prisma.$ShiftAssignmentPayload<ExtArgs>[]
     outgoingRelationships: Prisma.$OrganizationRelationshipPayload<ExtArgs>[]
     incomingRelationships: Prisma.$OrganizationRelationshipPayload<ExtArgs>[]
+    attendanceRecords: Prisma.$AttendanceRecordPayload<ExtArgs>[]
+    attendanceChallenges: Prisma.$AttendanceChallengePayload<ExtArgs>[]
+    leaveRequests: Prisma.$LeaveRequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2964,8 +3770,12 @@ export interface Prisma__EmployeeAssignmentClient<T, Null = never, ExtArgs exten
   history<T extends Prisma.EmployeeAssignment$historyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeAssignment$historyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrganizationAssignmentHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   roles<T extends Prisma.EmployeeAssignment$rolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeAssignment$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeAssignmentRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   permissions<T extends Prisma.EmployeeAssignment$permissionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeAssignment$permissionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeAssignmentPermissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  shiftAssignments<T extends Prisma.EmployeeAssignment$shiftAssignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeAssignment$shiftAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ShiftAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   outgoingRelationships<T extends Prisma.EmployeeAssignment$outgoingRelationshipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeAssignment$outgoingRelationshipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrganizationRelationshipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   incomingRelationships<T extends Prisma.EmployeeAssignment$incomingRelationshipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeAssignment$incomingRelationshipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrganizationRelationshipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  attendanceRecords<T extends Prisma.EmployeeAssignment$attendanceRecordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeAssignment$attendanceRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendanceRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  attendanceChallenges<T extends Prisma.EmployeeAssignment$attendanceChallengesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeAssignment$attendanceChallengesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendanceChallengePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  leaveRequests<T extends Prisma.EmployeeAssignment$leaveRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeAssignment$leaveRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3559,6 +4369,30 @@ export type EmployeeAssignment$permissionsArgs<ExtArgs extends runtime.Types.Ext
 }
 
 /**
+ * EmployeeAssignment.shiftAssignments
+ */
+export type EmployeeAssignment$shiftAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ShiftAssignment
+   */
+  select?: Prisma.ShiftAssignmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ShiftAssignment
+   */
+  omit?: Prisma.ShiftAssignmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ShiftAssignmentInclude<ExtArgs> | null
+  where?: Prisma.ShiftAssignmentWhereInput
+  orderBy?: Prisma.ShiftAssignmentOrderByWithRelationInput | Prisma.ShiftAssignmentOrderByWithRelationInput[]
+  cursor?: Prisma.ShiftAssignmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ShiftAssignmentScalarFieldEnum | Prisma.ShiftAssignmentScalarFieldEnum[]
+}
+
+/**
  * EmployeeAssignment.outgoingRelationships
  */
 export type EmployeeAssignment$outgoingRelationshipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3604,6 +4438,78 @@ export type EmployeeAssignment$incomingRelationshipsArgs<ExtArgs extends runtime
   take?: number
   skip?: number
   distinct?: Prisma.OrganizationRelationshipScalarFieldEnum | Prisma.OrganizationRelationshipScalarFieldEnum[]
+}
+
+/**
+ * EmployeeAssignment.attendanceRecords
+ */
+export type EmployeeAssignment$attendanceRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AttendanceRecord
+   */
+  select?: Prisma.AttendanceRecordSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AttendanceRecord
+   */
+  omit?: Prisma.AttendanceRecordOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AttendanceRecordInclude<ExtArgs> | null
+  where?: Prisma.AttendanceRecordWhereInput
+  orderBy?: Prisma.AttendanceRecordOrderByWithRelationInput | Prisma.AttendanceRecordOrderByWithRelationInput[]
+  cursor?: Prisma.AttendanceRecordWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AttendanceRecordScalarFieldEnum | Prisma.AttendanceRecordScalarFieldEnum[]
+}
+
+/**
+ * EmployeeAssignment.attendanceChallenges
+ */
+export type EmployeeAssignment$attendanceChallengesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AttendanceChallenge
+   */
+  select?: Prisma.AttendanceChallengeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AttendanceChallenge
+   */
+  omit?: Prisma.AttendanceChallengeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AttendanceChallengeInclude<ExtArgs> | null
+  where?: Prisma.AttendanceChallengeWhereInput
+  orderBy?: Prisma.AttendanceChallengeOrderByWithRelationInput | Prisma.AttendanceChallengeOrderByWithRelationInput[]
+  cursor?: Prisma.AttendanceChallengeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AttendanceChallengeScalarFieldEnum | Prisma.AttendanceChallengeScalarFieldEnum[]
+}
+
+/**
+ * EmployeeAssignment.leaveRequests
+ */
+export type EmployeeAssignment$leaveRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LeaveRequest
+   */
+  select?: Prisma.LeaveRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LeaveRequest
+   */
+  omit?: Prisma.LeaveRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LeaveRequestInclude<ExtArgs> | null
+  where?: Prisma.LeaveRequestWhereInput
+  orderBy?: Prisma.LeaveRequestOrderByWithRelationInput | Prisma.LeaveRequestOrderByWithRelationInput[]
+  cursor?: Prisma.LeaveRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LeaveRequestScalarFieldEnum | Prisma.LeaveRequestScalarFieldEnum[]
 }
 
 /**

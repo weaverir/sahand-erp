@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {validateWeeklyDraftSegments, type EditableWeeklySegment} from '../modules/attendance/weekly-schedule-editor-policy';
+const sample: EditableWeeklySegment={workDate:'2026-11-21',segmentOrder:1,startsAt:'2026-11-21T03:30:00.000Z',endsAt:'2026-11-21T11:30:00.000Z',requiredMinutes:480,workShiftId:null,notes:null};
+test('valid Saturday shift',()=>assert.equal(validateWeeklyDraftSegments([sample],'2026-11-21').length,1));
+test('reject day outside week',()=>assert.throws(()=>validateWeeklyDraftSegments([{...sample,workDate:'2026-11-29'}],'2026-11-21')));
+test('reject overlap',()=>assert.throws(()=>validateWeeklyDraftSegments([sample,{...sample,segmentOrder:2,startsAt:'2026-11-21T05:00:00.000Z'}],'2026-11-21')));
+test('reject duplicate order',()=>assert.throws(()=>validateWeeklyDraftSegments([sample,{...sample,startsAt:'2026-11-21T12:00:00.000Z',endsAt:'2026-11-21T13:00:00.000Z',requiredMinutes:60}],'2026-11-21')));
+test('reject excessive required minutes',()=>assert.throws(()=>validateWeeklyDraftSegments([{...sample,requiredMinutes:500}],'2026-11-21')));
+test('reject invalid time',()=>assert.throws(()=>validateWeeklyDraftSegments([{...sample,endsAt:sample.startsAt}],'2026-11-21')));
+test('allow empty draft',()=>assert.deepEqual(validateWeeklyDraftSegments([],'2026-11-21'),[]));

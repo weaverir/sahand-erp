@@ -771,112 +771,131 @@ input:focus-visible {
   }
 }
 /* Abar High */
+
+/* =========================
+   Abar High
+========================= */
+
 @font-face {
   font-family: "Abar High";
-  src: url("/fonts/Abar%20FaNum/Webfonts/AbarHighFaNum-Regular.woff") format("woff");
+  src: url("/fonts/Abar%20FaNum/Webfonts/woff2/AbarHighFaNum-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Abar High";
+  src: url("/fonts/Abar%20FaNum/Webfonts/woff2/AbarHighFaNum-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Abar High";
+  src: url("/fonts/Abar%20FaNum/Webfonts/woff2/AbarHighFaNum-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Abar High";
+  src: url("/fonts/Abar%20FaNum/Webfonts/woff2/AbarHighFaNum-ExtraBold.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Abar High";
+  src: url("/fonts/Abar%20FaNum/Webfonts/woff2/AbarHighFaNum-Black.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+/* =========================
+   Abar Mid
+========================= */
+
+@font-face {
+  font-family: "Abar Mid";
+  src: url("/fonts/Abar%20FaNum/Webfonts/woff2/AbarMidFaNum-Regular.woff2") format("woff2");
   font-weight: 400;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Abar High";
-  src: url("/fonts/Abar%20FaNum/Webfonts/AbarHighFaNum-SemiBold.woff") format("woff");
-  font-weight: 600;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Abar High";
-  src: url("/fonts/Abar%20FaNum/Webfonts/AbarHighFaNum-Bold.woff") format("woff");
-  font-weight: 700;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Abar High";
-  src: url("/fonts/Abar%20FaNum/Webfonts/AbarHighFaNum-ExtraBold.woff") format("woff");
-  font-weight: 800;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Abar High";
-  src: url("/fonts/Abar%20FaNum/Webfonts/AbarHighFaNum-Black.woff") format("woff");
-  font-weight: 900;
-  font-display: swap;
-}
-
-/* Abar Mid */
-@font-face {
   font-family: "Abar Mid";
-  src: url("/fonts/Abar%20FaNum/Webfonts/AbarMidFaNum-Regular.woff") format("woff");
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Abar Mid";
-  src: url("/fonts/Abar%20FaNum/Webfonts/AbarMidFaNum-SemiBold.woff") format("woff");
+  src: url("/fonts/Abar%20FaNum/Webfonts/woff2/AbarMidFaNum-SemiBold.woff2") format("woff2");
   font-weight: 600;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Abar Mid";
-  src: url("/fonts/Abar%20FaNum/Webfonts/AbarMidFaNum-Bold.woff") format("woff");
+  src: url("/fonts/Abar%20FaNum/Webfonts/woff2/AbarMidFaNum-Bold.woff2") format("woff2");
   font-weight: 700;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Abar Mid";
-  src: url("/fonts/Abar%20FaNum/Webfonts/AbarMidFaNum-ExtraBold.woff") format("woff");
+  src: url("/fonts/Abar%20FaNum/Webfonts/woff2/AbarMidFaNum-ExtraBold.woff2") format("woff2");
   font-weight: 800;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Abar Mid";
-  src: url("/fonts/Abar%20FaNum/Webfonts/AbarMidFaNum-Black.woff") format("woff");
+  src: url("/fonts/Abar%20FaNum/Webfonts/woff2/AbarMidFaNum-Black.woff2") format("woff2");
   font-weight: 900;
   font-display: swap;
 }
 
-/* Abar Low */
+
+/* =========================
+   Abar Low
+========================= */
+
 @font-face {
   font-family: "Abar Low";
-  src: url("/fonts/Abar%20FaNum/Webfonts/AbarLowFaNum-Regular.woff") format("woff");
+  src: url("/fonts/Abar%20FaNum/Webfonts/woff2/AbarLowFaNum-Regular.woff2") format("woff2");
   font-weight: 400;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Abar Low";
-  src: url("/fonts/Abar%20FaNum/Webfonts/AbarLowFaNum-SemiBold.woff") format("woff");
+  src: url("/fonts/Abar%20FaNum/Webfonts/woff2/AbarLowFaNum-SemiBold.woff2") format("woff2");
   font-weight: 600;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Abar Low";
-  src: url("/fonts/Abar%20FaNum/Webfonts/AbarLowFaNum-Bold.woff") format("woff");
+  src: url("/fonts/Abar%20FaNum/Webfonts/woff2/AbarLowFaNum-Bold.woff2") format("woff2");
   font-weight: 700;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Abar Low";
-  src: url("/fonts/Abar%20FaNum/Webfonts/AbarLowFaNum-ExtraBold.woff") format("woff");
+  src: url("/fonts/Abar%20FaNum/Webfonts/woff2/AbarLowFaNum-ExtraBold.woff2") format("woff2");
   font-weight: 800;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Abar Low";
-  src: url("/fonts/Abar%20FaNum/Webfonts/AbarLowFaNum-Black.woff") format("woff");
+  src: url("/fonts/Abar%20FaNum/Webfonts/woff2/AbarLowFaNum-Black.woff2") format("woff2");
   font-weight: 900;
   font-display: swap;
 }
+
 
 /* Tailwind CSS v4 */
 @theme {

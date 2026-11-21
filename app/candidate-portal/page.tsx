@@ -3,6 +3,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import DocumentsStepForm from "./documents-step-form";
 import {
   UserRound,
   FileText,
@@ -426,6 +427,8 @@ export default function CandidatePortalPage() {
             </div>
           </div>
         </section>
+
+        <DocumentsStepForm enabled={initialApproved} />
 
         <section className="rounded-2xl border border-slate-200 bg-white p-5">
           <div className="flex items-center gap-3">

@@ -260,6 +260,7 @@ export type OrganizationUnitWhereInput = {
   children?: Prisma.OrganizationUnitListRelationFilter
   location?: Prisma.XOR<Prisma.OrganizationLocationNullableScalarRelationFilter, Prisma.OrganizationLocationWhereInput> | null
   assignments?: Prisma.EmployeeAssignmentListRelationFilter
+  shiftAssignments?: Prisma.ShiftAssignmentListRelationFilter
 }
 
 export type OrganizationUnitOrderByWithRelationInput = {
@@ -277,6 +278,7 @@ export type OrganizationUnitOrderByWithRelationInput = {
   children?: Prisma.OrganizationUnitOrderByRelationAggregateInput
   location?: Prisma.OrganizationLocationOrderByWithRelationInput
   assignments?: Prisma.EmployeeAssignmentOrderByRelationAggregateInput
+  shiftAssignments?: Prisma.ShiftAssignmentOrderByRelationAggregateInput
 }
 
 export type OrganizationUnitWhereUniqueInput = Prisma.AtLeast<{
@@ -297,6 +299,7 @@ export type OrganizationUnitWhereUniqueInput = Prisma.AtLeast<{
   children?: Prisma.OrganizationUnitListRelationFilter
   location?: Prisma.XOR<Prisma.OrganizationLocationNullableScalarRelationFilter, Prisma.OrganizationLocationWhereInput> | null
   assignments?: Prisma.EmployeeAssignmentListRelationFilter
+  shiftAssignments?: Prisma.ShiftAssignmentListRelationFilter
 }, "id" | "code">
 
 export type OrganizationUnitOrderByWithAggregationInput = {
@@ -346,6 +349,7 @@ export type OrganizationUnitCreateInput = {
   children?: Prisma.OrganizationUnitCreateNestedManyWithoutParentInput
   location?: Prisma.OrganizationLocationCreateNestedOneWithoutUnitsInput
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutOrganizationUnitInput
+  shiftAssignments?: Prisma.ShiftAssignmentCreateNestedManyWithoutOrganizationUnitInput
 }
 
 export type OrganizationUnitUncheckedCreateInput = {
@@ -361,6 +365,7 @@ export type OrganizationUnitUncheckedCreateInput = {
   updatedAt?: Date | string
   children?: Prisma.OrganizationUnitUncheckedCreateNestedManyWithoutParentInput
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutOrganizationUnitInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedCreateNestedManyWithoutOrganizationUnitInput
 }
 
 export type OrganizationUnitUpdateInput = {
@@ -376,6 +381,7 @@ export type OrganizationUnitUpdateInput = {
   children?: Prisma.OrganizationUnitUpdateManyWithoutParentNestedInput
   location?: Prisma.OrganizationLocationUpdateOneWithoutUnitsNestedInput
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutOrganizationUnitNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUpdateManyWithoutOrganizationUnitNestedInput
 }
 
 export type OrganizationUnitUncheckedUpdateInput = {
@@ -391,6 +397,7 @@ export type OrganizationUnitUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   children?: Prisma.OrganizationUnitUncheckedUpdateManyWithoutParentNestedInput
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutOrganizationUnitNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedUpdateManyWithoutOrganizationUnitNestedInput
 }
 
 export type OrganizationUnitCreateManyInput = {
@@ -615,6 +622,22 @@ export type OrganizationUnitUpdateOneRequiredWithoutAssignmentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUnitUpdateToOneWithWhereWithoutAssignmentsInput, Prisma.OrganizationUnitUpdateWithoutAssignmentsInput>, Prisma.OrganizationUnitUncheckedUpdateWithoutAssignmentsInput>
 }
 
+export type OrganizationUnitCreateNestedOneWithoutShiftAssignmentsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationUnitCreateWithoutShiftAssignmentsInput, Prisma.OrganizationUnitUncheckedCreateWithoutShiftAssignmentsInput>
+  connectOrCreate?: Prisma.OrganizationUnitCreateOrConnectWithoutShiftAssignmentsInput
+  connect?: Prisma.OrganizationUnitWhereUniqueInput
+}
+
+export type OrganizationUnitUpdateOneWithoutShiftAssignmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationUnitCreateWithoutShiftAssignmentsInput, Prisma.OrganizationUnitUncheckedCreateWithoutShiftAssignmentsInput>
+  connectOrCreate?: Prisma.OrganizationUnitCreateOrConnectWithoutShiftAssignmentsInput
+  upsert?: Prisma.OrganizationUnitUpsertWithoutShiftAssignmentsInput
+  disconnect?: Prisma.OrganizationUnitWhereInput | boolean
+  delete?: Prisma.OrganizationUnitWhereInput | boolean
+  connect?: Prisma.OrganizationUnitWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUnitUpdateToOneWithWhereWithoutShiftAssignmentsInput, Prisma.OrganizationUnitUpdateWithoutShiftAssignmentsInput>, Prisma.OrganizationUnitUncheckedUpdateWithoutShiftAssignmentsInput>
+}
+
 export type OrganizationUnitCreateWithoutLocationInput = {
   id?: string
   code: string
@@ -627,6 +650,7 @@ export type OrganizationUnitCreateWithoutLocationInput = {
   parent?: Prisma.OrganizationUnitCreateNestedOneWithoutChildrenInput
   children?: Prisma.OrganizationUnitCreateNestedManyWithoutParentInput
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutOrganizationUnitInput
+  shiftAssignments?: Prisma.ShiftAssignmentCreateNestedManyWithoutOrganizationUnitInput
 }
 
 export type OrganizationUnitUncheckedCreateWithoutLocationInput = {
@@ -641,6 +665,7 @@ export type OrganizationUnitUncheckedCreateWithoutLocationInput = {
   updatedAt?: Date | string
   children?: Prisma.OrganizationUnitUncheckedCreateNestedManyWithoutParentInput
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutOrganizationUnitInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedCreateNestedManyWithoutOrganizationUnitInput
 }
 
 export type OrganizationUnitCreateOrConnectWithoutLocationInput = {
@@ -697,6 +722,7 @@ export type OrganizationUnitCreateWithoutChildrenInput = {
   parent?: Prisma.OrganizationUnitCreateNestedOneWithoutChildrenInput
   location?: Prisma.OrganizationLocationCreateNestedOneWithoutUnitsInput
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutOrganizationUnitInput
+  shiftAssignments?: Prisma.ShiftAssignmentCreateNestedManyWithoutOrganizationUnitInput
 }
 
 export type OrganizationUnitUncheckedCreateWithoutChildrenInput = {
@@ -711,6 +737,7 @@ export type OrganizationUnitUncheckedCreateWithoutChildrenInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutOrganizationUnitInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedCreateNestedManyWithoutOrganizationUnitInput
 }
 
 export type OrganizationUnitCreateOrConnectWithoutChildrenInput = {
@@ -730,6 +757,7 @@ export type OrganizationUnitCreateWithoutParentInput = {
   children?: Prisma.OrganizationUnitCreateNestedManyWithoutParentInput
   location?: Prisma.OrganizationLocationCreateNestedOneWithoutUnitsInput
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutOrganizationUnitInput
+  shiftAssignments?: Prisma.ShiftAssignmentCreateNestedManyWithoutOrganizationUnitInput
 }
 
 export type OrganizationUnitUncheckedCreateWithoutParentInput = {
@@ -744,6 +772,7 @@ export type OrganizationUnitUncheckedCreateWithoutParentInput = {
   updatedAt?: Date | string
   children?: Prisma.OrganizationUnitUncheckedCreateNestedManyWithoutParentInput
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutOrganizationUnitInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedCreateNestedManyWithoutOrganizationUnitInput
 }
 
 export type OrganizationUnitCreateOrConnectWithoutParentInput = {
@@ -779,6 +808,7 @@ export type OrganizationUnitUpdateWithoutChildrenInput = {
   parent?: Prisma.OrganizationUnitUpdateOneWithoutChildrenNestedInput
   location?: Prisma.OrganizationLocationUpdateOneWithoutUnitsNestedInput
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutOrganizationUnitNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUpdateManyWithoutOrganizationUnitNestedInput
 }
 
 export type OrganizationUnitUncheckedUpdateWithoutChildrenInput = {
@@ -793,6 +823,7 @@ export type OrganizationUnitUncheckedUpdateWithoutChildrenInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutOrganizationUnitNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedUpdateManyWithoutOrganizationUnitNestedInput
 }
 
 export type OrganizationUnitUpsertWithWhereUniqueWithoutParentInput = {
@@ -823,6 +854,7 @@ export type OrganizationUnitCreateWithoutAssignmentsInput = {
   parent?: Prisma.OrganizationUnitCreateNestedOneWithoutChildrenInput
   children?: Prisma.OrganizationUnitCreateNestedManyWithoutParentInput
   location?: Prisma.OrganizationLocationCreateNestedOneWithoutUnitsInput
+  shiftAssignments?: Prisma.ShiftAssignmentCreateNestedManyWithoutOrganizationUnitInput
 }
 
 export type OrganizationUnitUncheckedCreateWithoutAssignmentsInput = {
@@ -837,6 +869,7 @@ export type OrganizationUnitUncheckedCreateWithoutAssignmentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   children?: Prisma.OrganizationUnitUncheckedCreateNestedManyWithoutParentInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedCreateNestedManyWithoutOrganizationUnitInput
 }
 
 export type OrganizationUnitCreateOrConnectWithoutAssignmentsInput = {
@@ -867,6 +900,7 @@ export type OrganizationUnitUpdateWithoutAssignmentsInput = {
   parent?: Prisma.OrganizationUnitUpdateOneWithoutChildrenNestedInput
   children?: Prisma.OrganizationUnitUpdateManyWithoutParentNestedInput
   location?: Prisma.OrganizationLocationUpdateOneWithoutUnitsNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUpdateManyWithoutOrganizationUnitNestedInput
 }
 
 export type OrganizationUnitUncheckedUpdateWithoutAssignmentsInput = {
@@ -881,6 +915,83 @@ export type OrganizationUnitUncheckedUpdateWithoutAssignmentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   children?: Prisma.OrganizationUnitUncheckedUpdateManyWithoutParentNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedUpdateManyWithoutOrganizationUnitNestedInput
+}
+
+export type OrganizationUnitCreateWithoutShiftAssignmentsInput = {
+  id?: string
+  code: string
+  name: string
+  description?: string | null
+  status?: $Enums.OrganizationUnitStatus
+  sortOrder?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  parent?: Prisma.OrganizationUnitCreateNestedOneWithoutChildrenInput
+  children?: Prisma.OrganizationUnitCreateNestedManyWithoutParentInput
+  location?: Prisma.OrganizationLocationCreateNestedOneWithoutUnitsInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutOrganizationUnitInput
+}
+
+export type OrganizationUnitUncheckedCreateWithoutShiftAssignmentsInput = {
+  id?: string
+  code: string
+  name: string
+  description?: string | null
+  parentId?: string | null
+  locationId?: string | null
+  status?: $Enums.OrganizationUnitStatus
+  sortOrder?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  children?: Prisma.OrganizationUnitUncheckedCreateNestedManyWithoutParentInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutOrganizationUnitInput
+}
+
+export type OrganizationUnitCreateOrConnectWithoutShiftAssignmentsInput = {
+  where: Prisma.OrganizationUnitWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationUnitCreateWithoutShiftAssignmentsInput, Prisma.OrganizationUnitUncheckedCreateWithoutShiftAssignmentsInput>
+}
+
+export type OrganizationUnitUpsertWithoutShiftAssignmentsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUnitUpdateWithoutShiftAssignmentsInput, Prisma.OrganizationUnitUncheckedUpdateWithoutShiftAssignmentsInput>
+  create: Prisma.XOR<Prisma.OrganizationUnitCreateWithoutShiftAssignmentsInput, Prisma.OrganizationUnitUncheckedCreateWithoutShiftAssignmentsInput>
+  where?: Prisma.OrganizationUnitWhereInput
+}
+
+export type OrganizationUnitUpdateToOneWithWhereWithoutShiftAssignmentsInput = {
+  where?: Prisma.OrganizationUnitWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUnitUpdateWithoutShiftAssignmentsInput, Prisma.OrganizationUnitUncheckedUpdateWithoutShiftAssignmentsInput>
+}
+
+export type OrganizationUnitUpdateWithoutShiftAssignmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationUnitStatusFieldUpdateOperationsInput | $Enums.OrganizationUnitStatus
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parent?: Prisma.OrganizationUnitUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.OrganizationUnitUpdateManyWithoutParentNestedInput
+  location?: Prisma.OrganizationLocationUpdateOneWithoutUnitsNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutOrganizationUnitNestedInput
+}
+
+export type OrganizationUnitUncheckedUpdateWithoutShiftAssignmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationUnitStatusFieldUpdateOperationsInput | $Enums.OrganizationUnitStatus
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.OrganizationUnitUncheckedUpdateManyWithoutParentNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutOrganizationUnitNestedInput
 }
 
 export type OrganizationUnitCreateManyLocationInput = {
@@ -907,6 +1018,7 @@ export type OrganizationUnitUpdateWithoutLocationInput = {
   parent?: Prisma.OrganizationUnitUpdateOneWithoutChildrenNestedInput
   children?: Prisma.OrganizationUnitUpdateManyWithoutParentNestedInput
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutOrganizationUnitNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUpdateManyWithoutOrganizationUnitNestedInput
 }
 
 export type OrganizationUnitUncheckedUpdateWithoutLocationInput = {
@@ -921,6 +1033,7 @@ export type OrganizationUnitUncheckedUpdateWithoutLocationInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   children?: Prisma.OrganizationUnitUncheckedUpdateManyWithoutParentNestedInput
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutOrganizationUnitNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedUpdateManyWithoutOrganizationUnitNestedInput
 }
 
 export type OrganizationUnitUncheckedUpdateManyWithoutLocationInput = {
@@ -959,6 +1072,7 @@ export type OrganizationUnitUpdateWithoutParentInput = {
   children?: Prisma.OrganizationUnitUpdateManyWithoutParentNestedInput
   location?: Prisma.OrganizationLocationUpdateOneWithoutUnitsNestedInput
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutOrganizationUnitNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUpdateManyWithoutOrganizationUnitNestedInput
 }
 
 export type OrganizationUnitUncheckedUpdateWithoutParentInput = {
@@ -973,6 +1087,7 @@ export type OrganizationUnitUncheckedUpdateWithoutParentInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   children?: Prisma.OrganizationUnitUncheckedUpdateManyWithoutParentNestedInput
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutOrganizationUnitNestedInput
+  shiftAssignments?: Prisma.ShiftAssignmentUncheckedUpdateManyWithoutOrganizationUnitNestedInput
 }
 
 export type OrganizationUnitUncheckedUpdateManyWithoutParentInput = {
@@ -995,11 +1110,13 @@ export type OrganizationUnitUncheckedUpdateManyWithoutParentInput = {
 export type OrganizationUnitCountOutputType = {
   children: number
   assignments: number
+  shiftAssignments: number
 }
 
 export type OrganizationUnitCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   children?: boolean | OrganizationUnitCountOutputTypeCountChildrenArgs
   assignments?: boolean | OrganizationUnitCountOutputTypeCountAssignmentsArgs
+  shiftAssignments?: boolean | OrganizationUnitCountOutputTypeCountShiftAssignmentsArgs
 }
 
 /**
@@ -1026,6 +1143,13 @@ export type OrganizationUnitCountOutputTypeCountAssignmentsArgs<ExtArgs extends 
   where?: Prisma.EmployeeAssignmentWhereInput
 }
 
+/**
+ * OrganizationUnitCountOutputType without action
+ */
+export type OrganizationUnitCountOutputTypeCountShiftAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ShiftAssignmentWhereInput
+}
+
 
 export type OrganizationUnitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1042,6 +1166,7 @@ export type OrganizationUnitSelect<ExtArgs extends runtime.Types.Extensions.Inte
   children?: boolean | Prisma.OrganizationUnit$childrenArgs<ExtArgs>
   location?: boolean | Prisma.OrganizationUnit$locationArgs<ExtArgs>
   assignments?: boolean | Prisma.OrganizationUnit$assignmentsArgs<ExtArgs>
+  shiftAssignments?: boolean | Prisma.OrganizationUnit$shiftAssignmentsArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationUnitCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["organizationUnit"]>
 
@@ -1094,6 +1219,7 @@ export type OrganizationUnitInclude<ExtArgs extends runtime.Types.Extensions.Int
   children?: boolean | Prisma.OrganizationUnit$childrenArgs<ExtArgs>
   location?: boolean | Prisma.OrganizationUnit$locationArgs<ExtArgs>
   assignments?: boolean | Prisma.OrganizationUnit$assignmentsArgs<ExtArgs>
+  shiftAssignments?: boolean | Prisma.OrganizationUnit$shiftAssignmentsArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationUnitCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OrganizationUnitIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1112,6 +1238,7 @@ export type $OrganizationUnitPayload<ExtArgs extends runtime.Types.Extensions.In
     children: Prisma.$OrganizationUnitPayload<ExtArgs>[]
     location: Prisma.$OrganizationLocationPayload<ExtArgs> | null
     assignments: Prisma.$EmployeeAssignmentPayload<ExtArgs>[]
+    shiftAssignments: Prisma.$ShiftAssignmentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1522,6 +1649,7 @@ export interface Prisma__OrganizationUnitClient<T, Null = never, ExtArgs extends
   children<T extends Prisma.OrganizationUnit$childrenArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationUnit$childrenArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrganizationUnitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   location<T extends Prisma.OrganizationUnit$locationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationUnit$locationArgs<ExtArgs>>): Prisma.Prisma__OrganizationLocationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationLocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   assignments<T extends Prisma.OrganizationUnit$assignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationUnit$assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  shiftAssignments<T extends Prisma.OrganizationUnit$shiftAssignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationUnit$shiftAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ShiftAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2040,6 +2168,30 @@ export type OrganizationUnit$assignmentsArgs<ExtArgs extends runtime.Types.Exten
   take?: number
   skip?: number
   distinct?: Prisma.EmployeeAssignmentScalarFieldEnum | Prisma.EmployeeAssignmentScalarFieldEnum[]
+}
+
+/**
+ * OrganizationUnit.shiftAssignments
+ */
+export type OrganizationUnit$shiftAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ShiftAssignment
+   */
+  select?: Prisma.ShiftAssignmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ShiftAssignment
+   */
+  omit?: Prisma.ShiftAssignmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ShiftAssignmentInclude<ExtArgs> | null
+  where?: Prisma.ShiftAssignmentWhereInput
+  orderBy?: Prisma.ShiftAssignmentOrderByWithRelationInput | Prisma.ShiftAssignmentOrderByWithRelationInput[]
+  cursor?: Prisma.ShiftAssignmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ShiftAssignmentScalarFieldEnum | Prisma.ShiftAssignmentScalarFieldEnum[]
 }
 
 /**

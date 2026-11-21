@@ -534,6 +534,7 @@ export type CandidateApplicationWhereInput = {
   familyMembers?: Prisma.CandidateFamilyMemberListRelationFilter
   documents?: Prisma.CandidateDocumentListRelationFilter
   approvals?: Prisma.ApplicationApprovalListRelationFilter
+  employeeProfile?: Prisma.XOR<Prisma.EmployeeProfileNullableScalarRelationFilter, Prisma.EmployeeProfileWhereInput> | null
 }
 
 export type CandidateApplicationOrderByWithRelationInput = {
@@ -589,6 +590,7 @@ export type CandidateApplicationOrderByWithRelationInput = {
   familyMembers?: Prisma.CandidateFamilyMemberOrderByRelationAggregateInput
   documents?: Prisma.CandidateDocumentOrderByRelationAggregateInput
   approvals?: Prisma.ApplicationApprovalOrderByRelationAggregateInput
+  employeeProfile?: Prisma.EmployeeProfileOrderByWithRelationInput
 }
 
 export type CandidateApplicationWhereUniqueInput = Prisma.AtLeast<{
@@ -647,6 +649,7 @@ export type CandidateApplicationWhereUniqueInput = Prisma.AtLeast<{
   familyMembers?: Prisma.CandidateFamilyMemberListRelationFilter
   documents?: Prisma.CandidateDocumentListRelationFilter
   approvals?: Prisma.ApplicationApprovalListRelationFilter
+  employeeProfile?: Prisma.XOR<Prisma.EmployeeProfileNullableScalarRelationFilter, Prisma.EmployeeProfileWhereInput> | null
 }, "id" | "applicationNumber" | "userId" | "nationalId">
 
 export type CandidateApplicationOrderByWithAggregationInput = {
@@ -799,6 +802,7 @@ export type CandidateApplicationCreateInput = {
   familyMembers?: Prisma.CandidateFamilyMemberCreateNestedManyWithoutApplicationInput
   documents?: Prisma.CandidateDocumentCreateNestedManyWithoutApplicationInput
   approvals?: Prisma.ApplicationApprovalCreateNestedManyWithoutApplicationInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutCandidateApplicationInput
 }
 
 export type CandidateApplicationUncheckedCreateInput = {
@@ -853,6 +857,7 @@ export type CandidateApplicationUncheckedCreateInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUncheckedCreateNestedManyWithoutApplicationInput
   documents?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutApplicationInput
   approvals?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutApplicationInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutCandidateApplicationInput
 }
 
 export type CandidateApplicationUpdateInput = {
@@ -907,6 +912,7 @@ export type CandidateApplicationUpdateInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUpdateManyWithoutApplicationNestedInput
   documents?: Prisma.CandidateDocumentUpdateManyWithoutApplicationNestedInput
   approvals?: Prisma.ApplicationApprovalUpdateManyWithoutApplicationNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutCandidateApplicationNestedInput
 }
 
 export type CandidateApplicationUncheckedUpdateInput = {
@@ -961,6 +967,7 @@ export type CandidateApplicationUncheckedUpdateInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUncheckedUpdateManyWithoutApplicationNestedInput
   documents?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutApplicationNestedInput
   approvals?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutApplicationNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutCandidateApplicationNestedInput
 }
 
 export type CandidateApplicationCreateManyInput = {
@@ -1434,6 +1441,20 @@ export type CandidateApplicationUpdateOneRequiredWithoutApprovalsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CandidateApplicationUpdateToOneWithWhereWithoutApprovalsInput, Prisma.CandidateApplicationUpdateWithoutApprovalsInput>, Prisma.CandidateApplicationUncheckedUpdateWithoutApprovalsInput>
 }
 
+export type CandidateApplicationCreateNestedOneWithoutEmployeeProfileInput = {
+  create?: Prisma.XOR<Prisma.CandidateApplicationCreateWithoutEmployeeProfileInput, Prisma.CandidateApplicationUncheckedCreateWithoutEmployeeProfileInput>
+  connectOrCreate?: Prisma.CandidateApplicationCreateOrConnectWithoutEmployeeProfileInput
+  connect?: Prisma.CandidateApplicationWhereUniqueInput
+}
+
+export type CandidateApplicationUpdateOneRequiredWithoutEmployeeProfileNestedInput = {
+  create?: Prisma.XOR<Prisma.CandidateApplicationCreateWithoutEmployeeProfileInput, Prisma.CandidateApplicationUncheckedCreateWithoutEmployeeProfileInput>
+  connectOrCreate?: Prisma.CandidateApplicationCreateOrConnectWithoutEmployeeProfileInput
+  upsert?: Prisma.CandidateApplicationUpsertWithoutEmployeeProfileInput
+  connect?: Prisma.CandidateApplicationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CandidateApplicationUpdateToOneWithWhereWithoutEmployeeProfileInput, Prisma.CandidateApplicationUpdateWithoutEmployeeProfileInput>, Prisma.CandidateApplicationUncheckedUpdateWithoutEmployeeProfileInput>
+}
+
 export type CandidateApplicationCreateWithoutUserInput = {
   id?: string
   applicationNumber: string
@@ -1485,6 +1506,7 @@ export type CandidateApplicationCreateWithoutUserInput = {
   familyMembers?: Prisma.CandidateFamilyMemberCreateNestedManyWithoutApplicationInput
   documents?: Prisma.CandidateDocumentCreateNestedManyWithoutApplicationInput
   approvals?: Prisma.ApplicationApprovalCreateNestedManyWithoutApplicationInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutCandidateApplicationInput
 }
 
 export type CandidateApplicationUncheckedCreateWithoutUserInput = {
@@ -1538,6 +1560,7 @@ export type CandidateApplicationUncheckedCreateWithoutUserInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUncheckedCreateNestedManyWithoutApplicationInput
   documents?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutApplicationInput
   approvals?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutApplicationInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutCandidateApplicationInput
 }
 
 export type CandidateApplicationCreateOrConnectWithoutUserInput = {
@@ -1607,6 +1630,7 @@ export type CandidateApplicationUpdateWithoutUserInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUpdateManyWithoutApplicationNestedInput
   documents?: Prisma.CandidateDocumentUpdateManyWithoutApplicationNestedInput
   approvals?: Prisma.ApplicationApprovalUpdateManyWithoutApplicationNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutCandidateApplicationNestedInput
 }
 
 export type CandidateApplicationUncheckedUpdateWithoutUserInput = {
@@ -1660,6 +1684,7 @@ export type CandidateApplicationUncheckedUpdateWithoutUserInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUncheckedUpdateManyWithoutApplicationNestedInput
   documents?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutApplicationNestedInput
   approvals?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutApplicationNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutCandidateApplicationNestedInput
 }
 
 export type CandidateApplicationCreateWithoutEducationRecordsInput = {
@@ -1713,6 +1738,7 @@ export type CandidateApplicationCreateWithoutEducationRecordsInput = {
   familyMembers?: Prisma.CandidateFamilyMemberCreateNestedManyWithoutApplicationInput
   documents?: Prisma.CandidateDocumentCreateNestedManyWithoutApplicationInput
   approvals?: Prisma.ApplicationApprovalCreateNestedManyWithoutApplicationInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutCandidateApplicationInput
 }
 
 export type CandidateApplicationUncheckedCreateWithoutEducationRecordsInput = {
@@ -1766,6 +1792,7 @@ export type CandidateApplicationUncheckedCreateWithoutEducationRecordsInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUncheckedCreateNestedManyWithoutApplicationInput
   documents?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutApplicationInput
   approvals?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutApplicationInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutCandidateApplicationInput
 }
 
 export type CandidateApplicationCreateOrConnectWithoutEducationRecordsInput = {
@@ -1835,6 +1862,7 @@ export type CandidateApplicationUpdateWithoutEducationRecordsInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUpdateManyWithoutApplicationNestedInput
   documents?: Prisma.CandidateDocumentUpdateManyWithoutApplicationNestedInput
   approvals?: Prisma.ApplicationApprovalUpdateManyWithoutApplicationNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutCandidateApplicationNestedInput
 }
 
 export type CandidateApplicationUncheckedUpdateWithoutEducationRecordsInput = {
@@ -1888,6 +1916,7 @@ export type CandidateApplicationUncheckedUpdateWithoutEducationRecordsInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUncheckedUpdateManyWithoutApplicationNestedInput
   documents?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutApplicationNestedInput
   approvals?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutApplicationNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutCandidateApplicationNestedInput
 }
 
 export type CandidateApplicationCreateWithoutWorkExperiencesInput = {
@@ -1941,6 +1970,7 @@ export type CandidateApplicationCreateWithoutWorkExperiencesInput = {
   familyMembers?: Prisma.CandidateFamilyMemberCreateNestedManyWithoutApplicationInput
   documents?: Prisma.CandidateDocumentCreateNestedManyWithoutApplicationInput
   approvals?: Prisma.ApplicationApprovalCreateNestedManyWithoutApplicationInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutCandidateApplicationInput
 }
 
 export type CandidateApplicationUncheckedCreateWithoutWorkExperiencesInput = {
@@ -1994,6 +2024,7 @@ export type CandidateApplicationUncheckedCreateWithoutWorkExperiencesInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUncheckedCreateNestedManyWithoutApplicationInput
   documents?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutApplicationInput
   approvals?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutApplicationInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutCandidateApplicationInput
 }
 
 export type CandidateApplicationCreateOrConnectWithoutWorkExperiencesInput = {
@@ -2063,6 +2094,7 @@ export type CandidateApplicationUpdateWithoutWorkExperiencesInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUpdateManyWithoutApplicationNestedInput
   documents?: Prisma.CandidateDocumentUpdateManyWithoutApplicationNestedInput
   approvals?: Prisma.ApplicationApprovalUpdateManyWithoutApplicationNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutCandidateApplicationNestedInput
 }
 
 export type CandidateApplicationUncheckedUpdateWithoutWorkExperiencesInput = {
@@ -2116,6 +2148,7 @@ export type CandidateApplicationUncheckedUpdateWithoutWorkExperiencesInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUncheckedUpdateManyWithoutApplicationNestedInput
   documents?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutApplicationNestedInput
   approvals?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutApplicationNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutCandidateApplicationNestedInput
 }
 
 export type CandidateApplicationCreateWithoutSkillsInput = {
@@ -2169,6 +2202,7 @@ export type CandidateApplicationCreateWithoutSkillsInput = {
   familyMembers?: Prisma.CandidateFamilyMemberCreateNestedManyWithoutApplicationInput
   documents?: Prisma.CandidateDocumentCreateNestedManyWithoutApplicationInput
   approvals?: Prisma.ApplicationApprovalCreateNestedManyWithoutApplicationInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutCandidateApplicationInput
 }
 
 export type CandidateApplicationUncheckedCreateWithoutSkillsInput = {
@@ -2222,6 +2256,7 @@ export type CandidateApplicationUncheckedCreateWithoutSkillsInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUncheckedCreateNestedManyWithoutApplicationInput
   documents?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutApplicationInput
   approvals?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutApplicationInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutCandidateApplicationInput
 }
 
 export type CandidateApplicationCreateOrConnectWithoutSkillsInput = {
@@ -2291,6 +2326,7 @@ export type CandidateApplicationUpdateWithoutSkillsInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUpdateManyWithoutApplicationNestedInput
   documents?: Prisma.CandidateDocumentUpdateManyWithoutApplicationNestedInput
   approvals?: Prisma.ApplicationApprovalUpdateManyWithoutApplicationNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutCandidateApplicationNestedInput
 }
 
 export type CandidateApplicationUncheckedUpdateWithoutSkillsInput = {
@@ -2344,6 +2380,7 @@ export type CandidateApplicationUncheckedUpdateWithoutSkillsInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUncheckedUpdateManyWithoutApplicationNestedInput
   documents?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutApplicationNestedInput
   approvals?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutApplicationNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutCandidateApplicationNestedInput
 }
 
 export type CandidateApplicationCreateWithoutReferencesInput = {
@@ -2397,6 +2434,7 @@ export type CandidateApplicationCreateWithoutReferencesInput = {
   familyMembers?: Prisma.CandidateFamilyMemberCreateNestedManyWithoutApplicationInput
   documents?: Prisma.CandidateDocumentCreateNestedManyWithoutApplicationInput
   approvals?: Prisma.ApplicationApprovalCreateNestedManyWithoutApplicationInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutCandidateApplicationInput
 }
 
 export type CandidateApplicationUncheckedCreateWithoutReferencesInput = {
@@ -2450,6 +2488,7 @@ export type CandidateApplicationUncheckedCreateWithoutReferencesInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUncheckedCreateNestedManyWithoutApplicationInput
   documents?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutApplicationInput
   approvals?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutApplicationInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutCandidateApplicationInput
 }
 
 export type CandidateApplicationCreateOrConnectWithoutReferencesInput = {
@@ -2519,6 +2558,7 @@ export type CandidateApplicationUpdateWithoutReferencesInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUpdateManyWithoutApplicationNestedInput
   documents?: Prisma.CandidateDocumentUpdateManyWithoutApplicationNestedInput
   approvals?: Prisma.ApplicationApprovalUpdateManyWithoutApplicationNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutCandidateApplicationNestedInput
 }
 
 export type CandidateApplicationUncheckedUpdateWithoutReferencesInput = {
@@ -2572,6 +2612,7 @@ export type CandidateApplicationUncheckedUpdateWithoutReferencesInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUncheckedUpdateManyWithoutApplicationNestedInput
   documents?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutApplicationNestedInput
   approvals?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutApplicationNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutCandidateApplicationNestedInput
 }
 
 export type CandidateApplicationCreateWithoutEmergencyContactInput = {
@@ -2625,6 +2666,7 @@ export type CandidateApplicationCreateWithoutEmergencyContactInput = {
   familyMembers?: Prisma.CandidateFamilyMemberCreateNestedManyWithoutApplicationInput
   documents?: Prisma.CandidateDocumentCreateNestedManyWithoutApplicationInput
   approvals?: Prisma.ApplicationApprovalCreateNestedManyWithoutApplicationInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutCandidateApplicationInput
 }
 
 export type CandidateApplicationUncheckedCreateWithoutEmergencyContactInput = {
@@ -2678,6 +2720,7 @@ export type CandidateApplicationUncheckedCreateWithoutEmergencyContactInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUncheckedCreateNestedManyWithoutApplicationInput
   documents?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutApplicationInput
   approvals?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutApplicationInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutCandidateApplicationInput
 }
 
 export type CandidateApplicationCreateOrConnectWithoutEmergencyContactInput = {
@@ -2747,6 +2790,7 @@ export type CandidateApplicationUpdateWithoutEmergencyContactInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUpdateManyWithoutApplicationNestedInput
   documents?: Prisma.CandidateDocumentUpdateManyWithoutApplicationNestedInput
   approvals?: Prisma.ApplicationApprovalUpdateManyWithoutApplicationNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutCandidateApplicationNestedInput
 }
 
 export type CandidateApplicationUncheckedUpdateWithoutEmergencyContactInput = {
@@ -2800,6 +2844,7 @@ export type CandidateApplicationUncheckedUpdateWithoutEmergencyContactInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUncheckedUpdateManyWithoutApplicationNestedInput
   documents?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutApplicationNestedInput
   approvals?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutApplicationNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutCandidateApplicationNestedInput
 }
 
 export type CandidateApplicationCreateWithoutSensitiveInfoInput = {
@@ -2853,6 +2898,7 @@ export type CandidateApplicationCreateWithoutSensitiveInfoInput = {
   familyMembers?: Prisma.CandidateFamilyMemberCreateNestedManyWithoutApplicationInput
   documents?: Prisma.CandidateDocumentCreateNestedManyWithoutApplicationInput
   approvals?: Prisma.ApplicationApprovalCreateNestedManyWithoutApplicationInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutCandidateApplicationInput
 }
 
 export type CandidateApplicationUncheckedCreateWithoutSensitiveInfoInput = {
@@ -2906,6 +2952,7 @@ export type CandidateApplicationUncheckedCreateWithoutSensitiveInfoInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUncheckedCreateNestedManyWithoutApplicationInput
   documents?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutApplicationInput
   approvals?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutApplicationInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutCandidateApplicationInput
 }
 
 export type CandidateApplicationCreateOrConnectWithoutSensitiveInfoInput = {
@@ -2975,6 +3022,7 @@ export type CandidateApplicationUpdateWithoutSensitiveInfoInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUpdateManyWithoutApplicationNestedInput
   documents?: Prisma.CandidateDocumentUpdateManyWithoutApplicationNestedInput
   approvals?: Prisma.ApplicationApprovalUpdateManyWithoutApplicationNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutCandidateApplicationNestedInput
 }
 
 export type CandidateApplicationUncheckedUpdateWithoutSensitiveInfoInput = {
@@ -3028,6 +3076,7 @@ export type CandidateApplicationUncheckedUpdateWithoutSensitiveInfoInput = {
   familyMembers?: Prisma.CandidateFamilyMemberUncheckedUpdateManyWithoutApplicationNestedInput
   documents?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutApplicationNestedInput
   approvals?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutApplicationNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutCandidateApplicationNestedInput
 }
 
 export type CandidateApplicationCreateWithoutFamilyMembersInput = {
@@ -3081,6 +3130,7 @@ export type CandidateApplicationCreateWithoutFamilyMembersInput = {
   sensitiveInfo?: Prisma.CandidateSensitiveInfoCreateNestedOneWithoutApplicationInput
   documents?: Prisma.CandidateDocumentCreateNestedManyWithoutApplicationInput
   approvals?: Prisma.ApplicationApprovalCreateNestedManyWithoutApplicationInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutCandidateApplicationInput
 }
 
 export type CandidateApplicationUncheckedCreateWithoutFamilyMembersInput = {
@@ -3134,6 +3184,7 @@ export type CandidateApplicationUncheckedCreateWithoutFamilyMembersInput = {
   sensitiveInfo?: Prisma.CandidateSensitiveInfoUncheckedCreateNestedOneWithoutApplicationInput
   documents?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutApplicationInput
   approvals?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutApplicationInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutCandidateApplicationInput
 }
 
 export type CandidateApplicationCreateOrConnectWithoutFamilyMembersInput = {
@@ -3203,6 +3254,7 @@ export type CandidateApplicationUpdateWithoutFamilyMembersInput = {
   sensitiveInfo?: Prisma.CandidateSensitiveInfoUpdateOneWithoutApplicationNestedInput
   documents?: Prisma.CandidateDocumentUpdateManyWithoutApplicationNestedInput
   approvals?: Prisma.ApplicationApprovalUpdateManyWithoutApplicationNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutCandidateApplicationNestedInput
 }
 
 export type CandidateApplicationUncheckedUpdateWithoutFamilyMembersInput = {
@@ -3256,6 +3308,7 @@ export type CandidateApplicationUncheckedUpdateWithoutFamilyMembersInput = {
   sensitiveInfo?: Prisma.CandidateSensitiveInfoUncheckedUpdateOneWithoutApplicationNestedInput
   documents?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutApplicationNestedInput
   approvals?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutApplicationNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutCandidateApplicationNestedInput
 }
 
 export type CandidateApplicationCreateWithoutDocumentsInput = {
@@ -3309,6 +3362,7 @@ export type CandidateApplicationCreateWithoutDocumentsInput = {
   sensitiveInfo?: Prisma.CandidateSensitiveInfoCreateNestedOneWithoutApplicationInput
   familyMembers?: Prisma.CandidateFamilyMemberCreateNestedManyWithoutApplicationInput
   approvals?: Prisma.ApplicationApprovalCreateNestedManyWithoutApplicationInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutCandidateApplicationInput
 }
 
 export type CandidateApplicationUncheckedCreateWithoutDocumentsInput = {
@@ -3362,6 +3416,7 @@ export type CandidateApplicationUncheckedCreateWithoutDocumentsInput = {
   sensitiveInfo?: Prisma.CandidateSensitiveInfoUncheckedCreateNestedOneWithoutApplicationInput
   familyMembers?: Prisma.CandidateFamilyMemberUncheckedCreateNestedManyWithoutApplicationInput
   approvals?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutApplicationInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutCandidateApplicationInput
 }
 
 export type CandidateApplicationCreateOrConnectWithoutDocumentsInput = {
@@ -3431,6 +3486,7 @@ export type CandidateApplicationUpdateWithoutDocumentsInput = {
   sensitiveInfo?: Prisma.CandidateSensitiveInfoUpdateOneWithoutApplicationNestedInput
   familyMembers?: Prisma.CandidateFamilyMemberUpdateManyWithoutApplicationNestedInput
   approvals?: Prisma.ApplicationApprovalUpdateManyWithoutApplicationNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutCandidateApplicationNestedInput
 }
 
 export type CandidateApplicationUncheckedUpdateWithoutDocumentsInput = {
@@ -3484,6 +3540,7 @@ export type CandidateApplicationUncheckedUpdateWithoutDocumentsInput = {
   sensitiveInfo?: Prisma.CandidateSensitiveInfoUncheckedUpdateOneWithoutApplicationNestedInput
   familyMembers?: Prisma.CandidateFamilyMemberUncheckedUpdateManyWithoutApplicationNestedInput
   approvals?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutApplicationNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutCandidateApplicationNestedInput
 }
 
 export type CandidateApplicationCreateWithoutApprovalsInput = {
@@ -3537,6 +3594,7 @@ export type CandidateApplicationCreateWithoutApprovalsInput = {
   sensitiveInfo?: Prisma.CandidateSensitiveInfoCreateNestedOneWithoutApplicationInput
   familyMembers?: Prisma.CandidateFamilyMemberCreateNestedManyWithoutApplicationInput
   documents?: Prisma.CandidateDocumentCreateNestedManyWithoutApplicationInput
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutCandidateApplicationInput
 }
 
 export type CandidateApplicationUncheckedCreateWithoutApprovalsInput = {
@@ -3590,6 +3648,7 @@ export type CandidateApplicationUncheckedCreateWithoutApprovalsInput = {
   sensitiveInfo?: Prisma.CandidateSensitiveInfoUncheckedCreateNestedOneWithoutApplicationInput
   familyMembers?: Prisma.CandidateFamilyMemberUncheckedCreateNestedManyWithoutApplicationInput
   documents?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutApplicationInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutCandidateApplicationInput
 }
 
 export type CandidateApplicationCreateOrConnectWithoutApprovalsInput = {
@@ -3659,6 +3718,7 @@ export type CandidateApplicationUpdateWithoutApprovalsInput = {
   sensitiveInfo?: Prisma.CandidateSensitiveInfoUpdateOneWithoutApplicationNestedInput
   familyMembers?: Prisma.CandidateFamilyMemberUpdateManyWithoutApplicationNestedInput
   documents?: Prisma.CandidateDocumentUpdateManyWithoutApplicationNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutCandidateApplicationNestedInput
 }
 
 export type CandidateApplicationUncheckedUpdateWithoutApprovalsInput = {
@@ -3712,6 +3772,239 @@ export type CandidateApplicationUncheckedUpdateWithoutApprovalsInput = {
   sensitiveInfo?: Prisma.CandidateSensitiveInfoUncheckedUpdateOneWithoutApplicationNestedInput
   familyMembers?: Prisma.CandidateFamilyMemberUncheckedUpdateManyWithoutApplicationNestedInput
   documents?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutApplicationNestedInput
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutCandidateApplicationNestedInput
+}
+
+export type CandidateApplicationCreateWithoutEmployeeProfileInput = {
+  id?: string
+  applicationNumber: string
+  firstName: string
+  lastName: string
+  fatherName: string
+  birthCertificateNumber: string
+  nationalId: string
+  gender: $Enums.CandidateGender
+  maritalStatus: $Enums.CandidateMaritalStatus
+  nationality: string
+  birthPlace: string
+  dateOfBirth: Date | string
+  landlinePhone?: string | null
+  mobilePhone: string
+  email?: string | null
+  address: string
+  militaryStatus?: $Enums.CandidateMilitaryStatus | null
+  currentlyEmployed?: boolean
+  currentEmployer?: string | null
+  hasExternalCommitment?: boolean
+  hasInsuranceHistory?: boolean
+  minimumEmploymentPeriod?: string | null
+  childrenCount?: number
+  requestedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  additionalNotes?: string | null
+  insuranceNumber?: string | null
+  bankSinaIban?: string | null
+  declarationAccepted?: boolean
+  declarationTextVersion?: string | null
+  declarationAcceptedAt?: Date | string | null
+  declarationIpAddress?: string | null
+  initialStatus?: $Enums.InitialApplicationStatus
+  initialVersion?: number
+  initialSubmittedAt?: Date | string | null
+  initialApprovedAt?: Date | string | null
+  documentsStatus?: $Enums.DocumentsApplicationStatus
+  documentsVersion?: number
+  documentsSubmittedAt?: Date | string | null
+  documentsApprovedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutCandidateApplicationInput
+  educationRecords?: Prisma.CandidateEducationCreateNestedManyWithoutApplicationInput
+  workExperiences?: Prisma.CandidateWorkExperienceCreateNestedManyWithoutApplicationInput
+  skills?: Prisma.CandidateSkillCreateNestedManyWithoutApplicationInput
+  references?: Prisma.CandidateReferenceCreateNestedManyWithoutApplicationInput
+  emergencyContact?: Prisma.CandidateEmergencyContactCreateNestedOneWithoutApplicationInput
+  sensitiveInfo?: Prisma.CandidateSensitiveInfoCreateNestedOneWithoutApplicationInput
+  familyMembers?: Prisma.CandidateFamilyMemberCreateNestedManyWithoutApplicationInput
+  documents?: Prisma.CandidateDocumentCreateNestedManyWithoutApplicationInput
+  approvals?: Prisma.ApplicationApprovalCreateNestedManyWithoutApplicationInput
+}
+
+export type CandidateApplicationUncheckedCreateWithoutEmployeeProfileInput = {
+  id?: string
+  applicationNumber: string
+  userId: string
+  firstName: string
+  lastName: string
+  fatherName: string
+  birthCertificateNumber: string
+  nationalId: string
+  gender: $Enums.CandidateGender
+  maritalStatus: $Enums.CandidateMaritalStatus
+  nationality: string
+  birthPlace: string
+  dateOfBirth: Date | string
+  landlinePhone?: string | null
+  mobilePhone: string
+  email?: string | null
+  address: string
+  militaryStatus?: $Enums.CandidateMilitaryStatus | null
+  currentlyEmployed?: boolean
+  currentEmployer?: string | null
+  hasExternalCommitment?: boolean
+  hasInsuranceHistory?: boolean
+  minimumEmploymentPeriod?: string | null
+  childrenCount?: number
+  requestedSalary?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  additionalNotes?: string | null
+  insuranceNumber?: string | null
+  bankSinaIban?: string | null
+  declarationAccepted?: boolean
+  declarationTextVersion?: string | null
+  declarationAcceptedAt?: Date | string | null
+  declarationIpAddress?: string | null
+  initialStatus?: $Enums.InitialApplicationStatus
+  initialVersion?: number
+  initialSubmittedAt?: Date | string | null
+  initialApprovedAt?: Date | string | null
+  documentsStatus?: $Enums.DocumentsApplicationStatus
+  documentsVersion?: number
+  documentsSubmittedAt?: Date | string | null
+  documentsApprovedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  educationRecords?: Prisma.CandidateEducationUncheckedCreateNestedManyWithoutApplicationInput
+  workExperiences?: Prisma.CandidateWorkExperienceUncheckedCreateNestedManyWithoutApplicationInput
+  skills?: Prisma.CandidateSkillUncheckedCreateNestedManyWithoutApplicationInput
+  references?: Prisma.CandidateReferenceUncheckedCreateNestedManyWithoutApplicationInput
+  emergencyContact?: Prisma.CandidateEmergencyContactUncheckedCreateNestedOneWithoutApplicationInput
+  sensitiveInfo?: Prisma.CandidateSensitiveInfoUncheckedCreateNestedOneWithoutApplicationInput
+  familyMembers?: Prisma.CandidateFamilyMemberUncheckedCreateNestedManyWithoutApplicationInput
+  documents?: Prisma.CandidateDocumentUncheckedCreateNestedManyWithoutApplicationInput
+  approvals?: Prisma.ApplicationApprovalUncheckedCreateNestedManyWithoutApplicationInput
+}
+
+export type CandidateApplicationCreateOrConnectWithoutEmployeeProfileInput = {
+  where: Prisma.CandidateApplicationWhereUniqueInput
+  create: Prisma.XOR<Prisma.CandidateApplicationCreateWithoutEmployeeProfileInput, Prisma.CandidateApplicationUncheckedCreateWithoutEmployeeProfileInput>
+}
+
+export type CandidateApplicationUpsertWithoutEmployeeProfileInput = {
+  update: Prisma.XOR<Prisma.CandidateApplicationUpdateWithoutEmployeeProfileInput, Prisma.CandidateApplicationUncheckedUpdateWithoutEmployeeProfileInput>
+  create: Prisma.XOR<Prisma.CandidateApplicationCreateWithoutEmployeeProfileInput, Prisma.CandidateApplicationUncheckedCreateWithoutEmployeeProfileInput>
+  where?: Prisma.CandidateApplicationWhereInput
+}
+
+export type CandidateApplicationUpdateToOneWithWhereWithoutEmployeeProfileInput = {
+  where?: Prisma.CandidateApplicationWhereInput
+  data: Prisma.XOR<Prisma.CandidateApplicationUpdateWithoutEmployeeProfileInput, Prisma.CandidateApplicationUncheckedUpdateWithoutEmployeeProfileInput>
+}
+
+export type CandidateApplicationUpdateWithoutEmployeeProfileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  fatherName?: Prisma.StringFieldUpdateOperationsInput | string
+  birthCertificateNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  nationalId?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.EnumCandidateGenderFieldUpdateOperationsInput | $Enums.CandidateGender
+  maritalStatus?: Prisma.EnumCandidateMaritalStatusFieldUpdateOperationsInput | $Enums.CandidateMaritalStatus
+  nationality?: Prisma.StringFieldUpdateOperationsInput | string
+  birthPlace?: Prisma.StringFieldUpdateOperationsInput | string
+  dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  landlinePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mobilePhone?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  militaryStatus?: Prisma.NullableEnumCandidateMilitaryStatusFieldUpdateOperationsInput | $Enums.CandidateMilitaryStatus | null
+  currentlyEmployed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentEmployer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hasExternalCommitment?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasInsuranceHistory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumEmploymentPeriod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  childrenCount?: Prisma.IntFieldUpdateOperationsInput | number
+  requestedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  additionalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  insuranceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankSinaIban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  declarationAccepted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  declarationTextVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  declarationAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  declarationIpAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initialStatus?: Prisma.EnumInitialApplicationStatusFieldUpdateOperationsInput | $Enums.InitialApplicationStatus
+  initialVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  initialSubmittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initialApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  documentsStatus?: Prisma.EnumDocumentsApplicationStatusFieldUpdateOperationsInput | $Enums.DocumentsApplicationStatus
+  documentsVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  documentsSubmittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  documentsApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutCandidateApplicationNestedInput
+  educationRecords?: Prisma.CandidateEducationUpdateManyWithoutApplicationNestedInput
+  workExperiences?: Prisma.CandidateWorkExperienceUpdateManyWithoutApplicationNestedInput
+  skills?: Prisma.CandidateSkillUpdateManyWithoutApplicationNestedInput
+  references?: Prisma.CandidateReferenceUpdateManyWithoutApplicationNestedInput
+  emergencyContact?: Prisma.CandidateEmergencyContactUpdateOneWithoutApplicationNestedInput
+  sensitiveInfo?: Prisma.CandidateSensitiveInfoUpdateOneWithoutApplicationNestedInput
+  familyMembers?: Prisma.CandidateFamilyMemberUpdateManyWithoutApplicationNestedInput
+  documents?: Prisma.CandidateDocumentUpdateManyWithoutApplicationNestedInput
+  approvals?: Prisma.ApplicationApprovalUpdateManyWithoutApplicationNestedInput
+}
+
+export type CandidateApplicationUncheckedUpdateWithoutEmployeeProfileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  fatherName?: Prisma.StringFieldUpdateOperationsInput | string
+  birthCertificateNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  nationalId?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.EnumCandidateGenderFieldUpdateOperationsInput | $Enums.CandidateGender
+  maritalStatus?: Prisma.EnumCandidateMaritalStatusFieldUpdateOperationsInput | $Enums.CandidateMaritalStatus
+  nationality?: Prisma.StringFieldUpdateOperationsInput | string
+  birthPlace?: Prisma.StringFieldUpdateOperationsInput | string
+  dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  landlinePhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mobilePhone?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  militaryStatus?: Prisma.NullableEnumCandidateMilitaryStatusFieldUpdateOperationsInput | $Enums.CandidateMilitaryStatus | null
+  currentlyEmployed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentEmployer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hasExternalCommitment?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasInsuranceHistory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumEmploymentPeriod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  childrenCount?: Prisma.IntFieldUpdateOperationsInput | number
+  requestedSalary?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  additionalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  insuranceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankSinaIban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  declarationAccepted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  declarationTextVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  declarationAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  declarationIpAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initialStatus?: Prisma.EnumInitialApplicationStatusFieldUpdateOperationsInput | $Enums.InitialApplicationStatus
+  initialVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  initialSubmittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initialApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  documentsStatus?: Prisma.EnumDocumentsApplicationStatusFieldUpdateOperationsInput | $Enums.DocumentsApplicationStatus
+  documentsVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  documentsSubmittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  documentsApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  educationRecords?: Prisma.CandidateEducationUncheckedUpdateManyWithoutApplicationNestedInput
+  workExperiences?: Prisma.CandidateWorkExperienceUncheckedUpdateManyWithoutApplicationNestedInput
+  skills?: Prisma.CandidateSkillUncheckedUpdateManyWithoutApplicationNestedInput
+  references?: Prisma.CandidateReferenceUncheckedUpdateManyWithoutApplicationNestedInput
+  emergencyContact?: Prisma.CandidateEmergencyContactUncheckedUpdateOneWithoutApplicationNestedInput
+  sensitiveInfo?: Prisma.CandidateSensitiveInfoUncheckedUpdateOneWithoutApplicationNestedInput
+  familyMembers?: Prisma.CandidateFamilyMemberUncheckedUpdateManyWithoutApplicationNestedInput
+  documents?: Prisma.CandidateDocumentUncheckedUpdateManyWithoutApplicationNestedInput
+  approvals?: Prisma.ApplicationApprovalUncheckedUpdateManyWithoutApplicationNestedInput
 }
 
 
@@ -3852,6 +4145,7 @@ export type CandidateApplicationSelect<ExtArgs extends runtime.Types.Extensions.
   familyMembers?: boolean | Prisma.CandidateApplication$familyMembersArgs<ExtArgs>
   documents?: boolean | Prisma.CandidateApplication$documentsArgs<ExtArgs>
   approvals?: boolean | Prisma.CandidateApplication$approvalsArgs<ExtArgs>
+  employeeProfile?: boolean | Prisma.CandidateApplication$employeeProfileArgs<ExtArgs>
   _count?: boolean | Prisma.CandidateApplicationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["candidateApplication"]>
 
@@ -4004,6 +4298,7 @@ export type CandidateApplicationInclude<ExtArgs extends runtime.Types.Extensions
   familyMembers?: boolean | Prisma.CandidateApplication$familyMembersArgs<ExtArgs>
   documents?: boolean | Prisma.CandidateApplication$documentsArgs<ExtArgs>
   approvals?: boolean | Prisma.CandidateApplication$approvalsArgs<ExtArgs>
+  employeeProfile?: boolean | Prisma.CandidateApplication$employeeProfileArgs<ExtArgs>
   _count?: boolean | Prisma.CandidateApplicationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CandidateApplicationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4026,6 +4321,7 @@ export type $CandidateApplicationPayload<ExtArgs extends runtime.Types.Extension
     familyMembers: Prisma.$CandidateFamilyMemberPayload<ExtArgs>[]
     documents: Prisma.$CandidateDocumentPayload<ExtArgs>[]
     approvals: Prisma.$ApplicationApprovalPayload<ExtArgs>[]
+    employeeProfile: Prisma.$EmployeeProfilePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -4474,6 +4770,7 @@ export interface Prisma__CandidateApplicationClient<T, Null = never, ExtArgs ext
   familyMembers<T extends Prisma.CandidateApplication$familyMembersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CandidateApplication$familyMembersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CandidateFamilyMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   documents<T extends Prisma.CandidateApplication$documentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CandidateApplication$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CandidateDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   approvals<T extends Prisma.CandidateApplication$approvalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CandidateApplication$approvalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApplicationApprovalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  employeeProfile<T extends Prisma.CandidateApplication$employeeProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CandidateApplication$employeeProfileArgs<ExtArgs>>): Prisma.Prisma__EmployeeProfileClient<runtime.Types.Result.GetResult<Prisma.$EmployeeProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5144,6 +5441,25 @@ export type CandidateApplication$approvalsArgs<ExtArgs extends runtime.Types.Ext
   take?: number
   skip?: number
   distinct?: Prisma.ApplicationApprovalScalarFieldEnum | Prisma.ApplicationApprovalScalarFieldEnum[]
+}
+
+/**
+ * CandidateApplication.employeeProfile
+ */
+export type CandidateApplication$employeeProfileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeProfile
+   */
+  select?: Prisma.EmployeeProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeProfile
+   */
+  omit?: Prisma.EmployeeProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeProfileInclude<ExtArgs> | null
+  where?: Prisma.EmployeeProfileWhereInput
 }
 
 /**

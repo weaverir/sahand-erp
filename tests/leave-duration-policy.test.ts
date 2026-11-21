@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import {calculateScheduledLeaveMinutes, LeaveScheduleMissingError, type LeaveWorkDay} from '../modules/attendance/leave-duration-policy';
+const d=(s:string)=>new Date(s);
+const day=(patch:Partial<LeaveWorkDay>={}):LeaveWorkDay=>({date:'2026-11-21',scheduleFound:true,isHoliday:false,isWorkingDayOverride:null,segments:[{startsAt:d('2026-11-21T03:30:00Z'),endsAt:d('2026-11-21T11:30:00Z')}],...patch});
+const calc=(days:LeaveWorkDay[])=>calculateScheduledLeaveMinutes(d('2026-11-21T03:30:00Z'),d('2026-11-21T11:30:00Z'),days);
+test('full scheduled day is 480 minutes',()=>assert.equal(calc([day()]),480));
+test('hourly leave intersects approved shift',()=>assert.equal(calculateScheduledLeaveMinutes(d('2026-11-21T05:00:00Z'),d('2026-11-21T06:30:00Z'),[day()]),90));
+test('holiday excludes scheduled minutes',()=>assert.equal(calc([day({isHoliday:true})]),0));
+test('holiday with working-day override counts',()=>assert.equal(calc([day({isHoliday:true,isWorkingDayOverride:true})]),480));
+test('explicit nonworking override excludes minutes',()=>assert.equal(calc([day({isWorkingDayOverride:false})]),0));
+test('approved day off is zero',()=>assert.equal(calc([day({segments:[]})]),0));
+test('missing schedule is an error',()=>assert.throws(()=>calc([day({scheduleFound:false})]),LeaveScheduleMissingError));
+test('overlapping segments are rejected',()=>assert.throws(()=>calc([day({segments:[{startsAt:d('2026-11-21T03:30:00Z'),endsAt:d('2026-11-21T06:00:00Z')},{startsAt:d('2026-11-21T05:00:00Z'),endsAt:d('2026-11-21T07:00:00Z')}]})]),/هم‌پوشانی/));
+test('invalid date range rejected',()=>assert.throws(()=>calculateScheduledLeaveMinutes(d('2026-11-21T11:30:00Z'),d('2026-11-21T03:30:00Z'),[day()]),/نامعتبر/));

@@ -1,3 +1,5 @@
+import { assertEmployeeShiftCompatibility, OrganizationShiftConflictError, assertTransferShiftResolved } from "@/modules/shifts/organization-shift-guard";
+import { runShiftWrite } from "@/modules/shifts/shift-write-transaction";
 
 import { NextRequest } from "next/server";
 import { prisma } from "@/libs/prisma";
@@ -136,7 +138,7 @@ export async function POST(
       return errorResponse("یادداشت معتبر نیست.", 400);
     }
 
-    const result = await prisma.$transaction(async tx => {
+    const result = await runShiftWrite(async tx => {
       const previous = await tx.employeeAssignment.findUnique({
         where: { id },
       });
@@ -210,6 +212,8 @@ export async function POST(
         });
       }
 
+      await assertTransferShiftResolved(tx, id, startDate);
+
       const endedPrevious = await tx.employeeAssignment.update({
         where: { id },
         data: {
@@ -234,6 +238,8 @@ export async function POST(
           status: "ACTIVE",
         },
       });
+
+      await assertEmployeeShiftCompatibility(tx, created.userId);
 
       await tx.organizationAssignmentHistory.createMany({
         data: [
@@ -273,8 +279,6 @@ export async function POST(
         previous: endedPrevious,
         current: created,
       };
-    }, {
-      isolationLevel: "Serializable",
     });
 
     return successResponse({
@@ -282,6 +286,8 @@ export async function POST(
       message: "انتقال سازمانی با موفقیت انجام شد.",
     });
   } catch (error) {
+    if (error instanceof OrganizationShiftConflictError) return errorResponse(error.message, 409);
+    if (typeof error === "object" && error !== null && "code" in error && error.code === "P2034") return errorResponse("اطلاعات هم‌زمان تغییر کرده است. دوباره تلاش کنید.", 409);
     if (error instanceof Error) {
       const messages: Record<string, string> = {
         ASSIGNMENT_NOT_FOUND: "انتصاب قبلی پیدا نشد.",

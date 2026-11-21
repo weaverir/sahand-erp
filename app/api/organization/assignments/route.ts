@@ -1,3 +1,5 @@
+import { assertEmployeeShiftCompatibility, OrganizationShiftConflictError } from "@/modules/shifts/organization-shift-guard";
+import { runShiftWrite } from "@/modules/shifts/shift-write-transaction";
 
 import { NextRequest } from "next/server";
 
@@ -412,6 +414,8 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
+    if (error instanceof OrganizationShiftConflictError) return errorResponse(error.message, 409);
+    if (typeof error === "object" && error !== null && "code" in error && error.code === "P2034") return errorResponse("اطلاعات هم‌زمان تغییر کرده است. دوباره تلاش کنید.", 409);
     return getErrorResponse(error);
   }
 }
@@ -452,8 +456,9 @@ export async function POST(request: NextRequest) {
     const input =
       parseAssignmentInput(body);
 
+    const created = await runShiftWrite(async (tx) => {
     // 4. بررسی کارمند
-    const employee = await prisma.user.findFirst({
+    const employee = await tx.user.findFirst({
       where: {
         id: input.userId,
         isActive: true,
@@ -476,7 +481,7 @@ export async function POST(request: NextRequest) {
 
     // 5. بررسی واحد سازمانی
     const unit =
-      await prisma.organizationUnit.findFirst({
+      await tx.organizationUnit.findFirst({
         where: {
           id: input.organizationUnitId,
           status: "ACTIVE",
@@ -498,7 +503,7 @@ export async function POST(request: NextRequest) {
     // 6. بررسی سمت رسمی
     if (input.positionId) {
       const position =
-        await prisma.organizationPosition.findFirst({
+        await tx.organizationPosition.findFirst({
           where: {
             id: input.positionId,
             isActive: true,
@@ -521,7 +526,7 @@ export async function POST(request: NextRequest) {
     // 7. بررسی محل خدمت
     if (input.locationId) {
       const location =
-        await prisma.organizationLocation.findFirst({
+        await tx.organizationLocation.findFirst({
           where: {
             id: input.locationId,
             status: "ACTIVE",
@@ -543,7 +548,7 @@ export async function POST(request: NextRequest) {
     // 8. بررسی مدیر مستقیم
     if (input.managerAssignmentId) {
       const manager =
-        await prisma.employeeAssignment.findFirst({
+        await tx.employeeAssignment.findFirst({
           where: {
             id: input.managerAssignmentId,
             status: EmployeeAssignmentStatus.ACTIVE,
@@ -579,7 +584,7 @@ export async function POST(request: NextRequest) {
       EmployeeAssignmentType.PRIMARY
     ) {
       const existingPrimary =
-        await prisma.employeeAssignment.findFirst({
+        await tx.employeeAssignment.findFirst({
           where: {
             userId: employee.id,
             status: EmployeeAssignmentStatus.ACTIVE,
@@ -620,9 +625,6 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 10. ثبت انتصاب و تاریخچه در یک تراکنش
-    const created = await prisma.$transaction(
-      async (tx) => {
         const assignment =
           await tx.employeeAssignment.create({
             data: {
@@ -658,6 +660,8 @@ export async function POST(request: NextRequest) {
               notes: input.notes,
             },
           });
+
+        await assertEmployeeShiftCompatibility(tx, assignment.userId);
 
         // تاریخچه تغییرات انتصاب
         await tx.organizationAssignmentHistory.create({
@@ -772,6 +776,8 @@ export async function POST(request: NextRequest) {
     );
 
   } catch (error) {
+    if (error instanceof OrganizationShiftConflictError) return errorResponse(error.message, 409);
+    if (typeof error === "object" && error !== null && "code" in error && error.code === "P2034") return errorResponse("اطلاعات هم‌زمان تغییر کرده است. دوباره تلاش کنید.", 409);
     return getErrorResponse(error);
   }
 }

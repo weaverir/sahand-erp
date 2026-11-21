@@ -292,3 +292,123 @@ export type OrganizationAssignmentHistory = Prisma.OrganizationAssignmentHistory
  * 
  */
 export type OrganizationAuditLog = Prisma.OrganizationAuditLogModel
+/**
+ * Model WorkShift
+ * 
+ */
+export type WorkShift = Prisma.WorkShiftModel
+/**
+ * Model WorkShiftDay
+ * 
+ */
+export type WorkShiftDay = Prisma.WorkShiftDayModel
+/**
+ * Model ShiftAssignment
+ * 
+ */
+export type ShiftAssignment = Prisma.ShiftAssignmentModel
+/**
+ * Model HolidayCalendar
+ * 
+ */
+export type HolidayCalendar = Prisma.HolidayCalendarModel
+/**
+ * Model HolidayCalendarDay
+ * 
+ */
+export type HolidayCalendarDay = Prisma.HolidayCalendarDayModel
+/**
+ * Model EmployeeProfile
+ * 
+ */
+export type EmployeeProfile = Prisma.EmployeeProfileModel
+/**
+ * Model AttendanceRecord
+ * 
+ */
+export type AttendanceRecord = Prisma.AttendanceRecordModel
+/**
+ * Model AttendanceEvent
+ * 
+ */
+export type AttendanceEvent = Prisma.AttendanceEventModel
+/**
+ * Model AttendanceVerification
+ * 
+ */
+export type AttendanceVerification = Prisma.AttendanceVerificationModel
+/**
+ * Model AttendanceAdjustment
+ * 
+ */
+export type AttendanceAdjustment = Prisma.AttendanceAdjustmentModel
+/**
+ * Model AttendanceChallenge
+ * 
+ */
+export type AttendanceChallenge = Prisma.AttendanceChallengeModel
+/**
+ * Model FaceIdentityProfile
+ * 
+ */
+export type FaceIdentityProfile = Prisma.FaceIdentityProfileModel
+/**
+ * Model EmployeeShiftSchedule
+ * 
+ */
+export type EmployeeShiftSchedule = Prisma.EmployeeShiftScheduleModel
+/**
+ * Model EmployeeShiftScheduleSegment
+ * 
+ */
+export type EmployeeShiftScheduleSegment = Prisma.EmployeeShiftScheduleSegmentModel
+/**
+ * Model EmployeeShiftScheduleRevision
+ * 
+ */
+export type EmployeeShiftScheduleRevision = Prisma.EmployeeShiftScheduleRevisionModel
+/**
+ * Model CorrespondenceLetter
+ * 
+ */
+export type CorrespondenceLetter = Prisma.CorrespondenceLetterModel
+/**
+ * Model CorrespondenceHistory
+ * 
+ */
+export type CorrespondenceHistory = Prisma.CorrespondenceHistoryModel
+/**
+ * Model CorrespondenceMonthlyQuota
+ * 
+ */
+export type CorrespondenceMonthlyQuota = Prisma.CorrespondenceMonthlyQuotaModel
+/**
+ * Model AttendanceMonthlyPeriod
+ * 
+ */
+export type AttendanceMonthlyPeriod = Prisma.AttendanceMonthlyPeriodModel
+/**
+ * Model MonthlyWorkSummary
+ * 
+ */
+export type MonthlyWorkSummary = Prisma.MonthlyWorkSummaryModel
+/**
+ * Model LeaveRequest
+ * 
+ */
+export type LeaveRequest = Prisma.LeaveRequestModel
+/**
+ * Model LeaveApprovalStep
+ * 
+ */
+export type LeaveApprovalStep = Prisma.LeaveApprovalStepModel
+/**
+ * Model LeaveLedgerEntry
+ * 
+ */
+export type LeaveLedgerEntry = Prisma.LeaveLedgerEntryModel
+/**
+ * Model LeaveOpeningBalance
+ * 
+ */
+export type LeaveOpeningBalance = Prisma.LeaveOpeningBalanceModel

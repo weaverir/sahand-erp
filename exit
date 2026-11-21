@@ -1,0 +1,468 @@
+warning: in the working copy of 'modules/permissions/access-control.ts', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/modules/permissions/access-control.ts b/modules/permissions/access-control.ts[m
+[1mindex a83cba1..96798a7 100644[m
+[1m--- a/modules/permissions/access-control.ts[m
+[1m+++ b/modules/permissions/access-control.ts[m
+[36m@@ -1,327 +1,291 @@[m
+[31m-import "server-only";[m
+[31m-[m
+[31m-import { prisma } from "@/libs/prisma";[m
+[31m-import { DataScope } from "@/generated/prisma/client";[m
+[31m-[m
+[31m-type PermissionCheck = {[m
+[31m-  userId: string;[m
+[31m-  permission: string;[m
+[31m-  assignmentId?: string;[m
+[31m-};[m
+[31m-[m
+[31m-export type PermissionResult = {[m
+[31m-  allowed: boolean;[m
+[31m-  scopes: DataScope[];[m
+[31m-  isSystemAdmin: boolean;[m
+[31m-  activeAssignmentId: string | null;[m
+[31m-};[m
+[31m-[m
+[31m-export class PermissionDeniedError extends Error {[m
+[31m-  statusCode = 403;[m
+[31m-[m
+[31m-  constructor([m
+[31m-    message = "شما اجازه انجام این عملیات را ندارید."[m
+[31m-  ) {[m
+[31m-    super(message);[m
+[31m-    this.name = "PermissionDeniedError";[m
+[31m-  }[m
+[31m-}[m
+ [m
+[31m-const emptyResult = (): PermissionResult => ({[m
+[31m-  allowed: false,[m
+[31m-  scopes: [],[m
+[31m-  isSystemAdmin: false,[m
+[31m-  activeAssignmentId: null,[m
+[31m-});[m
+[31m-[m
+[31m-/**[m
+[31m- * بررسی مجوز در سطح کاربر و مسئولیت سازمانی[m
+[31m- *[m
+[31m- * اگر assignmentId ارسال نشود:[m
+[31m- * فقط مسئولیت اصلی و فعال کاربر بررسی می‌شود.[m
+[31m- *[m
+[31m- * اگر assignmentId ارسال شود:[m
+[31m- * مالکیت و فعال بودن آن مسئولیت بررسی می‌شود.[m
+[31m- */[m
+[31m-export async function checkPermission({[m
+[31m-  userId,[m
+[31m-  permission,[m
+[31m-  assignmentId,[m
+[31m-}: PermissionCheck): Promise<PermissionResult> {[m
+[31m-  const now = new Date();[m
+[32m+[m[32mimport "dotenv/config";[m
+ [m
+[31m-  const user = await prisma.user.findFirst({[m
+[31m-    where: {[m
+[31m-      id: userId,[m
+[31m-      isActive: true,[m
+[31m-    },[m
+[32m+[m[32mimport { prisma } from "../libs/prisma";[m
+ [m
+[31m-    select: {[m
+[31m-      id: true,[m
+[32m+[m[32mconst usernames = ["hr.test", "ceo.test"];[m
+ [m
+[31m-      roles: {[m
+[31m-        where: {[m
+[31m-          isActive: true,[m
+[32m+[m[32mconst moduleKeys = [[m
+[32m+[m[32m  "dashboard",[m
+[32m+[m[32m  "hr",[m
+[32m+[m[32m  "organization",[m
+[32m+[m[32m  "items",[m
+[32m+[m[32m];[m
+ [m
+[31m-          OR: [[m
+[31m-            { expiresAt: null },[m
+[31m-            { expiresAt: { gt: now } },[m
+[31m-          ],[m
+[32m+[m[32masync function main() {[m
+[32m+[m[32m  const now = new Date();[m
+ [m
+[31m-          role: {[m
+[32m+[m[32m  for (const username of usernames) {[m
+[32m+[m[32m    console.log("\n====================================");[m
+[32m+[m[32m    console.log(`USER: ${username}`);[m
+[32m+[m[32m    console.log("====================================");[m
+[32m+[m
+[32m+[m[32m    const user = await prisma.user.findUnique({[m
+[32m+[m[32m      where: { username },[m
+[32m+[m[32m      select: {[m
+[32m+[m[32m        id: true,[m
+[32m+[m[32m        username: true,[m
+[32m+[m[32m        fullName: true,[m
+[32m+[m[32m        isActive: true,[m
+[32m+[m[32m        accessLevel: true,[m
+[32m+[m
+[32m+[m[32m        roles: {[m
+[32m+[m[32m          where: {[m
+             isActive: true,[m
+[32m+[m[32m            OR: [[m
+[32m+[m[32m              { expiresAt: null },[m
+[32m+[m[32m              { expiresAt: { gt: now } },[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            role: { isActive: true },[m
+           },[m
+[31m-        },[m
+[31m-[m
+[31m-        select: {[m
+[31m-          role: {[m
+[31m-            select: {[m
+[31m-              key: true,[m
+[31m-              isSystem: true,[m
+[31m-[m
+[31m-              permissions: {[m
+[31m-                where: {[m
+[31m-                  permission: {[m
+[31m-                    key: permission,[m
+[32m+[m[32m          select: {[m
+[32m+[m[32m            isActive: true,[m
+[32m+[m[32m            expiresAt: true,[m
+[32m+[m[32m            role: {[m
+[32m+[m[32m              select: {[m
+[32m+[m[32m                key: true,[m
+[32m+[m[32m                isSystem: true,[m
+[32m+[m[32m                permissions: {[m
+[32m+[m[32m                  select: {[m
+[32m+[m[32m                    isAllowed: true,[m
+[32m+[m[32m                    permission: {[m
+[32m+[m[32m                      select: { key: true },[m
+[32m+[m[32m                    },[m
+                   },[m
+                 },[m
+[31m-[m
+[31m-                select: {[m
+[31m-                  isAllowed: true,[m
+[31m-                  scope: true,[m
+[31m-                },[m
+               },[m
+             },[m
+           },[m
+         },[m
+[31m-      },[m
+[31m-[m
+[31m-      employeeAssignments: {[m
+[31m-        where: {[m
+[31m-          status: "ACTIVE",[m
+[31m-[m
+[31m-          AND: [[m
+[31m-            {[m
+[31m-              OR: [[m
+[31m-                { endDate: null },[m
+[31m-                { endDate: { gt: now } },[m
+[31m-              ],[m
+[31m-            },[m
+[31m-[m
+[31m-            assignmentId[m
+[31m-              ? { id: assignmentId }[m
+[31m-              : { isPrimary: true },[m
+[31m-          ],[m
+[31m-        },[m
+[31m-[m
+[31m-        orderBy: [[m
+[31m-          { isPrimary: "desc" },[m
+[31m-          { startDate: "desc" },[m
+[31m-        ],[m
+ [m
+[31m-        take: 1,[m
+[31m-[m
+[31m-        select: {[m
+[31m-          id: true,[m
+[31m-[m
+[31m-          roles: {[m
+[31m-            where: {[m
+[31m-              isActive: true,[m
+[31m-[m
+[31m-              OR: [[m
+[31m-                { expiresAt: null },[m
+[31m-                { expiresAt: { gt: now } },[m
+[31m-              ],[m
+[31m-[m
+[31m-              role: {[m
+[32m+[m[32m        employeeAssignments: {[m
+[32m+[m[32m          where: {[m
+[32m+[m[32m            status: "ACTIVE",[m
+[32m+[m[32m            OR: [[m
+[32m+[m[32m              { endDate: null },[m
+[32m+[m[32m              { endDate: { gt: now } },[m
+[32m+[m[32m            ],[m
+[32m+[m[32m          },[m
+[32m+[m[32m          orderBy: {[m
+[32m+[m[32m            startDate: "desc",[m
+[32m+[m[32m          },[m
+[32m+[m[32m          select: {[m
+[32m+[m[32m            id: true,[m
+[32m+[m[32m            status: true,[m
+[32m+[m[32m            isPrimary: true,[m
+[32m+[m[32m            endDate: true,[m
+[32m+[m
+[32m+[m[32m            roles: {[m
+[32m+[m[32m              where: {[m
+                 isActive: true,[m
+[31m-                isSystem: false,[m
+[32m+[m[32m                OR: [[m
+[32m+[m[32m                  { expiresAt: null },[m
+[32m+[m[32m                  { expiresAt: { gt: now } },[m
+[32m+[m[32m                ],[m
+[32m+[m[32m                role: {[m
+[32m+[m[32m                  isActive: true,[m
+[32m+[m[32m                  isSystem: false,[m
+[32m+[m[32m                },[m
+               },[m
+[31m-            },[m
+[31m-[m
+[31m-            select: {[m
+[31m-              role: {[m
+[31m-                select: {[m
+[31m-                  permissions: {[m
+[31m-                    where: {[m
+[31m-                      permission: {[m
+[31m-                        key: permission,[m
+[32m+[m[32m              select: {[m
+[32m+[m[32m                role: {[m
+[32m+[m[32m                  select: {[m
+[32m+[m[32m                    key: true,[m
+[32m+[m[32m                    permissions: {[m
+[32m+[m[32m                      select: {[m
+[32m+[m[32m                        isAllowed: true,[m
+[32m+[m[32m                        permission: {[m
+[32m+[m[32m                          select: { key: true },[m
+[32m+[m[32m                        },[m
+                       },[m
+                     },[m
+[31m-[m
+[31m-                    select: {[m
+[31m-                      isAllowed: true,[m
+[31m-                      scope: true,[m
+[31m-                    },[m
+                   },[m
+                 },[m
+               },[m
+             },[m
+[31m-          },[m
+[31m-[m
+[31m-          permissions: {[m
+[31m-            where: {[m
+[31m-              isActive: true,[m
+ [m
+[31m-              OR: [[m
+[31m-                { expiresAt: null },[m
+[31m-                { expiresAt: { gt: now } },[m
+[31m-              ],[m
+[31m-[m
+[31m-              permission: {[m
+[31m-                key: permission,[m
+[32m+[m[32m            permissions: {[m
+[32m+[m[32m              where: {[m
+[32m+[m[32m                isActive: true,[m
+[32m+[m[32m                OR: [[m
+[32m+[m[32m                  { expiresAt: null },[m
+[32m+[m[32m                  { expiresAt: { gt: now } },[m
+[32m+[m[32m                ],[m
+[32m+[m[32m              },[m
+[32m+[m[32m              select: {[m
+[32m+[m[32m                isAllowed: true,[m
+[32m+[m[32m                permission: {[m
+[32m+[m[32m                  select: { key: true },[m
+[32m+[m[32m                },[m
+               },[m
+[31m-            },[m
+[31m-[m
+[31m-            select: {[m
+[31m-              isAllowed: true,[m
+[31m-              scope: true,[m
+             },[m
+           },[m
+         },[m
+       },[m
+[31m-    },[m
+[31m-  });[m
+[31m-[m
+[31m-  if (!user) {[m
+[31m-    return emptyResult();[m
+[31m-  }[m
+[31m-[m
+[31m-  const assignment =[m
+[31m-    user.employeeAssignments[0] ?? null;[m
+[31m-[m
+[31m-  // مسئولیت ارسالی باید متعلق به همین کاربر و فعال باشد.[m
+[31m-  if (assignmentId && !assignment) {[m
+[31m-    return emptyResult();[m
+[31m-  }[m
+[31m-[m
+[31m-  // مدیر سیستم به تمام مجوزها دسترسی دارد.[m
+[31m-  const isSystemAdmin = user.roles.some([m
+[31m-    (userRole) =>[m
+[31m-      userRole.role.isSystem &&[m
+[31m-      userRole.role.key === "system_admin"[m
+[31m-  );[m
+[31m-[m
+[31m-  if (isSystemAdmin) {[m
+[31m-    return {[m
+[31m-      allowed: true,[m
+[31m-      scopes: [DataScope.ALL],[m
+[31m-      isSystemAdmin: true,[m
+[31m-      activeAssignmentId: assignment?.id ?? null,[m
+[31m-    };[m
+[31m-  }[m
+[31m-[m
+[31m-  // مجوزهای نقش‌های عمومی کاربر[m
+[31m-  const globalGrants = user.roles.flatMap([m
+[31m-    (userRole) => userRole.role.permissions[m
+[31m-  );[m
+[31m-[m
+[31m-  // مجوزهای نقش‌های مسئولیت فعال[m
+[31m-  const assignmentRoleGrants =[m
+[31m-    assignment?.roles.flatMap([m
+[31m-      (assignmentRole) =>[m
+[31m-        assignmentRole.role.permissions[m
+[31m-    ) ?? [];[m
+[31m-[m
+[31m-  // مجوزهای مستقیم مسئولیت[m
+[31m-  const assignmentDirectGrants =[m
+[31m-    assignment?.permissions ?? [];[m
+[31m-[m
+[31m-  const grants = [[m
+[31m-    ...globalGrants,[m
+[31m-    ...assignmentRoleGrants,[m
+[31m-    ...assignmentDirectGrants,[m
+[31m-  ];[m
+[31m-[m
+[31m-  // منع صریح دسترسی بر اجازه اولویت دارد.[m
+[31m-  if (grants.some((grant) => !grant.isAllowed)) {[m
+[31m-    return {[m
+[31m-      allowed: false,[m
+[31m-      scopes: [],[m
+[31m-      isSystemAdmin: false,[m
+[31m-      activeAssignmentId: assignment?.id ?? null,[m
+[31m-    };[m
+[31m-  }[m
+[31m-[m
+[31m-  const allowedGrants = grants.filter([m
+[31m-    (grant) => grant.isAllowed[m
+[31m-  );[m
+[31m-[m
+[31m-  if (allowedGrants.length === 0) {[m
+[31m-    return emptyResult();[m
+[32m+[m[32m    });[m
+[32m+[m
+[32m+[m[32m    if (!user) {[m
+[32m+[m[32m      console.log("USER NOT FOUND");[m
+[32m+[m[32m      continue;[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    console.log("\nPROFILE:");[m
+[32m+[m[32m    console.table({[m
+[32m+[m[32m      username: user.username,[m
+[32m+[m[32m      fullName: user.fullName,[m
+[32m+[m[32m      isActive: user.isActive,[m
+[32m+[m[32m      accessLevel: user.accessLevel,[m
+[32m+[m[32m    });[m
+[32m+[m
+[32m+[m[32m    const isSystemAdmin = user.roles.some([m
+[32m+[m[32m      (r) =>[m
+[32m+[m[32m        r.role.isSystem &&[m
+[32m+[m[32m        r.role.key === "system_admin"[m
+[32m+[m[32m    );[m
+[32m+[m
+[32m+[m[32m    console.log("\nGLOBAL ROLES:");[m
+[32m+[m
+[32m+[m[32m    console.log([m
+[32m+[m[32m      JSON.stringify([m
+[32m+[m[32m        user.roles.map((r) => ({[m
+[32m+[m[32m          role: r.role.key,[m
+[32m+[m[32m          active: r.isActive,[m
+[32m+[m[32m          expiresAt: r.expiresAt,[m
+[32m+[m[32m          permissions: r.role.permissions.map((p) => ({[m
+[32m+[m[32m            key: p.permission.key,[m
+[32m+[m[32m            allowed: p.isAllowed,[m
+[32m+[m[32m          })),[m
+[32m+[m[32m        })),[m
+[32m+[m[32m        null,[m
+[32m+[m[32m        2[m
+[32m+[m[32m      )[m
+[32m+[m[32m    );[m
+[32m+[m
+[32m+[m[32m    console.log("\nACTIVE ASSIGNMENTS:");[m
+[32m+[m
+[32m+[m[32m    console.log([m
+[32m+[m[32m      JSON.stringify([m
+[32m+[m[32m        user.employeeAssignments.map((a) => ({[m
+[32m+[m[32m          id: a.id,[m
+[32m+[m[32m          primary: a.isPrimary,[m
+[32m+[m[32m          status: a.status,[m
+[32m+[m[32m          endDate: a.endDate,[m
+[32m+[m[32m          roles: a.roles.map((r) => r.role.key),[m
+[32m+[m[32m          directPermissions: a.permissions.map((p) => ({[m
+[32m+[m[32m            key: p.permission.key,[m
+[32m+[m[32m            allowed: p.isAllowed,[m
+[32m+[m[32m          })),[m
+[32m+[m[32m        })),[m
+[32m+[m[32m        null,[m
+[32m+[m[32m        2[m
+[32m+[m[32m      )[m
+[32m+[m[32m    );[m
+[32m+[m
+[32m+[m[32m    const globalGrants = user.roles.flatMap([m
+[32m+[m[32m      (r) => r.role.permissions[m
+[32m+[m[32m    );[m
+[32m+[m
+[32m+[m[32m    const assignmentRoleGrants =[m
+[32m+[m[32m      user.employeeAssignments.flatMap([m
+[32m+[m[32m        (a) =>[m
+[32m+[m[32m          a.roles.flatMap([m
+[32m+[m[32m            (r) => r.role.permissions[m
+[32m+[m[32m          )[m
+[32m+[m[32m      );[m
+[32m+[m
+[32m+[m[32m    const assignmentDirectGrants =[m
+[32m+[m[32m      user.employeeAssignments.flatMap([m
+[32m+[m[32m        (a) => a.permissions[m
+[32m+[m[32m      );[m
+[32m+[m
+[32m+[m[32m    const grants = [[m
+[32m+[m[32m      ...globalGrants,[m
+[32m+[m[32m      ...assignmentRoleGrants,[m
+[32m+[m[32m      ...assignmentDirectGrants,[m
+[32m+[m[32m    ];[m
+[32m+[m
+[32m+[m[32m    const denied = new Set([m
+[32m+[m[32m      grants[m
+[32m+[m[32m        .filter((g) => !g.isAllowed)[m
+[32m+[m[32m        .map((g) => g.permission.key)[m
+[32m+[m[32m    );[m
+[32m+[m
+[32m+[m[32m    const allowed = new Set([m
+[32m+[m[32m      grants[m
+[32m+[m[32m        .filter((g) => g.isAllowed)[m
+[32m+[m[32m        .map((g) => g.permission.key)[m
+[32m+[m[32m    );[m
+[32m+[m
+[32m+[m[32m    const effectivePermissions = isSystemAdmin[m
+[32m+[m[32m      ? ([m
+[32m+[m[32m          await prisma.permission.findMany({[m
+[32m+[m[32m            select: { key: true },[m
+[32m+[m[32m          })[m
+[32m+[m[32m        ).map((p) => p.key)[m
+[32m+[m[32m      : [...allowed].filter([m
+[32m+[m[32m          (key) => !denied.has(key)[m
+[32m+[m[32m        );[m
+[32m+[m
+[32m+[m[32m    console.log("\nSYSTEM ADMIN:", isSystemAdmin);[m
+[32m+[m
+[32m+[m[32m    console.log("\nEFFECTIVE PERMISSIONS:");[m
+[32m+[m[32m    console.log(effectivePermissions);[m
+[32m+[m
+[32m+[m[32m    const modulePermissions =[m
+[32m+[m[32m      await prisma.permission.findMany({[m
+[32m+[m[32m        where: {[m
+[32m+[m[32m          module: {[m
+[32m+[m[32m            key: { in: moduleKeys },[m
+[32m+[m[32m          },[m
+[32m+[m[32m   

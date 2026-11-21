@@ -1,8 +1,10 @@
+
 import type { Metadata } from "next";
 import "./globals.css";
 
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import ParticleBackground from "@/components/effects/ParticleBackground";
 
 export const metadata: Metadata = {
   title: "Sahand ERP | سیستم مدیریت یکپارچه",
@@ -18,6 +20,8 @@ export default function RootLayout({
     <html lang="fa" dir="rtl" suppressHydrationWarning>
       <body>
         <ThemeProvider>
+          <ParticleBackground />
+
           {children}
 
           <Toaster

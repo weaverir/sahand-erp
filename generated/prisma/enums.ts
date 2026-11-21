@@ -182,6 +182,16 @@ export const DataScope = {
 export type DataScope = (typeof DataScope)[keyof typeof DataScope]
 
 
+export const EmployeeEmploymentStatus = {
+  ACTIVE: 'ACTIVE',
+  ON_LEAVE: 'ON_LEAVE',
+  TERMINATED: 'TERMINATED',
+  SUSPENDED: 'SUSPENDED'
+} as const
+
+export type EmployeeEmploymentStatus = (typeof EmployeeEmploymentStatus)[keyof typeof EmployeeEmploymentStatus]
+
+
 export const UserAccessLevel = {
   PENDING: 'PENDING',
   CANDIDATE_PORTAL: 'CANDIDATE_PORTAL',
@@ -280,7 +290,8 @@ export const CandidateDocumentType = {
   MARRIAGE_CERTIFICATE: 'MARRIAGE_CERTIFICATE',
   SPOUSE_BIRTH_CERTIFICATE_PAGE: 'SPOUSE_BIRTH_CERTIFICATE_PAGE',
   CHILD_BIRTH_CERTIFICATE_PAGE: 'CHILD_BIRTH_CERTIFICATE_PAGE',
-  PARENT_CONSENT: 'PARENT_CONSENT'
+  PARENT_CONSENT: 'PARENT_CONSENT',
+  SOCIAL_SECURITY_FORM: 'SOCIAL_SECURITY_FORM'
 } as const
 
 export type CandidateDocumentType = (typeof CandidateDocumentType)[keyof typeof CandidateDocumentType]
@@ -335,6 +346,34 @@ export const OrganizationRelationshipStatus = {
 export type OrganizationRelationshipStatus = (typeof OrganizationRelationshipStatus)[keyof typeof OrganizationRelationshipStatus]
 
 
+export const ShiftAssignmentTarget = {
+  COMPANY: 'COMPANY',
+  UNIT: 'UNIT',
+  EMPLOYEE: 'EMPLOYEE'
+} as const
+
+export type ShiftAssignmentTarget = (typeof ShiftAssignmentTarget)[keyof typeof ShiftAssignmentTarget]
+
+
+export const WorkShiftDayType = {
+  NORMAL: 'NORMAL',
+  HOLIDAY: 'HOLIDAY'
+} as const
+
+export type WorkShiftDayType = (typeof WorkShiftDayType)[keyof typeof WorkShiftDayType]
+
+
+export const HolidayType = {
+  OFFICIAL: 'OFFICIAL',
+  RELIGIOUS: 'RELIGIOUS',
+  NATIONAL: 'NATIONAL',
+  COMPANY: 'COMPANY',
+  OTHER: 'OTHER'
+} as const
+
+export type HolidayType = (typeof HolidayType)[keyof typeof HolidayType]
+
+
 export const OrganizationLocationStatus = {
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE'
@@ -358,3 +397,162 @@ export const EmployeeAssignmentStatus = {
 } as const
 
 export type EmployeeAssignmentStatus = (typeof EmployeeAssignmentStatus)[keyof typeof EmployeeAssignmentStatus]
+
+
+export const AttendanceRecordStatus = {
+  OPEN: 'OPEN',
+  COMPLETED: 'COMPLETED',
+  PENDING_REVIEW: 'PENDING_REVIEW',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type AttendanceRecordStatus = (typeof AttendanceRecordStatus)[keyof typeof AttendanceRecordStatus]
+
+
+export const AttendanceEventType = {
+  CHECK_IN: 'CHECK_IN',
+  CHECK_OUT: 'CHECK_OUT',
+  BREAK_START: 'BREAK_START',
+  BREAK_END: 'BREAK_END',
+  AUTO_CHECK_OUT: 'AUTO_CHECK_OUT'
+} as const
+
+export type AttendanceEventType = (typeof AttendanceEventType)[keyof typeof AttendanceEventType]
+
+
+export const AttendanceVerificationType = {
+  GPS: 'GPS',
+  FACE: 'FACE',
+  DEVICE: 'DEVICE',
+  LIVENESS: 'LIVENESS'
+} as const
+
+export type AttendanceVerificationType = (typeof AttendanceVerificationType)[keyof typeof AttendanceVerificationType]
+
+
+export const AttendanceVerificationStatus = {
+  PENDING: 'PENDING',
+  PASSED: 'PASSED',
+  FAILED: 'FAILED',
+  REVIEW_REQUIRED: 'REVIEW_REQUIRED'
+} as const
+
+export type AttendanceVerificationStatus = (typeof AttendanceVerificationStatus)[keyof typeof AttendanceVerificationStatus]
+
+
+export const AttendanceAdjustmentStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type AttendanceAdjustmentStatus = (typeof AttendanceAdjustmentStatus)[keyof typeof AttendanceAdjustmentStatus]
+
+
+export const AttendanceChallengeAction = {
+  CHECK_IN: 'CHECK_IN',
+  CHECK_OUT: 'CHECK_OUT'
+} as const
+
+export type AttendanceChallengeAction = (typeof AttendanceChallengeAction)[keyof typeof AttendanceChallengeAction]
+
+
+export const AttendanceChallengeStatus = {
+  OPEN: 'OPEN',
+  CONSUMED: 'CONSUMED',
+  FAILED: 'FAILED',
+  EXPIRED: 'EXPIRED'
+} as const
+
+export type AttendanceChallengeStatus = (typeof AttendanceChallengeStatus)[keyof typeof AttendanceChallengeStatus]
+
+
+export const EmployeeShiftScheduleStatus = {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  SUPERSEDED: 'SUPERSEDED'
+} as const
+
+export type EmployeeShiftScheduleStatus = (typeof EmployeeShiftScheduleStatus)[keyof typeof EmployeeShiftScheduleStatus]
+
+
+export const CorrespondencePriority = {
+  NORMAL: 'NORMAL',
+  URGENT: 'URGENT'
+} as const
+
+export type CorrespondencePriority = (typeof CorrespondencePriority)[keyof typeof CorrespondencePriority]
+
+
+export const CorrespondenceStatus = {
+  PENDING: 'PENDING',
+  REJECTED: 'REJECTED',
+  CLOSED: 'CLOSED'
+} as const
+
+export type CorrespondenceStatus = (typeof CorrespondenceStatus)[keyof typeof CorrespondenceStatus]
+
+
+export const CorrespondenceAction = {
+  SENT: 'SENT',
+  FORWARDED: 'FORWARDED',
+  REJECTED: 'REJECTED',
+  CLOSED: 'CLOSED'
+} as const
+
+export type CorrespondenceAction = (typeof CorrespondenceAction)[keyof typeof CorrespondenceAction]
+
+
+export const AttendanceMonthlyPeriodStatus = {
+  OPEN: 'OPEN',
+  CALCULATING: 'CALCULATING',
+  PENDING_REVIEW: 'PENDING_REVIEW',
+  CLOSED: 'CLOSED',
+  REOPENED: 'REOPENED'
+} as const
+
+export type AttendanceMonthlyPeriodStatus = (typeof AttendanceMonthlyPeriodStatus)[keyof typeof AttendanceMonthlyPeriodStatus]
+
+
+export const LeaveRequestStatus = {
+  DRAFT: 'DRAFT',
+  PENDING: 'PENDING',
+  PARTIALLY_APPROVED: 'PARTIALLY_APPROVED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type LeaveRequestStatus = (typeof LeaveRequestStatus)[keyof typeof LeaveRequestStatus]
+
+
+export const LeaveApprovalRole = {
+  SECTION_SUPERVISOR: 'SECTION_SUPERVISOR',
+  PRODUCTION_MANAGER: 'PRODUCTION_MANAGER',
+  HR_MANAGER: 'HR_MANAGER',
+  CEO_OR_DEPUTY: 'CEO_OR_DEPUTY'
+} as const
+
+export type LeaveApprovalRole = (typeof LeaveApprovalRole)[keyof typeof LeaveApprovalRole]
+
+
+export const LeaveApprovalDecision = {
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type LeaveApprovalDecision = (typeof LeaveApprovalDecision)[keyof typeof LeaveApprovalDecision]
+
+
+export const LeaveLedgerEntryType = {
+  MONTHLY_CREDIT: 'MONTHLY_CREDIT',
+  APPROVED_USAGE: 'APPROVED_USAGE',
+  USAGE_REVERSAL: 'USAGE_REVERSAL',
+  MANUAL_ADJUSTMENT: 'MANUAL_ADJUSTMENT'
+} as const
+
+export type LeaveLedgerEntryType = (typeof LeaveLedgerEntryType)[keyof typeof LeaveLedgerEntryType]

@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { prepareHolidayDay, upsertHolidayDay } from '../modules/attendance/holiday-editor-policy';
+const base = { jalaliDate: '1405/09/01', title: 'تعطیلی شرکت', holidayType: 'COMPANY' as const, isHoliday: true, isWorkingDayOverride: null };
+test('valid Persian date produces Gregorian date', () => { const d = prepareHolidayDay(base, 1405); assert.match(d.date, /^\d{4}-\d{2}-\d{2}$/); });
+test('invalid Persian day rejected', () => assert.throws(() => prepareHolidayDay({ ...base, jalaliDate: '1405/12/31' }, 1405)));
+test('year mismatch rejected', () => assert.throws(() => prepareHolidayDay(base, 1404)));
+test('blank title rejected', () => assert.throws(() => prepareHolidayDay({ ...base, title: '  ' }, 1405)));
+test('upsert replaces same date without duplication', () => { const d = prepareHolidayDay(base, 1405); const updated = upsertHolidayDay([d], { ...d, title: 'اصلاح' }); assert.equal(updated.length, 1); assert.equal(updated[0].title, 'اصلاح'); });
+test('working day override preserved', () => assert.equal(prepareHolidayDay({ ...base, isWorkingDayOverride: true }, 1405).isWorkingDayOverride, true));

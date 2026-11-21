@@ -6,7 +6,7 @@ import { prisma } from "@/libs/prisma";
 import { AUTH_COOKIE_NAMES } from "@/modules/auth/auth.constants";
 import { getAuthenticatedUser } from "@/modules/auth/auth.service";
 
-export const dynamic = "force-dynamic";
+
 
 export async function GET() {
   try {

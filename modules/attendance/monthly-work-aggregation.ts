@@ -1,0 +1,80 @@
+import {classifySpecialWork, type DayKind} from "./holiday-work-policy";
+import { calculateDailyWork, type DailyWorkInput } from "./monthly-work-policy";
+
+export interface MonthlyWorkDay {
+  workDate: string;
+  dayKind?: DayKind;
+  required: DailyWorkInput["required"];
+  attendance: DailyWorkInput["attendance"];
+  /** Actual presence split by Tehran calendar day; used only for holiday-work classification. */
+  holidayAttendance?: DailyWorkInput["attendance"];
+  approvedLeave: DailyWorkInput["approvedLeave"];
+  /** A missing/unapproved schedule, open punch, or pending correction blocks finalization. */
+  unresolvedReasons?: string[];
+}
+
+export interface MonthlyWorkTotals {
+  requiredMinutes: number;
+  holidayWorkMinutes: number;
+  workedMinutes: number;
+  approvedLeaveMinutes: number;
+  uncoveredMinutes: number;
+  /** Overtime is deliberately not inferred from time outside the scheduled segments. */
+  overtimeMinutes: number;
+  unresolvedCount: number;
+  issues: Array<{ workDate: string; reason: string }>;
+}
+
+/**
+ * Pure monthly reducer. Caller must provide the complete, HR-approved schedule,
+ * validated attendance intervals, and FINAL-approved leave for each day.
+ * Never turn absent source data into a zero-hour approved schedule.
+ */
+export function aggregateMonthlyWork(days: MonthlyWorkDay[]): MonthlyWorkTotals {
+  const seen = new Set<string>();
+  const totals: MonthlyWorkTotals = {
+    requiredMinutes: 0,
+    holidayWorkMinutes: 0,
+    workedMinutes: 0,
+    approvedLeaveMinutes: 0,
+    uncoveredMinutes: 0,
+    overtimeMinutes: 0,
+    unresolvedCount: 0,
+    issues: [],
+  };
+
+  for (const day of days) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(day.workDate)) {
+      throw new Error(`Invalid workDate: ${day.workDate}`);
+    }
+    if (seen.has(day.workDate)) {
+      throw new Error(`Duplicate workDate: ${day.workDate}`);
+    }
+    seen.add(day.workDate);
+
+    const result = calculateDailyWork({
+      required: day.required,
+      attendance: day.attendance,
+      approvedLeave: day.approvedLeave,
+    });
+    const special = classifySpecialWork(day.dayKind ?? "REGULAR", day.holidayAttendance ?? day.attendance);
+    totals.holidayWorkMinutes += special.holidayWorkMinutes;
+    totals.requiredMinutes += result.requiredMinutes;
+    totals.workedMinutes += result.workedMinutes;
+    totals.approvedLeaveMinutes += result.leaveCoveredMinutes;
+    totals.uncoveredMinutes += result.uncoveredMinutes;
+
+    for (const reason of day.unresolvedReasons ?? []) {
+      if (!reason.trim()) throw new Error("Unresolved reason cannot be blank");
+      totals.issues.push({ workDate: day.workDate, reason });
+    }
+  }
+  totals.unresolvedCount = totals.issues.length;
+  for (const n of [totals.requiredMinutes, totals.workedMinutes,
+    totals.approvedLeaveMinutes, totals.uncoveredMinutes, totals.holidayWorkMinutes]) {
+    if (!Number.isSafeInteger(n) || n < 0) {
+      throw new Error("Monthly minutes must be non-negative safe integers");
+    }
+  }
+  return totals;
+}

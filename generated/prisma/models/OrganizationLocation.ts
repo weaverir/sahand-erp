@@ -20,8 +20,22 @@ export type OrganizationLocationModel = runtime.Types.Result.DefaultSelection<Pr
 
 export type AggregateOrganizationLocation = {
   _count: OrganizationLocationCountAggregateOutputType | null
+  _avg: OrganizationLocationAvgAggregateOutputType | null
+  _sum: OrganizationLocationSumAggregateOutputType | null
   _min: OrganizationLocationMinAggregateOutputType | null
   _max: OrganizationLocationMaxAggregateOutputType | null
+}
+
+export type OrganizationLocationAvgAggregateOutputType = {
+  latitude: runtime.Decimal | null
+  longitude: runtime.Decimal | null
+  geofenceRadiusMeters: number | null
+}
+
+export type OrganizationLocationSumAggregateOutputType = {
+  latitude: runtime.Decimal | null
+  longitude: runtime.Decimal | null
+  geofenceRadiusMeters: number | null
 }
 
 export type OrganizationLocationMinAggregateOutputType = {
@@ -35,6 +49,10 @@ export type OrganizationLocationMinAggregateOutputType = {
   city: string | null
   address: string | null
   phone: string | null
+  latitude: runtime.Decimal | null
+  longitude: runtime.Decimal | null
+  geofenceRadiusMeters: number | null
+  geofenceEnabled: boolean | null
   status: $Enums.OrganizationLocationStatus | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -51,6 +69,10 @@ export type OrganizationLocationMaxAggregateOutputType = {
   city: string | null
   address: string | null
   phone: string | null
+  latitude: runtime.Decimal | null
+  longitude: runtime.Decimal | null
+  geofenceRadiusMeters: number | null
+  geofenceEnabled: boolean | null
   status: $Enums.OrganizationLocationStatus | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -67,12 +89,28 @@ export type OrganizationLocationCountAggregateOutputType = {
   city: number
   address: number
   phone: number
+  latitude: number
+  longitude: number
+  geofenceRadiusMeters: number
+  geofenceEnabled: number
   status: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type OrganizationLocationAvgAggregateInputType = {
+  latitude?: true
+  longitude?: true
+  geofenceRadiusMeters?: true
+}
+
+export type OrganizationLocationSumAggregateInputType = {
+  latitude?: true
+  longitude?: true
+  geofenceRadiusMeters?: true
+}
 
 export type OrganizationLocationMinAggregateInputType = {
   id?: true
@@ -85,6 +123,10 @@ export type OrganizationLocationMinAggregateInputType = {
   city?: true
   address?: true
   phone?: true
+  latitude?: true
+  longitude?: true
+  geofenceRadiusMeters?: true
+  geofenceEnabled?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -101,6 +143,10 @@ export type OrganizationLocationMaxAggregateInputType = {
   city?: true
   address?: true
   phone?: true
+  latitude?: true
+  longitude?: true
+  geofenceRadiusMeters?: true
+  geofenceEnabled?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -117,6 +163,10 @@ export type OrganizationLocationCountAggregateInputType = {
   city?: true
   address?: true
   phone?: true
+  latitude?: true
+  longitude?: true
+  geofenceRadiusMeters?: true
+  geofenceEnabled?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -161,6 +211,18 @@ export type OrganizationLocationAggregateArgs<ExtArgs extends runtime.Types.Exte
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: OrganizationLocationAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: OrganizationLocationSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: OrganizationLocationMinAggregateInputType
@@ -191,6 +253,8 @@ export type OrganizationLocationGroupByArgs<ExtArgs extends runtime.Types.Extens
   take?: number
   skip?: number
   _count?: OrganizationLocationCountAggregateInputType | true
+  _avg?: OrganizationLocationAvgAggregateInputType
+  _sum?: OrganizationLocationSumAggregateInputType
   _min?: OrganizationLocationMinAggregateInputType
   _max?: OrganizationLocationMaxAggregateInputType
 }
@@ -206,10 +270,16 @@ export type OrganizationLocationGroupByOutputType = {
   city: string | null
   address: string | null
   phone: string | null
+  latitude: runtime.Decimal | null
+  longitude: runtime.Decimal | null
+  geofenceRadiusMeters: number
+  geofenceEnabled: boolean
   status: $Enums.OrganizationLocationStatus
   createdAt: Date
   updatedAt: Date
   _count: OrganizationLocationCountAggregateOutputType | null
+  _avg: OrganizationLocationAvgAggregateOutputType | null
+  _sum: OrganizationLocationSumAggregateOutputType | null
   _min: OrganizationLocationMinAggregateOutputType | null
   _max: OrganizationLocationMaxAggregateOutputType | null
 }
@@ -243,11 +313,16 @@ export type OrganizationLocationWhereInput = {
   city?: Prisma.StringNullableFilter<"OrganizationLocation"> | string | null
   address?: Prisma.StringNullableFilter<"OrganizationLocation"> | string | null
   phone?: Prisma.StringNullableFilter<"OrganizationLocation"> | string | null
+  latitude?: Prisma.DecimalNullableFilter<"OrganizationLocation"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.DecimalNullableFilter<"OrganizationLocation"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  geofenceRadiusMeters?: Prisma.IntFilter<"OrganizationLocation"> | number
+  geofenceEnabled?: Prisma.BoolFilter<"OrganizationLocation"> | boolean
   status?: Prisma.EnumOrganizationLocationStatusFilter<"OrganizationLocation"> | $Enums.OrganizationLocationStatus
   createdAt?: Prisma.DateTimeFilter<"OrganizationLocation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"OrganizationLocation"> | Date | string
   units?: Prisma.OrganizationUnitListRelationFilter
   assignments?: Prisma.EmployeeAssignmentListRelationFilter
+  attendanceRecords?: Prisma.AttendanceRecordListRelationFilter
 }
 
 export type OrganizationLocationOrderByWithRelationInput = {
@@ -261,11 +336,16 @@ export type OrganizationLocationOrderByWithRelationInput = {
   city?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  latitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  longitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  geofenceRadiusMeters?: Prisma.SortOrder
+  geofenceEnabled?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   units?: Prisma.OrganizationUnitOrderByRelationAggregateInput
   assignments?: Prisma.EmployeeAssignmentOrderByRelationAggregateInput
+  attendanceRecords?: Prisma.AttendanceRecordOrderByRelationAggregateInput
 }
 
 export type OrganizationLocationWhereUniqueInput = Prisma.AtLeast<{
@@ -282,11 +362,16 @@ export type OrganizationLocationWhereUniqueInput = Prisma.AtLeast<{
   city?: Prisma.StringNullableFilter<"OrganizationLocation"> | string | null
   address?: Prisma.StringNullableFilter<"OrganizationLocation"> | string | null
   phone?: Prisma.StringNullableFilter<"OrganizationLocation"> | string | null
+  latitude?: Prisma.DecimalNullableFilter<"OrganizationLocation"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.DecimalNullableFilter<"OrganizationLocation"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  geofenceRadiusMeters?: Prisma.IntFilter<"OrganizationLocation"> | number
+  geofenceEnabled?: Prisma.BoolFilter<"OrganizationLocation"> | boolean
   status?: Prisma.EnumOrganizationLocationStatusFilter<"OrganizationLocation"> | $Enums.OrganizationLocationStatus
   createdAt?: Prisma.DateTimeFilter<"OrganizationLocation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"OrganizationLocation"> | Date | string
   units?: Prisma.OrganizationUnitListRelationFilter
   assignments?: Prisma.EmployeeAssignmentListRelationFilter
+  attendanceRecords?: Prisma.AttendanceRecordListRelationFilter
 }, "id" | "code">
 
 export type OrganizationLocationOrderByWithAggregationInput = {
@@ -300,12 +385,18 @@ export type OrganizationLocationOrderByWithAggregationInput = {
   city?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  latitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  longitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  geofenceRadiusMeters?: Prisma.SortOrder
+  geofenceEnabled?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.OrganizationLocationCountOrderByAggregateInput
+  _avg?: Prisma.OrganizationLocationAvgOrderByAggregateInput
   _max?: Prisma.OrganizationLocationMaxOrderByAggregateInput
   _min?: Prisma.OrganizationLocationMinOrderByAggregateInput
+  _sum?: Prisma.OrganizationLocationSumOrderByAggregateInput
 }
 
 export type OrganizationLocationScalarWhereWithAggregatesInput = {
@@ -322,6 +413,10 @@ export type OrganizationLocationScalarWhereWithAggregatesInput = {
   city?: Prisma.StringNullableWithAggregatesFilter<"OrganizationLocation"> | string | null
   address?: Prisma.StringNullableWithAggregatesFilter<"OrganizationLocation"> | string | null
   phone?: Prisma.StringNullableWithAggregatesFilter<"OrganizationLocation"> | string | null
+  latitude?: Prisma.DecimalNullableWithAggregatesFilter<"OrganizationLocation"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.DecimalNullableWithAggregatesFilter<"OrganizationLocation"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  geofenceRadiusMeters?: Prisma.IntWithAggregatesFilter<"OrganizationLocation"> | number
+  geofenceEnabled?: Prisma.BoolWithAggregatesFilter<"OrganizationLocation"> | boolean
   status?: Prisma.EnumOrganizationLocationStatusWithAggregatesFilter<"OrganizationLocation"> | $Enums.OrganizationLocationStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"OrganizationLocation"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"OrganizationLocation"> | Date | string
@@ -338,11 +433,16 @@ export type OrganizationLocationCreateInput = {
   city?: string | null
   address?: string | null
   phone?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  geofenceRadiusMeters?: number
+  geofenceEnabled?: boolean
   status?: $Enums.OrganizationLocationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   units?: Prisma.OrganizationUnitCreateNestedManyWithoutLocationInput
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutLocationInput
+  attendanceRecords?: Prisma.AttendanceRecordCreateNestedManyWithoutCheckpointLocationInput
 }
 
 export type OrganizationLocationUncheckedCreateInput = {
@@ -356,11 +456,16 @@ export type OrganizationLocationUncheckedCreateInput = {
   city?: string | null
   address?: string | null
   phone?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  geofenceRadiusMeters?: number
+  geofenceEnabled?: boolean
   status?: $Enums.OrganizationLocationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   units?: Prisma.OrganizationUnitUncheckedCreateNestedManyWithoutLocationInput
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutLocationInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutCheckpointLocationInput
 }
 
 export type OrganizationLocationUpdateInput = {
@@ -374,11 +479,16 @@ export type OrganizationLocationUpdateInput = {
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  geofenceRadiusMeters?: Prisma.IntFieldUpdateOperationsInput | number
+  geofenceEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOrganizationLocationStatusFieldUpdateOperationsInput | $Enums.OrganizationLocationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   units?: Prisma.OrganizationUnitUpdateManyWithoutLocationNestedInput
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutLocationNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUpdateManyWithoutCheckpointLocationNestedInput
 }
 
 export type OrganizationLocationUncheckedUpdateInput = {
@@ -392,11 +502,16 @@ export type OrganizationLocationUncheckedUpdateInput = {
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  geofenceRadiusMeters?: Prisma.IntFieldUpdateOperationsInput | number
+  geofenceEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOrganizationLocationStatusFieldUpdateOperationsInput | $Enums.OrganizationLocationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   units?: Prisma.OrganizationUnitUncheckedUpdateManyWithoutLocationNestedInput
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutLocationNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutCheckpointLocationNestedInput
 }
 
 export type OrganizationLocationCreateManyInput = {
@@ -410,6 +525,10 @@ export type OrganizationLocationCreateManyInput = {
   city?: string | null
   address?: string | null
   phone?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  geofenceRadiusMeters?: number
+  geofenceEnabled?: boolean
   status?: $Enums.OrganizationLocationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -426,6 +545,10 @@ export type OrganizationLocationUpdateManyMutationInput = {
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  geofenceRadiusMeters?: Prisma.IntFieldUpdateOperationsInput | number
+  geofenceEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOrganizationLocationStatusFieldUpdateOperationsInput | $Enums.OrganizationLocationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -442,6 +565,10 @@ export type OrganizationLocationUncheckedUpdateManyInput = {
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  geofenceRadiusMeters?: Prisma.IntFieldUpdateOperationsInput | number
+  geofenceEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOrganizationLocationStatusFieldUpdateOperationsInput | $Enums.OrganizationLocationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -458,9 +585,19 @@ export type OrganizationLocationCountOrderByAggregateInput = {
   city?: Prisma.SortOrder
   address?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  geofenceRadiusMeters?: Prisma.SortOrder
+  geofenceEnabled?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type OrganizationLocationAvgOrderByAggregateInput = {
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  geofenceRadiusMeters?: Prisma.SortOrder
 }
 
 export type OrganizationLocationMaxOrderByAggregateInput = {
@@ -474,6 +611,10 @@ export type OrganizationLocationMaxOrderByAggregateInput = {
   city?: Prisma.SortOrder
   address?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  geofenceRadiusMeters?: Prisma.SortOrder
+  geofenceEnabled?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -490,9 +631,19 @@ export type OrganizationLocationMinOrderByAggregateInput = {
   city?: Prisma.SortOrder
   address?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  geofenceRadiusMeters?: Prisma.SortOrder
+  geofenceEnabled?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type OrganizationLocationSumOrderByAggregateInput = {
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  geofenceRadiusMeters?: Prisma.SortOrder
 }
 
 export type OrganizationLocationNullableScalarRelationFilter = {
@@ -536,6 +687,22 @@ export type OrganizationLocationUpdateOneWithoutAssignmentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationLocationUpdateToOneWithWhereWithoutAssignmentsInput, Prisma.OrganizationLocationUpdateWithoutAssignmentsInput>, Prisma.OrganizationLocationUncheckedUpdateWithoutAssignmentsInput>
 }
 
+export type OrganizationLocationCreateNestedOneWithoutAttendanceRecordsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationLocationCreateWithoutAttendanceRecordsInput, Prisma.OrganizationLocationUncheckedCreateWithoutAttendanceRecordsInput>
+  connectOrCreate?: Prisma.OrganizationLocationCreateOrConnectWithoutAttendanceRecordsInput
+  connect?: Prisma.OrganizationLocationWhereUniqueInput
+}
+
+export type OrganizationLocationUpdateOneWithoutAttendanceRecordsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationLocationCreateWithoutAttendanceRecordsInput, Prisma.OrganizationLocationUncheckedCreateWithoutAttendanceRecordsInput>
+  connectOrCreate?: Prisma.OrganizationLocationCreateOrConnectWithoutAttendanceRecordsInput
+  upsert?: Prisma.OrganizationLocationUpsertWithoutAttendanceRecordsInput
+  disconnect?: Prisma.OrganizationLocationWhereInput | boolean
+  delete?: Prisma.OrganizationLocationWhereInput | boolean
+  connect?: Prisma.OrganizationLocationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationLocationUpdateToOneWithWhereWithoutAttendanceRecordsInput, Prisma.OrganizationLocationUpdateWithoutAttendanceRecordsInput>, Prisma.OrganizationLocationUncheckedUpdateWithoutAttendanceRecordsInput>
+}
+
 export type OrganizationLocationCreateWithoutUnitsInput = {
   id?: string
   code: string
@@ -547,10 +714,15 @@ export type OrganizationLocationCreateWithoutUnitsInput = {
   city?: string | null
   address?: string | null
   phone?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  geofenceRadiusMeters?: number
+  geofenceEnabled?: boolean
   status?: $Enums.OrganizationLocationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutLocationInput
+  attendanceRecords?: Prisma.AttendanceRecordCreateNestedManyWithoutCheckpointLocationInput
 }
 
 export type OrganizationLocationUncheckedCreateWithoutUnitsInput = {
@@ -564,10 +736,15 @@ export type OrganizationLocationUncheckedCreateWithoutUnitsInput = {
   city?: string | null
   address?: string | null
   phone?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  geofenceRadiusMeters?: number
+  geofenceEnabled?: boolean
   status?: $Enums.OrganizationLocationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutLocationInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutCheckpointLocationInput
 }
 
 export type OrganizationLocationCreateOrConnectWithoutUnitsInput = {
@@ -597,10 +774,15 @@ export type OrganizationLocationUpdateWithoutUnitsInput = {
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  geofenceRadiusMeters?: Prisma.IntFieldUpdateOperationsInput | number
+  geofenceEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOrganizationLocationStatusFieldUpdateOperationsInput | $Enums.OrganizationLocationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutLocationNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUpdateManyWithoutCheckpointLocationNestedInput
 }
 
 export type OrganizationLocationUncheckedUpdateWithoutUnitsInput = {
@@ -614,10 +796,15 @@ export type OrganizationLocationUncheckedUpdateWithoutUnitsInput = {
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  geofenceRadiusMeters?: Prisma.IntFieldUpdateOperationsInput | number
+  geofenceEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOrganizationLocationStatusFieldUpdateOperationsInput | $Enums.OrganizationLocationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutLocationNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutCheckpointLocationNestedInput
 }
 
 export type OrganizationLocationCreateWithoutAssignmentsInput = {
@@ -631,10 +818,15 @@ export type OrganizationLocationCreateWithoutAssignmentsInput = {
   city?: string | null
   address?: string | null
   phone?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  geofenceRadiusMeters?: number
+  geofenceEnabled?: boolean
   status?: $Enums.OrganizationLocationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   units?: Prisma.OrganizationUnitCreateNestedManyWithoutLocationInput
+  attendanceRecords?: Prisma.AttendanceRecordCreateNestedManyWithoutCheckpointLocationInput
 }
 
 export type OrganizationLocationUncheckedCreateWithoutAssignmentsInput = {
@@ -648,10 +840,15 @@ export type OrganizationLocationUncheckedCreateWithoutAssignmentsInput = {
   city?: string | null
   address?: string | null
   phone?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  geofenceRadiusMeters?: number
+  geofenceEnabled?: boolean
   status?: $Enums.OrganizationLocationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   units?: Prisma.OrganizationUnitUncheckedCreateNestedManyWithoutLocationInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedCreateNestedManyWithoutCheckpointLocationInput
 }
 
 export type OrganizationLocationCreateOrConnectWithoutAssignmentsInput = {
@@ -681,10 +878,15 @@ export type OrganizationLocationUpdateWithoutAssignmentsInput = {
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  geofenceRadiusMeters?: Prisma.IntFieldUpdateOperationsInput | number
+  geofenceEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOrganizationLocationStatusFieldUpdateOperationsInput | $Enums.OrganizationLocationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   units?: Prisma.OrganizationUnitUpdateManyWithoutLocationNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUpdateManyWithoutCheckpointLocationNestedInput
 }
 
 export type OrganizationLocationUncheckedUpdateWithoutAssignmentsInput = {
@@ -698,10 +900,119 @@ export type OrganizationLocationUncheckedUpdateWithoutAssignmentsInput = {
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  geofenceRadiusMeters?: Prisma.IntFieldUpdateOperationsInput | number
+  geofenceEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumOrganizationLocationStatusFieldUpdateOperationsInput | $Enums.OrganizationLocationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   units?: Prisma.OrganizationUnitUncheckedUpdateManyWithoutLocationNestedInput
+  attendanceRecords?: Prisma.AttendanceRecordUncheckedUpdateManyWithoutCheckpointLocationNestedInput
+}
+
+export type OrganizationLocationCreateWithoutAttendanceRecordsInput = {
+  id?: string
+  code: string
+  name: string
+  locationType: string
+  description?: string | null
+  country?: string | null
+  province?: string | null
+  city?: string | null
+  address?: string | null
+  phone?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  geofenceRadiusMeters?: number
+  geofenceEnabled?: boolean
+  status?: $Enums.OrganizationLocationStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  units?: Prisma.OrganizationUnitCreateNestedManyWithoutLocationInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutLocationInput
+}
+
+export type OrganizationLocationUncheckedCreateWithoutAttendanceRecordsInput = {
+  id?: string
+  code: string
+  name: string
+  locationType: string
+  description?: string | null
+  country?: string | null
+  province?: string | null
+  city?: string | null
+  address?: string | null
+  phone?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  geofenceRadiusMeters?: number
+  geofenceEnabled?: boolean
+  status?: $Enums.OrganizationLocationStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  units?: Prisma.OrganizationUnitUncheckedCreateNestedManyWithoutLocationInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutLocationInput
+}
+
+export type OrganizationLocationCreateOrConnectWithoutAttendanceRecordsInput = {
+  where: Prisma.OrganizationLocationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationLocationCreateWithoutAttendanceRecordsInput, Prisma.OrganizationLocationUncheckedCreateWithoutAttendanceRecordsInput>
+}
+
+export type OrganizationLocationUpsertWithoutAttendanceRecordsInput = {
+  update: Prisma.XOR<Prisma.OrganizationLocationUpdateWithoutAttendanceRecordsInput, Prisma.OrganizationLocationUncheckedUpdateWithoutAttendanceRecordsInput>
+  create: Prisma.XOR<Prisma.OrganizationLocationCreateWithoutAttendanceRecordsInput, Prisma.OrganizationLocationUncheckedCreateWithoutAttendanceRecordsInput>
+  where?: Prisma.OrganizationLocationWhereInput
+}
+
+export type OrganizationLocationUpdateToOneWithWhereWithoutAttendanceRecordsInput = {
+  where?: Prisma.OrganizationLocationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationLocationUpdateWithoutAttendanceRecordsInput, Prisma.OrganizationLocationUncheckedUpdateWithoutAttendanceRecordsInput>
+}
+
+export type OrganizationLocationUpdateWithoutAttendanceRecordsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  locationType?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  geofenceRadiusMeters?: Prisma.IntFieldUpdateOperationsInput | number
+  geofenceEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumOrganizationLocationStatusFieldUpdateOperationsInput | $Enums.OrganizationLocationStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  units?: Prisma.OrganizationUnitUpdateManyWithoutLocationNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutLocationNestedInput
+}
+
+export type OrganizationLocationUncheckedUpdateWithoutAttendanceRecordsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  locationType?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  geofenceRadiusMeters?: Prisma.IntFieldUpdateOperationsInput | number
+  geofenceEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumOrganizationLocationStatusFieldUpdateOperationsInput | $Enums.OrganizationLocationStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  units?: Prisma.OrganizationUnitUncheckedUpdateManyWithoutLocationNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutLocationNestedInput
 }
 
 
@@ -712,11 +1023,13 @@ export type OrganizationLocationUncheckedUpdateWithoutAssignmentsInput = {
 export type OrganizationLocationCountOutputType = {
   units: number
   assignments: number
+  attendanceRecords: number
 }
 
 export type OrganizationLocationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   units?: boolean | OrganizationLocationCountOutputTypeCountUnitsArgs
   assignments?: boolean | OrganizationLocationCountOutputTypeCountAssignmentsArgs
+  attendanceRecords?: boolean | OrganizationLocationCountOutputTypeCountAttendanceRecordsArgs
 }
 
 /**
@@ -743,6 +1056,13 @@ export type OrganizationLocationCountOutputTypeCountAssignmentsArgs<ExtArgs exte
   where?: Prisma.EmployeeAssignmentWhereInput
 }
 
+/**
+ * OrganizationLocationCountOutputType without action
+ */
+export type OrganizationLocationCountOutputTypeCountAttendanceRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AttendanceRecordWhereInput
+}
+
 
 export type OrganizationLocationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -755,11 +1075,16 @@ export type OrganizationLocationSelect<ExtArgs extends runtime.Types.Extensions.
   city?: boolean
   address?: boolean
   phone?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  geofenceRadiusMeters?: boolean
+  geofenceEnabled?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   units?: boolean | Prisma.OrganizationLocation$unitsArgs<ExtArgs>
   assignments?: boolean | Prisma.OrganizationLocation$assignmentsArgs<ExtArgs>
+  attendanceRecords?: boolean | Prisma.OrganizationLocation$attendanceRecordsArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationLocationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["organizationLocation"]>
 
@@ -774,6 +1099,10 @@ export type OrganizationLocationSelectCreateManyAndReturn<ExtArgs extends runtim
   city?: boolean
   address?: boolean
   phone?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  geofenceRadiusMeters?: boolean
+  geofenceEnabled?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -790,6 +1119,10 @@ export type OrganizationLocationSelectUpdateManyAndReturn<ExtArgs extends runtim
   city?: boolean
   address?: boolean
   phone?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  geofenceRadiusMeters?: boolean
+  geofenceEnabled?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -806,15 +1139,20 @@ export type OrganizationLocationSelectScalar = {
   city?: boolean
   address?: boolean
   phone?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  geofenceRadiusMeters?: boolean
+  geofenceEnabled?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type OrganizationLocationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "name" | "locationType" | "description" | "country" | "province" | "city" | "address" | "phone" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["organizationLocation"]>
+export type OrganizationLocationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "name" | "locationType" | "description" | "country" | "province" | "city" | "address" | "phone" | "latitude" | "longitude" | "geofenceRadiusMeters" | "geofenceEnabled" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["organizationLocation"]>
 export type OrganizationLocationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   units?: boolean | Prisma.OrganizationLocation$unitsArgs<ExtArgs>
   assignments?: boolean | Prisma.OrganizationLocation$assignmentsArgs<ExtArgs>
+  attendanceRecords?: boolean | Prisma.OrganizationLocation$attendanceRecordsArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationLocationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OrganizationLocationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -825,6 +1163,7 @@ export type $OrganizationLocationPayload<ExtArgs extends runtime.Types.Extension
   objects: {
     units: Prisma.$OrganizationUnitPayload<ExtArgs>[]
     assignments: Prisma.$EmployeeAssignmentPayload<ExtArgs>[]
+    attendanceRecords: Prisma.$AttendanceRecordPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -837,6 +1176,10 @@ export type $OrganizationLocationPayload<ExtArgs extends runtime.Types.Extension
     city: string | null
     address: string | null
     phone: string | null
+    latitude: runtime.Decimal | null
+    longitude: runtime.Decimal | null
+    geofenceRadiusMeters: number
+    geofenceEnabled: boolean
     status: $Enums.OrganizationLocationStatus
     createdAt: Date
     updatedAt: Date
@@ -1236,6 +1579,7 @@ export interface Prisma__OrganizationLocationClient<T, Null = never, ExtArgs ext
   readonly [Symbol.toStringTag]: "PrismaPromise"
   units<T extends Prisma.OrganizationLocation$unitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationLocation$unitsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrganizationUnitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   assignments<T extends Prisma.OrganizationLocation$assignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationLocation$assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  attendanceRecords<T extends Prisma.OrganizationLocation$attendanceRecordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationLocation$attendanceRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendanceRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1275,6 +1619,10 @@ export interface OrganizationLocationFieldRefs {
   readonly city: Prisma.FieldRef<"OrganizationLocation", 'String'>
   readonly address: Prisma.FieldRef<"OrganizationLocation", 'String'>
   readonly phone: Prisma.FieldRef<"OrganizationLocation", 'String'>
+  readonly latitude: Prisma.FieldRef<"OrganizationLocation", 'Decimal'>
+  readonly longitude: Prisma.FieldRef<"OrganizationLocation", 'Decimal'>
+  readonly geofenceRadiusMeters: Prisma.FieldRef<"OrganizationLocation", 'Int'>
+  readonly geofenceEnabled: Prisma.FieldRef<"OrganizationLocation", 'Boolean'>
   readonly status: Prisma.FieldRef<"OrganizationLocation", 'OrganizationLocationStatus'>
   readonly createdAt: Prisma.FieldRef<"OrganizationLocation", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"OrganizationLocation", 'DateTime'>
@@ -1711,6 +2059,30 @@ export type OrganizationLocation$assignmentsArgs<ExtArgs extends runtime.Types.E
   take?: number
   skip?: number
   distinct?: Prisma.EmployeeAssignmentScalarFieldEnum | Prisma.EmployeeAssignmentScalarFieldEnum[]
+}
+
+/**
+ * OrganizationLocation.attendanceRecords
+ */
+export type OrganizationLocation$attendanceRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AttendanceRecord
+   */
+  select?: Prisma.AttendanceRecordSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AttendanceRecord
+   */
+  omit?: Prisma.AttendanceRecordOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AttendanceRecordInclude<ExtArgs> | null
+  where?: Prisma.AttendanceRecordWhereInput
+  orderBy?: Prisma.AttendanceRecordOrderByWithRelationInput | Prisma.AttendanceRecordOrderByWithRelationInput[]
+  cursor?: Prisma.AttendanceRecordWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AttendanceRecordScalarFieldEnum | Prisma.AttendanceRecordScalarFieldEnum[]
 }
 
 /**

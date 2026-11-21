@@ -1,0 +1,62 @@
+
+// Correspondence is retained even when an employee leaves the company.
+enum CorrespondencePriority {
+  NORMAL
+  URGENT
+}
+
+enum CorrespondenceStatus {
+  PENDING
+  REJECTED
+  CLOSED
+}
+
+enum CorrespondenceAction {
+  SENT
+  FORWARDED
+  REJECTED
+  CLOSED
+}
+
+model CorrespondenceLetter {
+  id String @id @default(cuid())
+  subject String
+  body String @db.Text
+  priority CorrespondencePriority @default(NORMAL)
+  status CorrespondenceStatus @default(PENDING)
+  senderUserId String
+  senderAssignmentId String
+  currentReviewerAssignmentId String?
+  persianMonth String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  version Int @default(0)
+  actions CorrespondenceHistory[]
+  @@index([senderUserId, persianMonth, priority])
+  @@index([currentReviewerAssignmentId, status])
+  @@index([createdAt])
+}
+
+model CorrespondenceHistory {
+  id String @id @default(cuid())
+  letterId String
+  letter CorrespondenceLetter @relation(fields: [letterId], references: [id], onDelete: Restrict)
+  actorUserId String
+  actorAssignmentId String
+  action CorrespondenceAction
+  fromAssignmentId String?
+  toAssignmentId String?
+  note String? @db.Text
+  createdAt DateTime @default(now())
+  @@index([letterId, createdAt])
+  @@index([actorUserId, createdAt])
+}
+
+// Locks serialize urgent-quota checks for each user and Persian month.
+model CorrespondenceMonthlyQuota {
+  id String @id @default(cuid())
+  userId String
+  persianMonth String
+  urgentUsed Int @default(0)
+  @@unique([userId, persianMonth])
+}

@@ -14,6 +14,10 @@ import {
   authorizeRequest,
 } from "@/modules/auth/auth.middleware";
 
+// ==========================================
+// HELPERS
+// ==========================================
+
 function getStatusCode(error: unknown): number {
   if (
     typeof error === "object" &&
@@ -27,6 +31,10 @@ function getStatusCode(error: unknown): number {
   return 500;
 }
 
+// ==========================================
+// TYPES
+// ==========================================
+
 type ChartNode = {
   id: string;
   code: string;
@@ -35,37 +43,48 @@ type ChartNode = {
   parentId: string | null;
   status: string;
   sortOrder: number;
+
   location: {
     id: string;
     name: string;
     code: string;
   } | null;
+
   assignments: {
     id: string;
     userId: string;
-    positionId: string;
+    positionId: string | null;
+    responsibilityTitle: string | null;
     managerAssignmentId: string | null;
     assignmentType: string;
     isPrimary: boolean;
     startDate: Date;
     endDate: Date | null;
+
     user: {
       id: string;
       username: string;
       fullName: string;
     };
+
     position: {
       id: string;
       code: string;
       title: string;
       isManagerial: boolean;
-    };
+    } | null;
   }[];
+
   children: ChartNode[];
 };
 
+// ==========================================
+// GET - ORGANIZATION CHART
+// ==========================================
+
 export async function GET(request: NextRequest) {
   try {
+    // بررسی دسترسی
     await authorizeRequest(
       request,
       "organization.chart.view"
@@ -73,62 +92,80 @@ export async function GET(request: NextRequest) {
 
     const now = new Date();
 
-    const units = await prisma.organizationUnit.findMany({
-      where: {
-        status: "ACTIVE",
-      },
-      include: {
-        location: {
-          select: {
-            id: true,
-            name: true,
-            code: true,
-          },
+    // ======================================
+    // دریافت واحدهای سازمانی و انتصاب‌ها
+    // ======================================
+
+    const units =
+      await prisma.organizationUnit.findMany({
+        where: {
+          status: "ACTIVE",
         },
-        assignments: {
-          where: {
-            status: "ACTIVE",
-            OR: [
-              { endDate: null },
-              { endDate: { gt: now } },
+
+        include: {
+          location: {
+            select: {
+              id: true,
+              name: true,
+              code: true,
+            },
+          },
+
+          assignments: {
+            where: {
+              status: "ACTIVE",
+
+              OR: [
+                { endDate: null },
+                { endDate: { gt: now } },
+              ],
+            },
+
+            select: {
+              id: true,
+              userId: true,
+              positionId: true,
+              responsibilityTitle: true,
+              managerAssignmentId: true,
+              assignmentType: true,
+              isPrimary: true,
+              startDate: true,
+              endDate: true,
+
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  fullName: true,
+                },
+              },
+
+              position: {
+                select: {
+                  id: true,
+                  code: true,
+                  title: true,
+                  isManagerial: true,
+                },
+              },
+            },
+
+            orderBy: [
+              { isPrimary: "desc" },
+              { startDate: "asc" },
             ],
           },
-          select: {
-            id: true,
-            userId: true,
-            positionId: true,
-            managerAssignmentId: true,
-            assignmentType: true,
-            isPrimary: true,
-            startDate: true,
-            endDate: true,
-            user: {
-              select: {
-                id: true,
-                username: true,
-                fullName: true,
-              },
-            },
-            position: {
-              select: {
-                id: true,
-                code: true,
-                title: true,
-                isManagerial: true,
-              },
-            },
-          },
-          orderBy: [
-            { isPrimary: "desc" },
-            { startDate: "asc" },
-          ],
         },
-      },
-      orderBy: [
-        { sortOrder: "asc" },
-        { name: "asc" },
-      ],
-    });
+
+        orderBy: [
+          { sortOrder: "asc" },
+          { name: "asc" },
+        ],
+      });
+
+    // ======================================
+    // ساخت درخت سازمانی
+    // ======================================
 
     const nodes = new Map<string, ChartNode>();
 
@@ -141,29 +178,47 @@ export async function GET(request: NextRequest) {
         parentId: unit.parentId,
         status: unit.status,
         sortOrder: unit.sortOrder,
+
         location: unit.location,
-        assignments: unit.assignments.map((assignment) => ({
-          id: assignment.id,
-          userId: assignment.userId,
-          positionId: assignment.positionId,
-          managerAssignmentId: assignment.managerAssignmentId,
-          assignmentType: assignment.assignmentType,
-          isPrimary: assignment.isPrimary,
-          startDate: assignment.startDate,
-          endDate: assignment.endDate,
-          user: assignment.user,
-          position: assignment.position,
-        })),
+
+        assignments: unit.assignments.map(
+          (assignment) => ({
+            id: assignment.id,
+            userId: assignment.userId,
+            positionId: assignment.positionId,
+            responsibilityTitle:
+              assignment.responsibilityTitle,
+            managerAssignmentId:
+              assignment.managerAssignmentId,
+            assignmentType:
+              assignment.assignmentType,
+            isPrimary: assignment.isPrimary,
+            startDate: assignment.startDate,
+            endDate: assignment.endDate,
+
+            user: assignment.user,
+
+            position: assignment.position,
+          })
+        ),
+
         children: [],
       };
 
       nodes.set(unit.id, node);
     }
 
+    // ======================================
+    // اتصال واحدها به یکدیگر
+    // ======================================
+
     const roots: ChartNode[] = [];
 
     for (const node of nodes.values()) {
-      if (!node.parentId || !nodes.has(node.parentId)) {
+      if (
+        !node.parentId ||
+        !nodes.has(node.parentId)
+      ) {
         roots.push(node);
         continue;
       }
@@ -173,17 +228,26 @@ export async function GET(request: NextRequest) {
         continue;
       }
 
-      nodes.get(node.parentId)!.children.push(node);
+      nodes
+        .get(node.parentId)!
+        .children.push(node);
     }
+
+    // ======================================
+    // خروجی نهایی
+    // ======================================
 
     const result = {
       chart: roots,
+
       count: units.length,
+
       activeAssignments: units.reduce(
         (total, unit) =>
           total + unit.assignments.length,
         0
       ),
+
       generatedAt: now.toISOString(),
     };
 
